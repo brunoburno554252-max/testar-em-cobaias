@@ -1602,6 +1602,21 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Chancela",
         "Verificação de Experiencia",
       ],
+      Plataforma: [
+        "ITECC",
+        "FRATEC",
+        "CTÉCNICA",
+        "LA SUL",
+        "ASTORTEC",
+        "LATEC",
+        "WAL RJ",
+        "IEPB PB2/PB",
+      ]
+      "Nível de Ensino:" [
+        "Competência",
+        "Aproveitamento de Estudos e Conhecimentos",
+        "Tecnico Regular",
+      ]
     },
   },
   OUVIDORIA: {
