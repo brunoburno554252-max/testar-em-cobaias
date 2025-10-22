@@ -1590,6 +1590,19 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       Curso: "select",
       Polo: "select",
     },
+    selectOptions: {
+      Atividade: [
+        "Matricula",
+        "Cancelamento",
+        "Troca de plataforma",
+        "Triagem",
+        "Enviado a Certificadora",
+        "Concluido",
+        "Negado pela Certificadora",
+        "Chancela",
+        "Verificação de Experiencia",
+      ],
+    },
   },
   OUVIDORIA: {
     fields: [
