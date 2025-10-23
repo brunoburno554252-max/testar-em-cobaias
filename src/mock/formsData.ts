@@ -1631,7 +1631,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "FILOSOFIA",
     "FÍSICA",
     "GEOGRAFIA",
-    "HISTÓRIA,"
+    "HISTÓRIA",
     "INGLÊS",
   ],
   "Superior Sequencial": [
