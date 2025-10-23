@@ -161,6 +161,8 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
       // Se o campo alterado for "Nível de Ensino", limpar o campo "Curso"
       if (field === "Nível de Ensino") {
         newValues["Curso"] = "";
+        console.log("🎓 Nível de Ensino selecionado:", value);
+        console.log("📚 Cursos disponíveis:", nivelEnsinoCursoMap[value] || "Nenhum");
       }
       
       return newValues;
