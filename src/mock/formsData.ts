@@ -1426,11 +1426,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "DISTÚRBIOS NA APRENDIZAGEM",
     "EDUCAÇÃO DE JOVENS E ADULTOS (EJA)",
     "EDUCAÇÃO ESPECIAL EM DEFICIÊNCIA INTELECTUAL",
-    "EDUCAÇÃO MUSICAL",
-    "ESTUDOS SOBRE O AUTISMO",
-    "NEUROEDUCAÇÃO",
-    "PEDAGOGIA EMPRESARIAL",
-    "PSICOMOTRICIDADE",
   ],
   "Extensão Universitária": [
     "DIDÁTICA NAS SÉRIES INICIAIS",
@@ -1558,7 +1553,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "CIÊNCIAS SOCIAIS PARA NÃO LICENCIADOS",
     "EDUCAÇÃO ESPECIAL PARA NÃO LICENCIADOS",
   ],
-  "Graduação": [
+  Graduação: [
     "ADMINISTRAÇÃO",
     "BACHARELADO EM SERVIÇO SOCIAL",
     "BACHARELADO EM TEOLOGIA",
@@ -1614,7 +1609,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM MEIO AMBIENTE",
     "TÉCNICO EM TTI",
   ],
-  "EJA": [
+  EJA: [
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS",
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS 2.0",
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS - D.O",
@@ -1635,10 +1630,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "AUTISMO",
     "AUXILIAR DE CONTABILIDADE",
   ],
-  "Profissionalizante Especial": [
-    "AUX. DE SAÚDE BUCAL",
-    "AUXILIAR DE ENFERMAGEM ESPECIAL",
-  ],
+  "Profissionalizante Especial": ["AUX. DE SAÚDE BUCAL", "AUXILIAR DE ENFERMAGEM ESPECIAL"],
   "Pós Técnico": [
     "ADMINISTRAÇÃO DA PRODUÇÃO",
     "CENTRAL DE MATERIAL E ESTERILIZAÇÃO",
