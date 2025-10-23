@@ -1990,7 +1990,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "COSMETOLOGIA",
     "CÁLCULOS TRABALHISTAS",
   ],
-  "PROFISSIONALIZANTES PREMIUM - ASTORTEC": [
+  "PROFISSIONALIZANTES PREMIUM": [
     "PÓS PRODUÇÃO COM AFTER EFFECTS CC",
     "3D GAME STUDIO NA PRÁTICA",
     "GAMIFICAÇÃO",
