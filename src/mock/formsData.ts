@@ -2982,6 +2982,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "ATENDIMENTO E VENDAS NO VAREJO",
     "TELEMARKETING",
   ],
+  "SEGUNDA LICENCIATURA/FORMAÇÃO PEDAGOGICA": ["SEGUNDA LICENCIATURA / R2 EM MÚSICA"],
 };
 
 // ============= ESTRUTURA DE CONFIGURAÇÃO DE SEÇÕES =============
