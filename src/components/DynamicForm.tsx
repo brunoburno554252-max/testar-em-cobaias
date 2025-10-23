@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { formsConfig, globalSelectOptions, globalPoloOptions, globalCursoOptions } from "@/mock/formsData";
+import { formsConfig, globalSelectOptions, globalPoloOptions, globalCursoOptions, nivelEnsinoCursoMap } from "@/mock/formsData";
 import { toast } from "sonner";
 import { ArrowLeft, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -155,7 +155,16 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
   };
 
   const handleChange = (field: string, value: string) => {
-    setFormValues(prev => ({ ...prev, [field]: value }));
+    setFormValues(prev => {
+      const newValues = { ...prev, [field]: value };
+      
+      // Se o campo alterado for "Nível de Ensino", limpar o campo "Curso"
+      if (field === "Nível de Ensino") {
+        newValues["Curso"] = "";
+      }
+      
+      return newValues;
+    });
   };
 
   const getFieldType = (field: string): string => {
@@ -172,11 +181,26 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
       return sectionConfig.selectOptions[field];
     }
     
-    // Usar listas globais para Polo e Curso
+    // Usar listas globais para Polo
     if (field === "Polo") {
       return globalPoloOptions;
     }
+    
+    // Para o campo Curso, filtrar baseado no Nível de Ensino selecionado
     if (field === "Curso") {
+      const nivelEnsinoSelecionado = formValues["Nível de Ensino"];
+      
+      // Se houver um nível de ensino selecionado e existe mapeamento para ele
+      if (nivelEnsinoSelecionado && nivelEnsinoCursoMap[nivelEnsinoSelecionado]) {
+        return nivelEnsinoCursoMap[nivelEnsinoSelecionado];
+      }
+      
+      // Se não houver nível selecionado, retornar lista vazia para forçar seleção do nível primeiro
+      if (!nivelEnsinoSelecionado) {
+        return [];
+      }
+      
+      // Fallback para lista global se o nível não tiver mapeamento específico
       return globalCursoOptions;
     }
     
@@ -202,6 +226,30 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
 
     if (fieldType === "select") {
       const options = getSelectOptions(field);
+      
+      // Validação especial para o campo Curso
+      if (field === "Curso") {
+        const nivelEnsinoSelecionado = formValues["Nível de Ensino"];
+        
+        // Se não houver nível de ensino selecionado
+        if (!nivelEnsinoSelecionado) {
+          return (
+            <div className="text-sm text-muted-foreground italic p-3 border border-dashed rounded-md">
+              Selecione primeiro o Nível de Ensino para visualizar os cursos disponíveis
+            </div>
+          );
+        }
+        
+        // Se houver nível selecionado mas não houver cursos disponíveis
+        if (options.length === 0) {
+          return (
+            <div className="text-sm text-muted-foreground italic p-3 border border-dashed rounded-md">
+              Nenhum curso disponível para este nível de ensino.
+            </div>
+          );
+        }
+      }
+      
       return (
         <Combobox
           options={options}

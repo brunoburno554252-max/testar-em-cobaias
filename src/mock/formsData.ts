@@ -1416,6 +1416,121 @@ export const globalCursoOptions: string[] = [
   "TECNOLOGIA DA INFORMAÇÃO",
 ];
 
+// ============= RELACIONAMENTO ENTRE NÍVEL DE ENSINO E CURSO =============
+// Mapeamento que vincula cada nível de ensino aos seus respectivos cursos
+
+export const nivelEnsinoCursoMap: Record<string, string[]> = {
+  "Aperfeiçoamento de Estudos": [
+    "Arte e Educação",
+    "Direito Aplicado à Educação",
+    "Distúrbios na Aprendizagem",
+    "Educação de Jovens e Adultos (EJA)",
+    "Educação Especial em Deficiência Intelectual",
+  ],
+  "Extensão Universitária": [
+    "Didática nas Séries Iniciais",
+    "Acessibilidade Escolar",
+    "AEE – Atendimento Educacional Especializado",
+    "Alfabetização e Letramento",
+    "Análise do Comportamento Aplicada (ABA)",
+  ],
+  "Formação Pedagógica": [
+    "Artes Visuais para Não Licenciados",
+    "Ciências Biológicas para Não Licenciados",
+    "Ciências da Religião para Não Licenciados",
+    "Ciências Sociais para Não Licenciados",
+    "Educação Especial para Não Licenciados",
+  ],
+  "Graduação": [
+    "Administração",
+    "Bacharelado em Serviço Social",
+    "Bacharelado em Teologia",
+    "Gestão da Tecnologia da Informação",
+    "Licenciatura em Educação Especial",
+  ],
+  "Pós-Graduação – Chancela Abracomex": [
+    "MBA Executivo em Comércio Exterior",
+    "MBA em Gestão de Câmbio e Mercados Financeiros Internacionais",
+    "MBA em Gestão de Logística Internacional",
+    "MBA em Gestão de Marketing Internacional",
+    "MBA em Gestão de Negócios Internacionais",
+  ],
+  "Pós-Graduação – Chancela Ebramed": [
+    "Cardiologia",
+    "Clínica Cirúrgica e Cirurgia Geral",
+    "Clínica Médica",
+    "Dermatologia Clínica",
+    "Endocrinologia",
+  ],
+  "Pós-Graduação – Chancela Educar Mais": [
+    "MBA em Direito de Família e Sucessões",
+    "MBA em Direito Público e do Terceiro Setor",
+    "MBA em Gestão Jurídica Criminal Compliance",
+    "MBA em Gestão Jurídica da Área de Saúde e Hospitalar",
+    "Advocacia Cível e Negócios Jurídicos",
+  ],
+  "Pós-graduação": [
+    "Especialização em Metodologia do Ensino de Língua Portuguesa",
+    "MBA – Administração Financeira e Orçamentária",
+    "MBA – Compliance e Gestão de Riscos",
+    "MBA – Gestão de Departamento Pessoal e Relações Trabalhistas",
+    "MBA – Gestão de Pessoas e Liderança",
+  ],
+  "Segunda Licenciatura": [
+    "Artes Visuais",
+    "Ciências Biológicas",
+    "Ciências da Religião",
+    "Ciências Sociais",
+    "Educação Especial",
+  ],
+  "Superior Sequencial": [
+    "Gestão em Teologia",
+    "Alfabetização e Letramento",
+    "Análises de Dados",
+    "Cadeia de Supply Chain",
+    "Educação Especial",
+  ],
+  "Aproveitamento / Competência": [
+    "Técnico em Agrimensura",
+    "Técnico em Marketing",
+    "Técnico em Mecânica",
+    "Técnico em Meio Ambiente",
+    "Técnico em TTI",
+  ],
+  "EJA": [
+    "EJA – Educação de Jovens e Adultos",
+    "EJA – Educação de Jovens e Adultos 2.0",
+    "EJA – Educação de Jovens e Adultos – D.O",
+    "EJA – Educação de Jovens e Adultos – V2",
+    "EJA – Educação de Jovens e Adultos 2.0 – D.O",
+  ],
+  "Ensino Técnico": [
+    "Técnico em Administração",
+    "Técnico em Agricultura",
+    "Técnico em Agropecuária",
+    "Técnico em Análises Clínicas",
+    "Técnico em Compliance",
+  ],
+  "Profissionalizante Avançado": [
+    "Administração para Micro e Médias Empresas",
+    "Aromaterapia",
+    "Auditoria em Enfermagem",
+    "Autismo",
+    "Auxiliar de Contabilidade",
+  ],
+  "Profissionalizante Especial": [
+    "Auxiliar de Saúde Bucal",
+    "Auxiliar de Enfermagem Especial",
+  ],
+  "Pós técnico": [
+    "Administração da Produção",
+    "Central de Material e Esterilização",
+    "Controle da Qualidade em Farmácia",
+    "Cosmetologia",
+    "Cálculos Trabalhistas",
+  ],
+};
+
 // ============= ESTRUTURA DE CONFIGURAÇÃO DE SEÇÕES =============
 // Cada seção é completamente independente com seus próprios campos
 
