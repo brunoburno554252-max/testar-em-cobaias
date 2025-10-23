@@ -1573,7 +1573,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "QUÍMICA",
     "SOCIOLOGIA",
   ],
-  "Graduação": [
+  Graduação: [
     "ADMINISTRAÇÃO",
     "BACHARELADO EM SERVIÇO SOCIAL",
     "BACHARELADO EM TEOLOGIA",
@@ -1588,7 +1588,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TECNÓLOGO EM LOGÍSTICA",
     "TECNÓLOGO EM LOGÍSTICA - 12M",
     "TECNÓLOGO EM MARKETING",
-    "TECNÓLOGO EM MARKETING - 12 M"
+    "TECNÓLOGO EM MARKETING - 12 M",
     "TECNÓLOGO EM PROCESSOS GERENCIAIS",
     "TECNÓLOGO EM PROCESSOS GERENCIAIS - 12M",
     "TECNÓLOGO EM SEGURANÇA PÚBLICA - 12M",
