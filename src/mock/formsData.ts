@@ -3252,6 +3252,8 @@ export const globalSelectOptions: Record<string, string[]> = {
     "Profissionalizante Avançado",
     "Profissionalizante Especial",
     "Pós Técnico",
+    "PROFISSIONALIZANTES PREMIUM",
+    "FADIC",
   ],
   Plataforma: [
     "LA EDUCAÇÃO",
