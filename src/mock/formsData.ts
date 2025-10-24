@@ -3311,7 +3311,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "ADMINISTRAÇÃO - BACHAREL",
     "TEOLOGIA - BACHAREL",
   ],
-  "SEGUNDA LICENCIATURA/FORMAÇÃO PEDAGOGICA - UNIMAIS": [
+  "SEGUNDA LICENCIATURA/FORMAÇÃO PEDAGÓGICA - UNIMAIS": [
     "SEGUNDA LICENCIATURA EM HISTÓRIA",
     "SEGUNDA LICENCIATURA EM CIÊNCIAS SOCIAIS",
     "SEGUNDA LICENCIATURA EM MATEMÁTICA",
@@ -3321,6 +3321,13 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "FORMAÇÃO PEDAGÓGICA EM CIÊNCIAS SOCIAIS",
     "FORMAÇÃO PEDAGÓGICA EM MATEMÁTICA",
     "FORMAÇÃO PEDAGÓGICA EM ARTES VISUAIS",
+  ],
+  "TECNÓLOGOS - UNIMAIS": [
+    "RECURSOS HUMANOS",
+    "GESTÃO FINANCEIRA",
+    "GESTÃO AMBIENTAL",
+    "GESTÃO DE SEGURANÇA PRIVADA",
+    "SERVIÇOS JURÍDICOS - 36 MESES",
   ],
 };
 
@@ -3587,7 +3594,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "Superior Sequencial",
     "Aproveitament/Competência",
     "EJA",
-    "Técnico REGULAR",
+    "Técnico regular",
     "Profissionalizante Avançado",
     "Profissionalizante Especial",
     "Pós Técnico",
@@ -3596,7 +3603,8 @@ export const globalSelectOptions: Record<string, string[]> = {
     "PÓS - GRADUAÇÕES - VINCIT",
     "PÓS - GRADUAÇÕES - UNIMAIS",
     "BACHAREL/ LICENCIATURA - UNIMAIS",
-    "SEGUNDA LICENCIATURA/FORMAÇÃO PEDAGOGICA - UNIMAIS",
+    "SEGUNDA LICENCIATURA/FORMAÇÃO PEDAGÓGICA - UNIMAIS",
+    "TECNÓLOGOS - UNIMAIS",
   ],
   Plataforma: [
     "LA EDUCAÇÃO",
