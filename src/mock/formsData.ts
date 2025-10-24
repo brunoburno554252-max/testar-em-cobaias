@@ -1572,7 +1572,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "PEDAGOGIA",
     "QUÍMICA",
     "SOCIOLOGIA",
-    "MÚSICA",
   ],
   Graduação: [
     "ADMINISTRAÇÃO",
