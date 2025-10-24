@@ -1919,7 +1919,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TECNOLOGIA DA INFORMAÇÃO",
     "TRANSTORNO DO ESPECTRO AUTISTA",
   ],
-  "Aproveitament/Competência": [
+  "Aproveitamento/Competência": [
     "TÉCNICO EM AGRIMENSURA",
     "TÉCNICO EM MARKETING",
     "TÉCNICO EM MECÂNICA",
