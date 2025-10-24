@@ -1883,7 +1883,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "MATEMÁTICA",
     "PEDAGOGIA",
     "SOCIOLOGIA",
-    "MÚSICA",
   ],
   "Superior Sequencial": [
     "GESTÃO EM TEOLOGIA",
