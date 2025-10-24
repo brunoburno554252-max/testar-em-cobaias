@@ -1572,6 +1572,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "PEDAGOGIA",
     "QUÍMICA",
     "SOCIOLOGIA",
+    "MÚSICA",
   ],
   Graduação: [
     "ADMINISTRAÇÃO",
@@ -1853,6 +1854,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "LATU SENSO EM TERAPIA COGNITIVO-COMPORTAMENTAL",
     "LATU SENSO EM TERAPIA DA CONSTELAÇÃO FAMILIAR SISTÊMICA",
     "SUPERVISÃO E ORIENTAÇÃO ESCOLAR",
+    "ENGENHARIA DE SEGURANÇA DO TRABALHO",
   ],
   "Segunda Licenciatura": [
     "ARTES VISUAIS",
@@ -1882,6 +1884,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "MATEMÁTICA",
     "PEDAGOGIA",
     "SOCIOLOGIA",
+    "MÚSICA",
   ],
   "Superior Sequencial": [
     "GESTÃO EM TEOLOGIA",
@@ -2982,7 +2985,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "ATENDIMENTO E VENDAS NO VAREJO",
     "TELEMARKETING",
   ],
-  FADYC: ["SEGUNDA LICENCIATURA / R2 EM MÚSICA", "PÓS - ENGENHARIA DE SEGURANÇA DO TRABALHO"],
   "PÓS - GRADUAÇÕES - VINCIT": [
     "ESPECIALIZAÇÃO EM GESTÃO ESTRATÉGICA EM ESG - AMBIENTAL, SOCIAL E GOVERNANÇA",
     "MBA EM COMUNICAÇÃO ELEITORAL E MARKETING POLÍTICO",
@@ -3329,23 +3331,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "GESTÃO DE SEGURANÇA PRIVADA",
     "SERVIÇOS JURÍDICOS - 36 MESES",
   ],
-  "FORMAÇÃO SPEED - UNIMAIS": [
-    "TECNÓLOGOS EM RECURSOS HUMANOS - 12 MESES",
-    "TECNÓLOGOS EM GESTÃO FINANCEIRA - 12 MESES",
-    "TECNÓLOGOS EM GESTÃO AMBIENTAL - 12 MESES",
-    "TECNÓLOGOS EM GESTÃO DE SEGURANÇA PRIVADA - 12 MESES",
-    "TECNÓLOGOS EM SERVIÇOS JURÍDICOS - 24 MESES",
-    "TECNÓLOGOS EM GESTÃO EM TI - 18 MESES",
-    "LICENCIATURA EM MATEMÁTICA - 2 ANOS",
-    "LICENCIATURA EM PEDAGOGIA - 2 ANOS",
-    "LICENCIATURA EM HISTÓRIA - 2 ANOS",
-    "LICENCIATURA EM LETRAS - LIBRAS - LÍNGUA PORTUGUESA - 2 ANOS",
-    "LICENCIATURA EM ARTES VISUAIS - 4 ANOS",
-    "LICENCIATURA EM CIÊNCIAS SOCIAIS - 4 ANOS",
-    "BACHARELADO EM CIÊNCIAS CONTÁBEIS - 2 ANOS",
-    "BACHARELADO EM ADMINISTRAÇÃO - 2 ANOS",
-    "BACHARELADO EM TEOLOGIA - 2 ANOS",
-  ],
 };
 
 // ============= ESTRUTURA DE CONFIGURAÇÃO DE SEÇÕES =============
@@ -3622,7 +3607,6 @@ export const globalSelectOptions: Record<string, string[]> = {
     "BACHAREL/ LICENCIATURA - UNIMAIS",
     "SEGUNDA LICENCIATURA/FORMAÇÃO PEDAGÓGICA - UNIMAIS",
     "TECNÓLOGOS - UNIMAIS",
-    "FORMAÇÃO SPEED - UNIMAIS",
   ],
   Plataforma: [
     "LA EDUCAÇÃO",
