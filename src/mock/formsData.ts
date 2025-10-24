@@ -3642,7 +3642,6 @@ export const globalSelectOptions: Record<string, string[]> = {
     "Profissionalizante Especial",
     "Pós Técnico",
     "PROFISSIONALIZANTES PREMIUM",
-    "FADYC",
     "PÓS - GRADUAÇÕES - VINCIT",
     "PÓS - GRADUAÇÕES - UNIMAIS",
     "BACHAREL/ LICENCIATURA - UNIMAIS",
