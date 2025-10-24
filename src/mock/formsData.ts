@@ -3311,6 +3311,17 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "ADMINISTRAÇÃO - BACHAREL",
     "TEOLOGIA - BACHAREL",
   ],
+  "SEGUNDA LICENCIATURA/FORMAÇÃO PEDAGOGICA - UNIMAIS": [
+    "SEGUNDA LICENCIATURA EM HISTÓRIA",
+    "SEGUNDA LICENCIATURA EM CIÊNCIAS SOCIAIS",
+    "SEGUNDA LICENCIATURA EM MATEMÁTICA",
+    "SEGUNDA LICENCIATURA EM ARTES VISUAIS",
+    "SEGUNDA LICENCIATURA EM PEDAGOGIA",
+    "FORMAÇÃO PEDAGÓGICA EM HISTÓRIA",
+    "FORMAÇÃO PEDAGÓGICA EM CIÊNCIAS SOCIAIS",
+    "FORMAÇÃO PEDAGÓGICA EM MATEMÁTICA",
+    "FORMAÇÃO PEDAGÓGICA EM ARTES VISUAIS",
+  ],
 };
 
 // ============= ESTRUTURA DE CONFIGURAÇÃO DE SEÇÕES =============
@@ -3572,7 +3583,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "Pós-Graduação Chancela Ebramed",
     "Pós-Graduação Chancela Educar Mais",
     "Pós-Graduações",
-    "Segunda Licenciatura",
+    "Segunda LIcenciatura",
     "Superior Sequencial",
     "Aproveitament/Competência",
     "EJA",
@@ -3585,6 +3596,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "PÓS - GRADUAÇÕES - VINCIT",
     "PÓS - GRADUAÇÕES - UNIMAIS",
     "BACHAREL/ LICENCIATURA - UNIMAIS",
+    "SEGUNDA LICENCIATURA/FORMAÇÃO PEDAGOGICA - UNIMAIS",
   ],
   Plataforma: [
     "LA EDUCAÇÃO",
