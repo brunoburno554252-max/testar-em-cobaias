@@ -16,12 +16,12 @@ interface RegistroPageProps {
 interface Registro {
   id: string;
   session_key: string;
-  submission_id: string;
   line_number: number;
   form_data: any;
   user_name: string;
   form_name: string;
   created_at: string;
+  user_id: string;
 }
 
 const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
@@ -42,7 +42,7 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
       console.log("🔍 Buscando registros...");
       
       let query = supabase
-        .from("forms_registry")
+        .from("forms_submissions")
         .select("*")
         .order("created_at", { ascending: false })
         .limit(100);
@@ -51,10 +51,19 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
 
       // Aplicar filtros se houver
       if (filtroIdSupabase) {
-        query = query.or(`submission_id::text.ilike.%${filtroIdSupabase}%,id::text.ilike.%${filtroIdSupabase}%`);
+        query = query.or(`id::text.ilike.%${filtroIdSupabase}%`);
       }
       if (filtroUsuario) {
-        query = query.ilike("user_name", `%${filtroUsuario}%`);
+        // Buscar user_id correspondente ao nome em forms_users
+        const { data: userData } = await supabase
+          .from("forms_users")
+          .select("user_id")
+          .ilike("full_name", `%${filtroUsuario}%`);
+        
+        if (userData && userData.length > 0) {
+          const userIds = userData.map(u => u.user_id);
+          query = query.in("user_id", userIds);
+        }
       }
       if (filtroNomeAluno) {
         query = query.ilike("form_data->>Aluno", `%${filtroNomeAluno}%`);
@@ -70,7 +79,22 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
       console.log("✅ Registros recebidos:", data?.length || 0);
       console.log("📋 IDs recebidos:", data?.map(r => r.id.substring(0, 8)));
       
-      setRegistros(data || []);
+      // Buscar nomes dos usuários
+      const userIds = [...new Set(data?.map(r => r.user_id) || [])];
+      const { data: usersData } = await supabase
+        .from("forms_users")
+        .select("user_id, full_name")
+        .in("user_id", userIds);
+      
+      const userMap = new Map(usersData?.map(u => [u.user_id, u.full_name]) || []);
+      
+      // Adicionar user_name aos registros
+      const registrosComNome = data?.map(r => ({
+        ...r,
+        user_name: userMap.get(r.user_id) || "Usuário desconhecido"
+      })) || [];
+      
+      setRegistros(registrosComNome);
     } catch (error: any) {
       console.error("Erro ao carregar registros:", error);
       toast.error("Erro ao carregar registros");
@@ -240,9 +264,9 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
 
                         <div className="space-y-2">
                           <div className="text-sm">
-                            <span className="font-semibold">ID Supabase:</span>
+                            <span className="font-semibold">ID:</span>
                             <p className="font-mono text-xs bg-muted p-2 rounded mt-1 break-all">
-                              {registro.submission_id}
+                              {registro.id}
                             </p>
                           </div>
                           
