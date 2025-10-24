@@ -3012,6 +3012,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "MBA EM SEGURANÇA PÚBLICA",
     "ESTATÍSTICA APLICADA",
   ],
+  "PÓS - GRADUAÇÕES - UNIMAIS": [],
 };
 
 // ============= ESTRUTURA DE CONFIGURAÇÃO DE SEÇÕES =============
@@ -3277,14 +3278,14 @@ export const globalSelectOptions: Record<string, string[]> = {
     "Superior Sequencial",
     "Aproveitament/Competência",
     "EJA",
-    "Ensino Técnico",
+    "Técnico REGULAR",
     "Profissionalizante Avançado",
     "Profissionalizante Especial",
     "Pós Técnico",
     "PROFISSIONALIZANTES PREMIUM",
     "FADYC",
     "PÓS - GRADUAÇÕES - VINCIT",
-    "UNIMAIS",
+    "PÓS - GRADUAÇÕES - UNIMAIS",
   ],
   Plataforma: [
     "LA EDUCAÇÃO",
