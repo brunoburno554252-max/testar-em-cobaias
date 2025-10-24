@@ -3438,7 +3438,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Pós-Graduações",
         "Segunda Licenciatura",
         "Superior Sequencial",
-        "Aproveitament/Competência",
+        "Aproveitamento/Competência",
         "EJA",
         "Ensino Técnico",
         "Profissionalizante Avançado",
