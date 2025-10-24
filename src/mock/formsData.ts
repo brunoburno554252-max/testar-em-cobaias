@@ -3471,6 +3471,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       Atividade: "select",
       Curso: "select",
       Polo: "select",
+      Gestor: "select",
     },
   },
   PEDAGÓGICO: {
@@ -3622,8 +3623,26 @@ export const formsConfig: Record<string, FormSectionConfig> = {
 // ============= OPÇÕES GLOBAIS PARA CAMPOS COMUNS =============
 // Usadas como fallback quando a seção não define opções específicas
 
+// Lista global de gestores
+export const globalGestorOptions: string[] = [
+  "FREDISON CARNEIRO",
+  "DANILO ANUNCIAÇÃO",
+  "LUCAS RODRIGUES",
+  "ALAN MIRANDA",
+  "GIOVANA RODRIGUES",
+  "FERNANDA MAGALHÃES",
+  "ROMILSON CARNEIRO",
+  "MONIQUE AZEVEDO",
+  "MARCOS SANTANA",
+  "PAULO SÉRGIO DO VALE",
+  "RENAN BARBOZA",
+  "PAULO CÉSAR",
+  "NATHÁLIA GALESKI",
+];
+
 export const globalSelectOptions: Record<string, string[]> = {
   STATUS: ["Aberto", "Em Andamento", "Resolvido", "Fechado"],
+  Gestor: globalGestorOptions,
   "Nível de Ensino": [
     "Aperfeiçoamento De Estudos",
     "Extensão Universitária",
