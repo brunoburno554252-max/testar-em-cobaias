@@ -196,9 +196,16 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
               </div>
             ) : (
               <div className="space-y-4">
-                {registros
-                  .filter((registro) => !mostrarApenasVermelhos || cardsVermelhos.has(registro.id))
-                  .map((registro) => (
+                {(() => {
+                  const registrosFiltrados = registros.filter((registro) => 
+                    !mostrarApenasVermelhos || cardsVermelhos.has(registro.id)
+                  );
+                  console.log("📊 Total de registros:", registros.length);
+                  console.log("📊 Registros após filtro:", registrosFiltrados.length);
+                  console.log("📊 Mostrar apenas vermelhos:", mostrarApenasVermelhos);
+                  console.log("📊 Cards vermelhos:", Array.from(cardsVermelhos));
+                  return registrosFiltrados;
+                })().map((registro) => (
                   <Card 
                     key={registro.id} 
                     className={`border shadow-sm transition-colors ${
