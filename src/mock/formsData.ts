@@ -1982,7 +1982,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "AUTISMO",
     "AUXILIAR DE CONTABILIDADE",
   ],
-  "Profissionalizante Especial": ["AUX. DE SAÚDE BUCAL", "AUXILIAR DE ENFERMAGEM ESPECIAL", "CURSO DE INGLES",],
+  "Profissionalizante Especial": ["AUX. DE SAÚDE BUCAL", "AUXILIAR DE ENFERMAGEM ESPECIAL", "CURSO DE INGLES"],
   "Pós Técnico": [
     "ADMINISTRAÇÃO DA PRODUÇÃO",
     "CENTRAL DE MATERIAL E ESTERILIZAÇÃO",
@@ -2983,7 +2983,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TELEMARKETING",
   ],
   FADYC: ["SEGUNDA LICENCIATURA / R2 EM MÚSICA", "PÓS - ENGENHARIA DE SEGURANÇA DO TRABALHO"],
-  "PÓS - GRADUAÇÕES - VINCIT":[
+  "PÓS - GRADUAÇÕES - VINCIT": [
     "ESPECIALIZAÇÃO EM GESTÃO ESTRATÉGICA EM ESG - AMBIENTAL, SOCIAL E GOVERNANÇA",
     "MBA EM COMUNICAÇÃO ELEITORAL E MARKETING POLÍTICO",
     "MBA EM E-COMMERCE",
@@ -3283,8 +3283,8 @@ export const globalSelectOptions: Record<string, string[]> = {
     "Pós Técnico",
     "PROFISSIONALIZANTES PREMIUM",
     "FADYC",
-    "PÓS - GRADUAÇÕES - VINCIT".
-    "UNIMAIS"
+    "PÓS - GRADUAÇÕES - VINCIT",
+    "UNIMAIS",
   ],
   Plataforma: [
     "LA EDUCAÇÃO",
