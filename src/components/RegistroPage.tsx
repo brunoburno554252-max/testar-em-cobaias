@@ -39,11 +39,15 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
 
   const loadRegistros = async () => {
     try {
+      console.log("🔍 Buscando registros...");
+      
       let query = supabase
         .from("forms_registry")
         .select("*")
         .order("created_at", { ascending: false })
         .limit(100);
+      
+      console.log("🔑 User ID atual:", (await supabase.auth.getUser()).data.user?.id);
 
       // Aplicar filtros se houver
       if (filtroIdSupabase) {
@@ -58,8 +62,14 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
 
       const { data, error } = await query;
 
-      if (error) throw error;
+      if (error) {
+        console.error("❌ Erro ao buscar:", error);
+        throw error;
+      }
 
+      console.log("✅ Registros recebidos:", data?.length || 0);
+      console.log("📋 IDs recebidos:", data?.map(r => r.id.substring(0, 8)));
+      
       setRegistros(data || []);
     } catch (error: any) {
       console.error("Erro ao carregar registros:", error);
