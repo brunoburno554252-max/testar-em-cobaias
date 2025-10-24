@@ -3403,7 +3403,6 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Profissionalizante Especial",
         "Pós Técnico",
         "PROFISSIONALIZANTES PREMIUM",
-        "FADYC",
       ],
     },
   },
