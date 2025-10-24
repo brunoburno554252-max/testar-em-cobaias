@@ -42,19 +42,30 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
   const loadSharedData = (): Record<string, string> => {
     try {
       const savedData = localStorage.getItem("sharedFormData");
+      console.log("🔍 [loadSharedData] Dados salvos no localStorage:", savedData);
+      
       if (savedData) {
         const parsedData = JSON.parse(savedData);
+        console.log("📦 [loadSharedData] Dados parseados:", parsedData);
+        
         // Filtrar apenas os campos que existem nesta seção
         const relevantData: Record<string, string> = {};
         SHARED_FIELDS.forEach(field => {
           if (fields.includes(field) && parsedData[field]) {
             relevantData[field] = parsedData[field];
+            console.log(`✅ [loadSharedData] Campo "${field}" carregado:`, parsedData[field]);
+          } else if (fields.includes(field)) {
+            console.log(`⚠️ [loadSharedData] Campo "${field}" existe na seção mas não tem valor salvo`);
           }
         });
+        
+        console.log("📊 [loadSharedData] Dados relevantes carregados:", relevantData);
         return relevantData;
+      } else {
+        console.log("⚠️ [loadSharedData] Nenhum dado salvo encontrado no localStorage");
       }
     } catch (error) {
-      console.error("Erro ao carregar dados compartilhados:", error);
+      console.error("❌ [loadSharedData] Erro ao carregar dados compartilhados:", error);
     }
     return {};
   };
@@ -79,9 +90,11 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         }
       });
       
+      console.log("💾 [saveSharedData] Salvando dados compartilhados:", updatedData);
       localStorage.setItem("sharedFormData", JSON.stringify(updatedData));
+      console.log("✅ [saveSharedData] Dados salvos com sucesso!");
     } catch (error) {
-      console.error("Erro ao salvar dados compartilhados:", error);
+      console.error("❌ [saveSharedData] Erro ao salvar dados compartilhados:", error);
     }
   };
 
@@ -188,8 +201,12 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
 
       toast.success("✅ Dados salvos com sucesso!");
       
-      // Limpar formulário (exceto Colaborador)
-      const resetValues: Record<string, string> = { Colaborador: username };
+      // Limpar formulário mas manter dados compartilhados
+      const sharedData = loadSharedData();
+      const resetValues: Record<string, string> = { 
+        Colaborador: username,
+        ...sharedData // Manter os dados compartilhados após o submit
+      };
       setFormValues(resetValues);
     } catch (error: any) {
       console.error("❌ Erro completo:", error);
