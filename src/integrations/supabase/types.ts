@@ -59,63 +59,6 @@ export type Database = {
         }
         Relationships: []
       }
-      alunos_tempo_conclusao: {
-        Row: {
-          atividade: string | null
-          colaborador: string | null
-          created_at: string | null
-          curso: string
-          data_conclusao: string | null
-          data_matricula: string
-          gestor: string | null
-          id: string
-          nivel_ensino: string | null
-          nome: string
-          observacoes: string | null
-          plataforma: string | null
-          polo: string | null
-          previsao_conclusao: string
-          status: string
-          updated_at: string | null
-        }
-        Insert: {
-          atividade?: string | null
-          colaborador?: string | null
-          created_at?: string | null
-          curso: string
-          data_conclusao?: string | null
-          data_matricula: string
-          gestor?: string | null
-          id?: string
-          nivel_ensino?: string | null
-          nome: string
-          observacoes?: string | null
-          plataforma?: string | null
-          polo?: string | null
-          previsao_conclusao: string
-          status?: string
-          updated_at?: string | null
-        }
-        Update: {
-          atividade?: string | null
-          colaborador?: string | null
-          created_at?: string | null
-          curso?: string
-          data_conclusao?: string | null
-          data_matricula?: string
-          gestor?: string | null
-          id?: string
-          nivel_ensino?: string | null
-          nome?: string
-          observacoes?: string | null
-          plataforma?: string | null
-          polo?: string | null
-          previsao_conclusao?: string
-          status?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
       audit_logs: {
         Row: {
           action_type: string
@@ -343,111 +286,6 @@ export type Database = {
         }
         Relationships: []
       }
-      planilhas: {
-        Row: {
-          atualizado_em: string | null
-          config_metadata: Json | null
-          dados: Json
-          id: string
-          sessao: string
-          status: string | null
-          total_rows: number | null
-        }
-        Insert: {
-          atualizado_em?: string | null
-          config_metadata?: Json | null
-          dados: Json
-          id?: string
-          sessao: string
-          status?: string | null
-          total_rows?: number | null
-        }
-        Update: {
-          atualizado_em?: string | null
-          config_metadata?: Json | null
-          dados?: Json
-          id?: string
-          sessao?: string
-          status?: string | null
-          total_rows?: number | null
-        }
-        Relationships: []
-      }
-      planilhas_config: {
-        Row: {
-          config_type: string
-          created_at: string
-          id: string
-          is_active: boolean | null
-          planilha_url: string | null
-          updated_at: string
-        }
-        Insert: {
-          config_type: string
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          planilha_url?: string | null
-          updated_at?: string
-        }
-        Update: {
-          config_type?: string
-          created_at?: string
-          id?: string
-          is_active?: boolean | null
-          planilha_url?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      planilhas_dados: {
-        Row: {
-          created_at: string
-          id: string
-          linha_dados: Json | null
-          linha_numero: number
-          sessao: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          linha_dados?: Json | null
-          linha_numero: number
-          sessao: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          linha_dados?: Json | null
-          linha_numero?: number
-          sessao?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      planilhas_links: {
-        Row: {
-          atualizado_em: string | null
-          id: string
-          link: string
-          sessao: string
-        }
-        Insert: {
-          atualizado_em?: string | null
-          id?: string
-          link: string
-          sessao: string
-        }
-        Update: {
-          atualizado_em?: string | null
-          id?: string
-          link?: string
-          sessao?: string
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           created_at: string | null
@@ -535,271 +373,6 @@ export type Database = {
         }
         Relationships: []
       }
-      sheet_configs: {
-        Row: {
-          auto_sync_enabled: boolean | null
-          created_at: string
-          id: string
-          last_sync: string | null
-          rows_synced: number | null
-          section: string
-          section_id: string | null
-          sheet_url: string
-          status: string | null
-          sync_interval_minutes: number | null
-          updated_at: string
-          validation_enabled: boolean | null
-        }
-        Insert: {
-          auto_sync_enabled?: boolean | null
-          created_at?: string
-          id?: string
-          last_sync?: string | null
-          rows_synced?: number | null
-          section: string
-          section_id?: string | null
-          sheet_url: string
-          status?: string | null
-          sync_interval_minutes?: number | null
-          updated_at?: string
-          validation_enabled?: boolean | null
-        }
-        Update: {
-          auto_sync_enabled?: boolean | null
-          created_at?: string
-          id?: string
-          last_sync?: string | null
-          rows_synced?: number | null
-          section?: string
-          section_id?: string | null
-          sheet_url?: string
-          status?: string | null
-          sync_interval_minutes?: number | null
-          updated_at?: string
-          validation_enabled?: boolean | null
-        }
-        Relationships: []
-      }
-      sheet_data: {
-        Row: {
-          config_id: string | null
-          created_at: string
-          id: string
-          row_data: Json | null
-          row_number: number | null
-          updated_at: string
-        }
-        Insert: {
-          config_id?: string | null
-          created_at?: string
-          id?: string
-          row_data?: Json | null
-          row_number?: number | null
-          updated_at?: string
-        }
-        Update: {
-          config_id?: string | null
-          created_at?: string
-          id?: string
-          row_data?: Json | null
-          row_number?: number | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "sheet_data_config_id_fkey"
-            columns: ["config_id"]
-            isOneToOne: false
-            referencedRelation: "sheet_configs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      sheet_mappings: {
-        Row: {
-          config_id: string | null
-          created_at: string
-          id: string
-          mapping_type: string | null
-          source_column: string | null
-          target_field: string | null
-        }
-        Insert: {
-          config_id?: string | null
-          created_at?: string
-          id?: string
-          mapping_type?: string | null
-          source_column?: string | null
-          target_field?: string | null
-        }
-        Update: {
-          config_id?: string | null
-          created_at?: string
-          id?: string
-          mapping_type?: string | null
-          source_column?: string | null
-          target_field?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "sheet_mappings_config_id_fkey"
-            columns: ["config_id"]
-            isOneToOne: false
-            referencedRelation: "sheet_configs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      sheets_cache: {
-        Row: {
-          cache_key: string
-          created_at: string
-          data: Json | null
-          expires_at: string | null
-          id: string
-          updated_at: string
-        }
-        Insert: {
-          cache_key: string
-          created_at?: string
-          data?: Json | null
-          expires_at?: string | null
-          id?: string
-          updated_at?: string
-        }
-        Update: {
-          cache_key?: string
-          created_at?: string
-          data?: Json | null
-          expires_at?: string | null
-          id?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      sync_configs: {
-        Row: {
-          auto_sync_enabled: boolean | null
-          created_at: string | null
-          gid: number | null
-          id: string
-          last_sync: string | null
-          section_name: string
-          sheet_url: string
-          status: string | null
-          sync_interval_minutes: number | null
-          total_rows: number | null
-          updated_at: string | null
-        }
-        Insert: {
-          auto_sync_enabled?: boolean | null
-          created_at?: string | null
-          gid?: number | null
-          id?: string
-          last_sync?: string | null
-          section_name: string
-          sheet_url: string
-          status?: string | null
-          sync_interval_minutes?: number | null
-          total_rows?: number | null
-          updated_at?: string | null
-        }
-        Update: {
-          auto_sync_enabled?: boolean | null
-          created_at?: string | null
-          gid?: number | null
-          id?: string
-          last_sync?: string | null
-          section_name?: string
-          sheet_url?: string
-          status?: string | null
-          sync_interval_minutes?: number | null
-          total_rows?: number | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      sync_global_config: {
-        Row: {
-          auto_sync_enabled: boolean | null
-          created_at: string | null
-          id: string
-          last_auto_sync: string | null
-          sync_frequency: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          auto_sync_enabled?: boolean | null
-          created_at?: string | null
-          id?: string
-          last_auto_sync?: string | null
-          sync_frequency?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          auto_sync_enabled?: boolean | null
-          created_at?: string | null
-          id?: string
-          last_auto_sync?: string | null
-          sync_frequency?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      sync_logs: {
-        Row: {
-          action: string
-          completed_at: string | null
-          config_id: string | null
-          created_at: string
-          error_details: Json | null
-          execution_time_ms: number | null
-          id: string
-          records_failed: number | null
-          records_processed: number | null
-          sessao: string
-          sheet_id: string | null
-          status: string
-          sync_type: string | null
-          tabs_processed: number | null
-          user_id: string | null
-        }
-        Insert: {
-          action: string
-          completed_at?: string | null
-          config_id?: string | null
-          created_at?: string
-          error_details?: Json | null
-          execution_time_ms?: number | null
-          id?: string
-          records_failed?: number | null
-          records_processed?: number | null
-          sessao: string
-          sheet_id?: string | null
-          status: string
-          sync_type?: string | null
-          tabs_processed?: number | null
-          user_id?: string | null
-        }
-        Update: {
-          action?: string
-          completed_at?: string | null
-          config_id?: string | null
-          created_at?: string
-          error_details?: Json | null
-          execution_time_ms?: number | null
-          id?: string
-          records_failed?: number | null
-          records_processed?: number | null
-          sessao?: string
-          sheet_id?: string | null
-          status?: string
-          sync_type?: string | null
-          tabs_processed?: number | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       user_roles: {
         Row: {
           created_at: string | null
@@ -835,22 +408,13 @@ export type Database = {
         }
         Returns: undefined
       }
-      cleanup_old_logs: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      cleanup_old_rate_limits: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      cleanup_old_logs: { Args: never; Returns: undefined }
+      cleanup_old_rate_limits: { Args: never; Returns: undefined }
       enforce_password_security: {
         Args: { p_action: string; p_user_id: string }
         Returns: boolean
       }
-      exec_sql: {
-        Args: { sql_query: string }
-        Returns: string
-      }
+      exec_sql: { Args: { sql_query: string }; Returns: string }
       get_dashboard_section_data: {
         Args: { p_section_key: string }
         Returns: {
@@ -861,10 +425,7 @@ export type Database = {
           total_records: number
         }[]
       }
-      get_master_admin_email: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      get_master_admin_email: { Args: never; Returns: string }
       get_public_dashboard_data: {
         Args: { p_section_key?: string }
         Returns: {
@@ -893,7 +454,7 @@ export type Database = {
         }[]
       }
       get_tempo_conclusao_data: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           colaborador: string
           created_at: string
@@ -910,7 +471,7 @@ export type Database = {
         }[]
       }
       get_tempo_conclusao_stats: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           atrasados: number
           concluidos: number
@@ -935,25 +496,22 @@ export type Database = {
         Args: { admin_user_id: string }
         Returns: boolean
       }
-      is_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_admin_master: {
-        Args: Record<PropertyKey, never> | { check_user: string }
-        Returns: boolean
-      }
-      is_admin_master_user: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
-      is_super_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      is_admin: { Args: never; Returns: boolean }
+      is_admin_master:
+        | { Args: never; Returns: boolean }
+        | { Args: { check_user: string }; Returns: boolean }
+      is_admin_master_user: { Args: never; Returns: boolean }
+      is_super_admin: { Args: never; Returns: boolean }
       promote_user_to_admin: {
         Args: { target_user_id: string }
         Returns: boolean
+      }
+      sync_forms_to_dashboard: {
+        Args: never
+        Returns: {
+          records_synced: number
+          section_key_out: string
+        }[]
       }
       sync_sheet_data_to_supabase: {
         Args: { p_data: Json; p_session: string }
