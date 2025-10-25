@@ -3654,7 +3654,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "Pós-Graduações",
     "Segunda LIcenciatura",
     "Superior Sequencial",
-    "Aproveitament/Competência",
+    "Aproveitamento/Competência",
     "EJA",
     "Técnico regular",
     "Profissionalizante Avançado",
