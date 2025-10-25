@@ -1396,6 +1396,7 @@ export const globalPoloOptions: string[] = [
   "CLM TREINAMENTO EM INFORMÁTICA",
   "THIAGO FERREIRA DA SILVA",
   "INSTITUTO DE EDUCAÇÃO SUPERIOR E FACULDADES INTEGRADAS FRATERNUM",
+  "TUTORES.ED",
 ];
 
 export const globalCursoOptions: string[] = [
