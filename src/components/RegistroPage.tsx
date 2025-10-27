@@ -7,6 +7,15 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 interface RegistroPageProps {
   username: string;
@@ -33,6 +42,9 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
   const [cardsVermelhos, setCardsVermelhos] = useState<Set<string>>(new Set());
   const [mostrarApenasVermelhos, setMostrarApenasVermelhos] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
     checkAdminStatus();
@@ -50,17 +62,23 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
     try {
       console.log("🔍 Buscando registros...");
       
+      // Count query for pagination
+      let countQuery = supabase
+        .from("forms_submissions")
+        .select("*", { count: 'exact', head: true });
+      
       let query = supabase
         .from("forms_submissions")
         .select("*")
         .order("created_at", { ascending: false })
-        .limit(100);
+        .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
       
       console.log("🔑 User ID atual:", (await supabase.auth.getUser()).data.user?.id);
 
       // Aplicar filtros se houver
       if (filtroIdSupabase) {
         query = query.or(`id::text.ilike.%${filtroIdSupabase}%`);
+        countQuery = countQuery.or(`id::text.ilike.%${filtroIdSupabase}%`);
       }
       if (filtroUsuario) {
         // Buscar user_id correspondente ao nome em forms_users
@@ -72,11 +90,16 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
         if (userData && userData.length > 0) {
           const userIds = userData.map(u => u.user_id);
           query = query.in("user_id", userIds);
+          countQuery = countQuery.in("user_id", userIds);
         }
       }
       if (filtroNomeAluno) {
         query = query.ilike("form_data->>Aluno", `%${filtroNomeAluno}%`);
+        countQuery = countQuery.ilike("form_data->>Aluno", `%${filtroNomeAluno}%`);
       }
+
+      const { count } = await countQuery;
+      setTotalCount(count || 0);
 
       const { data, error } = await query;
 
@@ -122,9 +145,14 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
   };
 
   const aplicarFiltros = () => {
+    setCurrentPage(1); // Reset to first page when filtering
     setIsLoading(true);
     loadRegistros();
   };
+
+  useEffect(() => {
+    loadRegistros();
+  }, [currentPage]);
 
   const loadFizMerda = async () => {
     try {
@@ -363,6 +391,59 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+            )}
+            
+            {/* Pagination */}
+            {!isLoading && registros.length > 0 && (
+              <div className="mt-6">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        className={currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                    
+                    {Array.from({ length: Math.ceil(totalCount / ITEMS_PER_PAGE) }, (_, i) => i + 1)
+                      .filter(page => {
+                        const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+                        return page === 1 || 
+                               page === totalPages || 
+                               Math.abs(page - currentPage) <= 1;
+                      })
+                      .map((page, index, array) => (
+                        <>
+                          {index > 0 && array[index - 1] !== page - 1 && (
+                            <PaginationItem key={`ellipsis-${page}`}>
+                              <PaginationEllipsis />
+                            </PaginationItem>
+                          )}
+                          <PaginationItem key={page}>
+                            <PaginationLink
+                              onClick={() => setCurrentPage(page)}
+                              isActive={currentPage === page}
+                              className="cursor-pointer"
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        </>
+                      ))}
+                    
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setCurrentPage(p => Math.min(Math.ceil(totalCount / ITEMS_PER_PAGE), p + 1))}
+                        className={currentPage >= Math.ceil(totalCount / ITEMS_PER_PAGE) ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+                
+                <p className="text-center text-sm text-muted-foreground mt-2">
+                  Mostrando {((currentPage - 1) * ITEMS_PER_PAGE) + 1} - {Math.min(currentPage * ITEMS_PER_PAGE, totalCount)} de {totalCount} registros
+                </p>
               </div>
             )}
           </CardContent>
