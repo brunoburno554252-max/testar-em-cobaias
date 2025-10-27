@@ -201,13 +201,12 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
 
       toast.success("✅ Dados salvos com sucesso!");
       
-      // Limpar formulário mas manter dados compartilhados
-      const sharedData = loadSharedData();
-      const resetValues: Record<string, string> = { 
-        Colaborador: username,
-        ...sharedData // Manter os dados compartilhados após o submit
-      };
-      setFormValues(resetValues);
+      // Limpar dados compartilhados do localStorage após envio
+      localStorage.removeItem("sharedFormData");
+      console.log("🧹 [handleSubmit] Dados compartilhados limpos do localStorage");
+      
+      // Limpar formulário completamente
+      setFormValues({ Colaborador: username });
     } catch (error: any) {
       console.error("❌ Erro completo:", error);
       console.error("📋 Error details:", JSON.stringify(error, null, 2));
