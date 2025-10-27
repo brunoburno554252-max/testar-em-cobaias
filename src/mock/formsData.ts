@@ -3673,7 +3673,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "Pós-Graduação Chancela Ebramed",
     "Pós-Graduação Chancela Educar Mais",
     "Pós-Graduação",
-    "Segunda LIcenciatura",
+    "Segunda Licenciatura",
     "Superior Sequencial",
     "Aproveitamento/Competência",
     "EJA",
