@@ -32,10 +32,19 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
   const [filtroNomeAluno, setFiltroNomeAluno] = useState("");
   const [cardsVermelhos, setCardsVermelhos] = useState<Set<string>>(new Set());
   const [mostrarApenasVermelhos, setMostrarApenasVermelhos] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    checkAdminStatus();
     loadRegistros();
   }, []);
+
+  const checkAdminStatus = async () => {
+    const { data, error } = await supabase.rpc('is_fiz_merda_admin');
+    if (!error && data) {
+      setIsAdmin(true);
+    }
+  };
 
   const loadRegistros = async () => {
     try {
@@ -95,6 +104,9 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
       })) || [];
       
       setRegistros(registrosComNome);
+      
+      // Carregar marcações "Fiz merda"
+      await loadFizMerda();
     } catch (error: any) {
       console.error("Erro ao carregar registros:", error);
       toast.error("Erro ao carregar registros");
@@ -114,16 +126,65 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
     loadRegistros();
   };
 
-  const toggleCardVermelho = (id: string) => {
-    setCardsVermelhos((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
+  const loadFizMerda = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("fiz_merda")
+        .select("submission_id");
+      
+      if (error) throw error;
+      
+      const ids = new Set(data?.map(m => m.submission_id) || []);
+      setCardsVermelhos(ids);
+    } catch (error) {
+      console.error("Erro ao carregar marcações:", error);
+    }
+  };
+
+  const toggleCardVermelho = async (submissionId: string) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error("Usuário não autenticado");
+        return;
       }
-      return newSet;
-    });
+
+      const isMarked = cardsVermelhos.has(submissionId);
+      
+      if (isMarked) {
+        // Remover marcação
+        const { error } = await supabase
+          .from("fiz_merda")
+          .delete()
+          .eq("submission_id", submissionId)
+          .eq("user_id", user.id);
+        
+        if (error) throw error;
+        
+        setCardsVermelhos((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(submissionId);
+          return newSet;
+        });
+        toast.success("Marcação removida");
+      } else {
+        // Adicionar marcação
+        const { error } = await supabase
+          .from("fiz_merda")
+          .insert({ 
+            submission_id: submissionId,
+            user_id: user.id 
+          });
+        
+        if (error) throw error;
+        
+        setCardsVermelhos((prev) => new Set([...prev, submissionId]));
+        toast.success("Marcado como 'Fiz merda'");
+      }
+    } catch (error: any) {
+      console.error("Erro ao marcar registro:", error);
+      toast.error("Erro ao salvar marcação");
+    }
   };
 
 
@@ -205,7 +266,7 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
                     className="w-4 h-4 rounded border-input cursor-pointer"
                   />
                   <label htmlFor="filtroVermelhos" className="text-sm font-medium cursor-pointer">
-                    Mostrar apenas "Fiz merda"
+                    Mostrar apenas "Fiz merda" {isAdmin && "(Admin - Visualizando todos)"}
                   </label>
                 </div>
               </div>

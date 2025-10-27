@@ -128,6 +128,35 @@ export type Database = {
         }
         Relationships: []
       }
+      fiz_merda: {
+        Row: {
+          created_at: string
+          id: string
+          submission_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          submission_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          submission_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiz_merda_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "forms_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       forms_registry: {
         Row: {
           created_at: string
@@ -501,6 +530,7 @@ export type Database = {
         | { Args: never; Returns: boolean }
         | { Args: { check_user: string }; Returns: boolean }
       is_admin_master_user: { Args: never; Returns: boolean }
+      is_fiz_merda_admin: { Args: never; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
       promote_user_to_admin: {
         Args: { target_user_id: string }
