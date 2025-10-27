@@ -1969,6 +1969,9 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS - D.O",
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS - V2",
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS 2.0 - D.O",
+    "EJA - FUNDAMENTAL",
+    "EJA - EDUCAÇÃO DE JOVENS E ADULTOS - MG",
+    "EJA - EDUCAÇÃO DE JOVENS E ADULTOS 2.0 - MG",
   ],
   "Técnico regular": [
     "TÉCNICO EM ADMINISTRAÇÃO",
