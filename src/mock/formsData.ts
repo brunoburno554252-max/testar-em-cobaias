@@ -1615,7 +1615,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "MBA EM GESTÃO JURÍDICA DA ÁREA DE SAÚDE E HOSPITALAR",
     "ADVOCACIA CÍVEL E NEGÓCIOS JURÍDICOS",
   ],
-  "Pós-Graduações": [
+  "Pós-Graduação": [
     "ESPECIALIZAÇÃO EM METODOLOGIA DO ENSINO DE LÍNGUA PORTUGUESA",
     "MBA - ADMINISTRAÇÃO FINANCEIRA E ORÇAMENTÁRIA",
     "MBA - COMPLIANCE E GESTÃO DE RISCOS",
@@ -1969,9 +1969,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS - D.O",
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS - V2",
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS 2.0 - D.O",
-    "EJA - FUNDAMENTAL",
-    "EJA - EDUCAÇÃO DE JOVENS E ADULTOS - MG",
-    "EJA - EDUCAÇÃO DE JOVENS E ADULTOS 2.0 - MG",
   ],
   "Técnico regular": [
     "TÉCNICO EM ADMINISTRAÇÃO",
@@ -3675,7 +3672,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "Pós-Graduação Chancela Abracomex",
     "Pós-Graduação Chancela Ebramed",
     "Pós-Graduação Chancela Educar Mais",
-    "Pós-Graduações",
+    "Pós-Graduação",
     "Segunda LIcenciatura",
     "Superior Sequencial",
     "Aproveitamento/Competência",
