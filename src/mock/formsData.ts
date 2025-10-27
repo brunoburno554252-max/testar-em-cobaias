@@ -3441,7 +3441,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Superior Sequencial",
         "Aproveitamento/Competência",
         "EJA",
-        "Ensino Técnico",
+        "Técnico regular",
         "Profissionalizante Avançado",
         "Profissionalizante Especial",
         "Pós Técnico",
