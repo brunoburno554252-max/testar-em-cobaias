@@ -35,68 +35,10 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
   const sectionConfig = formsConfig[formName];
   const fields = sectionConfig?.fields || [];
   
-  // Campos compartilhados entre seções que devem ser propagados
-  const SHARED_FIELDS = ["Nível de Ensino", "Curso", "Polo", "Plataforma", "Atividade"];
-  
-  // Carregar dados compartilhados do localStorage
-  const loadSharedData = (): Record<string, string> => {
-    try {
-      const savedData = localStorage.getItem("sharedFormData");
-      console.log("🔍 [loadSharedData] Dados salvos no localStorage:", savedData);
-      
-      if (savedData) {
-        const parsedData = JSON.parse(savedData);
-        console.log("📦 [loadSharedData] Dados parseados:", parsedData);
-        
-        // Filtrar apenas os campos que existem nesta seção
-        const relevantData: Record<string, string> = {};
-        SHARED_FIELDS.forEach(field => {
-          if (fields.includes(field) && parsedData[field]) {
-            relevantData[field] = parsedData[field];
-            console.log(`✅ [loadSharedData] Campo "${field}" carregado:`, parsedData[field]);
-          } else if (fields.includes(field)) {
-            console.log(`⚠️ [loadSharedData] Campo "${field}" existe na seção mas não tem valor salvo`);
-          }
-        });
-        
-        console.log("📊 [loadSharedData] Dados relevantes carregados:", relevantData);
-        return relevantData;
-      } else {
-        console.log("⚠️ [loadSharedData] Nenhum dado salvo encontrado no localStorage");
-      }
-    } catch (error) {
-      console.error("❌ [loadSharedData] Erro ao carregar dados compartilhados:", error);
-    }
-    return {};
-  };
-  
   const [formValues, setFormValues] = useState<Record<string, string>>({
     Colaborador: username,
-    ...loadSharedData(),
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Salvar dados compartilhados no localStorage quando alterados
-  const saveSharedData = (values: Record<string, string>) => {
-    try {
-      const currentSharedData = localStorage.getItem("sharedFormData");
-      const existingData = currentSharedData ? JSON.parse(currentSharedData) : {};
-      
-      // Atualizar apenas os campos compartilhados
-      const updatedData = { ...existingData };
-      SHARED_FIELDS.forEach(field => {
-        if (values[field]) {
-          updatedData[field] = values[field];
-        }
-      });
-      
-      console.log("💾 [saveSharedData] Salvando dados compartilhados:", updatedData);
-      localStorage.setItem("sharedFormData", JSON.stringify(updatedData));
-      console.log("✅ [saveSharedData] Dados salvos com sucesso!");
-    } catch (error) {
-      console.error("❌ [saveSharedData] Erro ao salvar dados compartilhados:", error);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,11 +143,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
 
       toast.success("✅ Dados salvos com sucesso!");
       
-      // Limpar dados compartilhados do localStorage após envio
-      localStorage.removeItem("sharedFormData");
-      console.log("🧹 [handleSubmit] Dados compartilhados limpos do localStorage");
-      
-      // Limpar formulário completamente
+      // Limpar formulário após envio
       setFormValues({ Colaborador: username });
     } catch (error: any) {
       console.error("❌ Erro completo:", error);
@@ -226,9 +164,6 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         console.log("🎓 Nível de Ensino selecionado:", value);
         console.log("📚 Cursos disponíveis:", nivelEnsinoCursoMap[value] || "Nenhum");
       }
-      
-      // Salvar dados compartilhados
-      saveSharedData(newValues);
       
       return newValues;
     });
