@@ -61,17 +61,27 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
   const saveSelectableFields = () => {
     if (!isCompetenciaForm) return;
     
-    // Salvar apenas campos selecionáveis (select/combobox)
+    // Salvar campos selecionáveis, Aluno e Data (exceto Colaborador e Observações)
     const selectableData: Record<string, string> = {};
     fields.forEach(field => {
       const fieldType = getFieldType(field);
-      if (fieldType === "select" && formValues[field] && field !== "Colaborador") {
-        selectableData[field] = formValues[field];
+      if (formValues[field] && field !== "Colaborador" && field !== "Observações") {
+        if (fieldType === "select" || field === "Aluno" || field === "Data") {
+          selectableData[field] = formValues[field];
+        }
       }
     });
     
     localStorage.setItem(storageKey, JSON.stringify(selectableData));
     toast.success("Campos salvos com sucesso!");
+  };
+
+  const clearSavedFields = () => {
+    if (!isCompetenciaForm) return;
+    
+    localStorage.removeItem(storageKey);
+    setFormValues({ Colaborador: username });
+    toast.success("Campos limpos com sucesso!");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -177,8 +187,15 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
 
       toast.success("✅ Dados salvos com sucesso!");
       
-      // Limpar formulário após envio
-      setFormValues({ Colaborador: username });
+      // Para COMPETÊNCIA, salvar automaticamente os campos após envio
+      // Para outros forms, limpar o formulário
+      if (isCompetenciaForm) {
+        saveSelectableFields();
+        // Limpar apenas Observações
+        setFormValues(prev => ({ ...prev, Observações: "" }));
+      } else {
+        setFormValues({ Colaborador: username });
+      }
     } catch (error: any) {
       console.error("❌ Erro completo:", error);
       console.error("📋 Error details:", JSON.stringify(error, null, 2));
@@ -333,17 +350,29 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
                 </CardDescription>
               </div>
               {isCompetenciaForm && (
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={saveSelectableFields}
-                  className="shrink-0 gap-2 text-muted-foreground hover:text-foreground"
-                  title="Salvar campos selecionáveis"
-                >
-                  <Save className="w-4 h-4" />
-                  <span className="text-xs">Salvar</span>
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={saveSelectableFields}
+                    className="shrink-0 gap-2 text-muted-foreground hover:text-foreground"
+                    title="Salvar campos"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span className="text-xs">Salvar</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={clearSavedFields}
+                    className="shrink-0 gap-2 text-muted-foreground hover:text-destructive"
+                    title="Limpar campos salvos"
+                  >
+                    <span className="text-xs">Limpar</span>
+                  </Button>
+                </div>
               )}
             </div>
           </CardHeader>
