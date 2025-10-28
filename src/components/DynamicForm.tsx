@@ -7,8 +7,9 @@ import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formsConfig, globalSelectOptions, globalPoloOptions, globalCursoOptions, nivelEnsinoCursoMap } from "@/mock/formsData";
 import { toast } from "sonner";
-import { ArrowLeft, Send } from "lucide-react";
+import { ArrowLeft, Send, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useEffect } from "react";
 
 interface DynamicFormProps {
   formName: string;
@@ -34,11 +35,44 @@ const getSessionKey = (formName: string): string => {
 const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
   const sectionConfig = formsConfig[formName];
   const fields = sectionConfig?.fields || [];
+  const isCompetenciaForm = formName === "COMPETÊNCIA";
+  const storageKey = `saved_form_${getSessionKey(formName)}`;
   
   const [formValues, setFormValues] = useState<Record<string, string>>({
     Colaborador: username,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Carregar valores salvos ao montar o componente (apenas para Competência)
+  useEffect(() => {
+    if (isCompetenciaForm) {
+      const savedData = localStorage.getItem(storageKey);
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          setFormValues(prev => ({ ...prev, ...parsed, Colaborador: username }));
+        } catch (error) {
+          console.error("Erro ao carregar dados salvos:", error);
+        }
+      }
+    }
+  }, [formName, username, isCompetenciaForm, storageKey]);
+
+  const saveSelectableFields = () => {
+    if (!isCompetenciaForm) return;
+    
+    // Salvar apenas campos selecionáveis (select/combobox)
+    const selectableData: Record<string, string> = {};
+    fields.forEach(field => {
+      const fieldType = getFieldType(field);
+      if (fieldType === "select" && formValues[field] && field !== "Colaborador") {
+        selectableData[field] = formValues[field];
+      }
+    });
+    
+    localStorage.setItem(storageKey, JSON.stringify(selectableData));
+    toast.success("Campos salvos com sucesso!");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -291,10 +325,27 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
 
         <Card className="shadow-xl border-0">
           <CardHeader className="space-y-3">
-            <CardTitle className="text-3xl">{formName}</CardTitle>
-            <CardDescription className="text-base">
-              Preencha os campos abaixo com as informações solicitadas
-            </CardDescription>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <CardTitle className="text-3xl">{formName}</CardTitle>
+                <CardDescription className="text-base mt-2">
+                  Preencha os campos abaixo com as informações solicitadas
+                </CardDescription>
+              </div>
+              {isCompetenciaForm && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={saveSelectableFields}
+                  className="shrink-0 gap-2 text-muted-foreground hover:text-foreground"
+                  title="Salvar campos selecionáveis"
+                >
+                  <Save className="w-4 h-4" />
+                  <span className="text-xs">Salvar</span>
+                </Button>
+              )}
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
