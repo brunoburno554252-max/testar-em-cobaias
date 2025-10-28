@@ -1961,7 +1961,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM TURISMO",
     "TÉCNICO EM PAPEL E CELULOSE",
     "TÉCNICO EM COMPETÊNCIA EM ELETRÔNICA",
-    "Técnico em Transações Imobiliárias".
     "TÉCNICO EM REFRIGERAÇÃO E CLIMATIZAÇÃO",
     "TÉCNICO EM TRANSAÇÃO IMOBILIÁRIA",
   ],
@@ -3505,7 +3504,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICAS DE VENDAS – 20 HORAS",
     "TELEMARKETING – 18 HORAS",
     "ORATÓRIA – 30 HORAS",
-    "JORNALISMO – 75 HORAS"
+    "JORNALISMO – 75 HORAS",
   ],
 };
 
