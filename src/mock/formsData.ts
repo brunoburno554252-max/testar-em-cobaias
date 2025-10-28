@@ -2014,6 +2014,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "AUDITORIA EM ENFERMAGEM",
     "AUTISMO",
     "AUXILIAR DE CONTABILIDADE",
+    "LEGISLAÇÃO DA EDUCAÇÃO E LDB",
   ],
   "Profissionalizante Especial": ["AUX. DE SAÚDE BUCAL", "AUXILIAR DE ENFERMAGEM ESPECIAL", "CURSO DE INGLES"],
   "Pós Técnico": [
