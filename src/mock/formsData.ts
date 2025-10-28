@@ -1397,7 +1397,6 @@ export const globalPoloOptions: string[] = [
   "THIAGO FERREIRA DA SILVA",
   "INSTITUTO DE EDUCAÇÃO SUPERIOR E FACULDADES INTEGRADAS FRATERNUM",
   "TUTORES.ED",
-  "FOR YOU",
 ];
 
 export const globalCursoOptions: string[] = [
@@ -1964,6 +1963,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM COMPETÊNCIA EM ELETRÔNICA",
     "TÉCNICO EM REFRIGERAÇÃO E CLIMATIZAÇÃO",
     "TÉCNICO EM TRANSAÇÃO IMOBILIÁRIA",
+    "técnico em eletrômecanica",
   ],
   EJA: [
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS",
