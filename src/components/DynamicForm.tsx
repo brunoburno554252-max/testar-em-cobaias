@@ -20,14 +20,15 @@ interface DynamicFormProps {
 // Mapear nome do formulário para sessão da tabela
 const getSessionKey = (formName: string): string => {
   const mapping: Record<string, string> = {
-    "SECRETARIA ACADÊMICA": "secretaria",
+    "CERTIFICAÇÃO": "certificacao",
     "MATRÍCULA": "matriculas",
     "PEDAGÓGICO": "pedagogia",
     "ATENDIMENTO": "atendimento",
-    "CERTIFICAÇÃO": "certificacao",
+    "SECRETARIA ACADÊMICA": "secretaria",
     "COMPETÊNCIA": "competencia",
     "OUVIDORIA": "ouvidoria",
     "Central de Atendimento aos Licenciados": "central-licenciados",
+    "BITRIX24": "bitrix24",
   };
   return mapping[formName] || formName.toLowerCase();
 };
@@ -264,6 +265,11 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
   const renderField = (field: string) => {
     const fieldType = getFieldType(field);
     const isColaborador = field === "Colaborador";
+    
+    // Lógica especial para o campo Média no formulário PEDAGÓGICO
+    const isPedagogicoForm = formName === "PEDAGÓGICO";
+    const isMediaField = field === "Média";
+    const statusAprovado = formValues["Status"] === "Aprovado";
 
     if (fieldType === "textarea") {
       return (
@@ -312,6 +318,31 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
           searchPlaceholder="Pesquisar..."
           emptyText="Nenhuma opção encontrada."
         />
+      );
+    }
+
+    // Para o campo Média no PEDAGÓGICO, desabilitar se Status não for "Aprovado"
+    if (isPedagogicoForm && isMediaField) {
+      return (
+        <div className="space-y-1">
+          <Input
+            id={field}
+            type={fieldType}
+            value={formValues[field] || ""}
+            onChange={(e) => handleChange(field, e.target.value)}
+            placeholder={statusAprovado ? "Digite a média" : "Selecione Status = Aprovado primeiro"}
+            disabled={!statusAprovado}
+            className="disabled:opacity-50 disabled:cursor-not-allowed"
+            min="0"
+            max="10"
+            step="0.1"
+          />
+          {!statusAprovado && (
+            <p className="text-xs text-muted-foreground italic">
+              O campo Média só pode ser preenchido quando o Status for "Aprovado"
+            </p>
+          )}
+        </div>
       );
     }
 
