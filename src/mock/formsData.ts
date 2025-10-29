@@ -3649,12 +3649,12 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     },
   },
   "SECRETARIA ACADÊMICA": {
-    fields: ["Colaborador", "Aluno", "Atividade", "Data da análise", "Status", "Observações"],
+    fields: ["Colaborador", "Aluno", "Atividade", "Data da análise", "Documentos", "Observações"],
     fieldTypes: {
       Observações: "textarea",
       "Data da análise": "date",
       Atividade: "select",
-      Status: "select",
+      Documentos: "document-blocks",
     },
     selectOptions: {
       Atividade: [
@@ -3668,7 +3668,18 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Atividades Corrigidas (Port/Mat)",
         "Lançamento de médias",
       ],
-      Status: ["Aprovado", "Negado"],
+      Documentos: [
+        "RG",
+        "CPF",
+        "Comprovante de residência",
+        "Histórico escolar",
+        "Certificado de conclusão",
+        "Certidão de nascimento",
+        "Foto 3x4",
+        "Comprovante de pagamento",
+        "Declaração escolar",
+        "Diploma",
+      ],
     },
   },
   BITRIX24: {

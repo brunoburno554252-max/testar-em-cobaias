@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Send, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
+import { DocumentStatusBlocks } from "@/components/DocumentStatusBlocks";
 
 interface DynamicFormProps {
   formName: string;
@@ -266,6 +267,31 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     const fieldType = getFieldType(field);
     const isColaborador = field === "Colaborador";
     
+    // Campo especial para blocos de documentos na SECRETARIA ACADÊMICA
+    if (fieldType === "document-blocks") {
+      const availableDocuments = getSelectOptions(field);
+      let parsedValue = [];
+      
+      try {
+        const rawValue = formValues[field];
+        if (typeof rawValue === "string") {
+          parsedValue = JSON.parse(rawValue);
+        } else if (Array.isArray(rawValue)) {
+          parsedValue = rawValue;
+        }
+      } catch (e) {
+        parsedValue = [];
+      }
+      
+      return (
+        <DocumentStatusBlocks
+          value={parsedValue}
+          onChange={(blocks) => handleChange(field, JSON.stringify(blocks))}
+          availableDocuments={availableDocuments}
+        />
+      );
+    }
+    
     // Lógica especial para o campo Média no formulário PEDAGÓGICO
     const isPedagogicoForm = formName === "PEDAGÓGICO";
     const isMediaField = field === "Média";
@@ -415,17 +441,20 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
                     key={field}
                     className={
                       getFieldType(field) === "textarea" || 
+                      getFieldType(field) === "document-blocks" ||
                       field === "Central de Atendimento aos Licenciados"
                         ? "md:col-span-2"
                         : ""
                     }
                   >
-                    <Label htmlFor={field} className="text-base mb-2 block">
-                      {field}
-                      {field !== "Observações" && (
-                        <span className="text-destructive ml-1">*</span>
-                      )}
-                    </Label>
+                    {getFieldType(field) !== "document-blocks" && (
+                      <Label htmlFor={field} className="text-base mb-2 block">
+                        {field}
+                        {field !== "Observações" && (
+                          <span className="text-destructive ml-1">*</span>
+                        )}
+                      </Label>
+                    )}
                     {renderField(field)}
                     {field === "Colaborador" && (
                       <p className="text-xs text-muted-foreground mt-1">
