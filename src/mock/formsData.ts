@@ -3522,7 +3522,7 @@ export interface FormSectionConfig {
 }
 
 export const formsConfig: Record<string, FormSectionConfig> = {
-  "SECRETARIA ACADÊMICA": {
+  CERTIFICAÇÃO: {
     fields: [
       "Colaborador",
       "Aluno",
@@ -3543,10 +3543,13 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     },
     selectOptions: {
       Atividade: [
-        "Enviado à auditoria",
+        "Aprovado na Triagem",
         "Negado na Triagem",
         "Enviado à certificadora",
+        "Emissão de certificado",
+        "Auditoria",
         "Aguardando Assinatura",
+        "Indeferido pela Auditoria",
       ],
       Plataforma: [
         "LA EDUCAÇÃO",
@@ -3611,13 +3614,15 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     },
   },
   PEDAGÓGICO: {
-    fields: ["Colaborador", "Aluno", "Atividade", "Nível de Ensino", "Curso", "Data da análise", "Observações"],
+    fields: ["Colaborador", "Aluno", "Atividade", "Nível de Ensino", "Curso", "Data da análise", "Status", "Média", "Observações"],
     fieldTypes: {
       Observações: "textarea",
       "Data da análise": "date",
       Atividade: "select",
       "Nível de Ensino": "select",
       Curso: "select",
+      Status: "select",
+      Média: "number",
     },
     selectOptions: {
       Atividade: [
@@ -3629,6 +3634,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "PORTUGUÊS E MATEMÁTICA CORRIGIDOS",
         "PROJETO INTEGRADOR",
       ],
+      Status: ["Aprovado", "Negado"],
     },
   },
   ATENDIMENTO: {
@@ -3642,13 +3648,13 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       "Nível de Ensino": "select",
     },
   },
-  CERTIFICAÇÃO: {
-    fields: ["Colaborador", "Atividade", "Data da análise", "Quantidade", "Observações"],
+  "SECRETARIA ACADÊMICA": {
+    fields: ["Colaborador", "Aluno", "Atividade", "Data da análise", "Documentos", "Observações"],
     fieldTypes: {
       Observações: "textarea",
       "Data da análise": "date",
-      Quantidade: "number",
       Atividade: "select",
+      Documentos: "document-blocks",
     },
     selectOptions: {
       Atividade: [
@@ -3661,6 +3667,49 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Certificados entregues",
         "Atividades Corrigidas (Port/Mat)",
         "Lançamento de médias",
+      ],
+      Documentos: [
+        "RG",
+        "CPF",
+        "Comprovante de residência",
+        "Histórico escolar",
+        "Certificado de conclusão",
+        "Certidão de nascimento",
+        "Foto 3x4",
+        "Comprovante de pagamento",
+        "Declaração escolar",
+        "Diploma",
+      ],
+    },
+  },
+  BITRIX24: {
+    fields: [
+      "Colaborador",
+      "Aluno",
+      "Atividade",
+      "Plataforma",
+      "Nível de Ensino",
+      "Curso",
+      "Polo",
+      "Data",
+      "Observações",
+    ],
+    fieldTypes: {
+      Observações: "textarea",
+      Data: "date",
+      Atividade: "select",
+      Plataforma: "select",
+      "Nível de Ensino": "select",
+      Curso: "select",
+      Polo: "select",
+    },
+    selectOptions: {
+      Atividade: [
+        "Cadastro de Aluno",
+        "Atualização de Dados",
+        "Consulta de Informações",
+        "Geração de Relatório",
+        "Outros",
       ],
     },
   },
