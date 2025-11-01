@@ -1398,6 +1398,7 @@ export const globalPoloOptions: string[] = [
   "INSTITUTO DE EDUCAÇÃO SUPERIOR E FACULDADES INTEGRADAS FRATERNUM",
   "TUTORES.ED",
   "JRW CURSOS",
+  "PRIMUS CURSOS E TREINAMENTOS",
 ];
 
 export const globalCursoOptions: string[] = [
@@ -3614,7 +3615,17 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     },
   },
   PEDAGÓGICO: {
-    fields: ["Colaborador", "Aluno", "Atividade", "Nível de Ensino", "Curso", "Data da análise", "Status", "Média", "Observações"],
+    fields: [
+      "Colaborador",
+      "Aluno",
+      "Atividade",
+      "Nível de Ensino",
+      "Curso",
+      "Data da análise",
+      "Status",
+      "Média",
+      "Observações",
+    ],
     fieldTypes: {
       Observações: "textarea",
       "Data da análise": "date",
