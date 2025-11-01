@@ -1967,6 +1967,8 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM TRANSAÇÃO IMOBILIÁRIA",
     "TÉCNICO EM ELETROMECÂNICA",
     "TÉCNICO EM INFORMÁTICA",
+    "AGRICULTURA",
+    "AGROPECUÁRIA",
   ],
   EJA: [
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS",
@@ -2017,6 +2019,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "AUTISMO",
     "AUXILIAR DE CONTABILIDADE",
     "LEGISLAÇÃO DA EDUCAÇÃO E LDB",
+    "ENFERMAGEM DO TRABALHO",
   ],
   "Profissionalizante Especial": ["AUX. DE SAÚDE BUCAL", "AUXILIAR DE ENFERMAGEM ESPECIAL", "CURSO DE INGLES"],
   "Pós Técnico": [
@@ -3543,12 +3546,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       Curso: "select",
     },
     selectOptions: {
-      Atividade: [
-        "ENVIADO À AUDITORIA",
-        "Aguardando assinatura",
-        "Negado na triagem",
-        "Enviado à certificadora",
-      ],
+      Atividade: ["ENVIADO À AUDITORIA", "Aguardando assinatura", "Negado na triagem", "Enviado à certificadora"],
       Plataforma: [
         "LA EDUCAÇÃO",
         "LA FACULDADES",
@@ -3712,9 +3710,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       Gestor: "select",
     },
     selectOptions: {
-      Atividade: [
-        "Certificado anexado ao Bitrix",
-      ],
+      Atividade: ["Certificado anexado ao Bitrix"],
     },
   },
   COMPETÊNCIA: {
