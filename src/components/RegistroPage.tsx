@@ -270,7 +270,8 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
                       <SelectItem value="ATENDIMENTO">Atendimento</SelectItem>
                       <SelectItem value="COMPETENCIA">Competência</SelectItem>
                       <SelectItem value="MATRICULAS">Matrículas</SelectItem>
-                      <SelectItem value="OUVIDORIA">Ouvidoria</SelectItem>
+                      <SelectItem value="OUVIDORIA">Ouvidoria</SelectItem
+                      <SelectItem value="OUVIDORIA">SECRETARIA ACADÊMICA</SelectItem>                                      
                       <SelectItem value="CENTRAL-LICENCIADOS">Central de Atendimento</SelectItem>
                     </SelectContent>
                   </Select>
