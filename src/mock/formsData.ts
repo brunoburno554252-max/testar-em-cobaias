@@ -3544,13 +3544,10 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     },
     selectOptions: {
       Atividade: [
-        "Aprovado na Triagem",
-        "Negado na Triagem",
+        "ENVIADO À AUDITORIA",
+        "Aguardando assinatura",
+        "Negado na triagem",
         "Enviado à certificadora",
-        "Emissão de certificado",
-        "Auditoria",
-        "Aguardando Assinatura",
-        "Indeferido pela Auditoria",
       ],
       Plataforma: [
         "LA EDUCAÇÃO",
