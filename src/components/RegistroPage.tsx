@@ -16,13 +16,6 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 interface RegistroPageProps {
   username: string;
@@ -46,7 +39,6 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
   const [filtroIdSupabase, setFiltroIdSupabase] = useState("");
   const [filtroUsuario, setFiltroUsuario] = useState("");
   const [filtroNomeAluno, setFiltroNomeAluno] = useState("");
-  const [filtroSecao, setFiltroSecao] = useState("");
   const [cardsVermelhos, setCardsVermelhos] = useState<Set<string>>(new Set());
   const [mostrarApenasVermelhos, setMostrarApenasVermelhos] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -105,10 +97,6 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
         query = query.ilike("form_data->>Aluno", `%${filtroNomeAluno}%`);
         countQuery = countQuery.ilike("form_data->>Aluno", `%${filtroNomeAluno}%`);
       }
-      if (filtroSecao && filtroSecao !== "all") {
-        query = query.eq("form_name", filtroSecao);
-        countQuery = countQuery.eq("form_name", filtroSecao);
-      }
 
       const { count } = await countQuery;
       setTotalCount(count || 0);
@@ -154,7 +142,6 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
     setFiltroIdSupabase("");
     setFiltroUsuario("");
     setFiltroNomeAluno("");
-    setFiltroSecao("");
   };
 
   const aplicarFiltros = () => {
@@ -256,27 +243,7 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
                 <h3 className="font-semibold">Filtros de Pesquisa</h3>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <label className="text-sm font-medium mb-1 block">Seção</label>
-                  <Select value={filtroSecao} onValueChange={setFiltroSecao}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Todas as seções" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Todas as seções</SelectItem>
-                      <SelectItem value="CERTIFICAÇÃO">Certificação</SelectItem>
-                      <SelectItem value="PEDAGOGIA">Pedagogia</SelectItem>
-                      <SelectItem value="ATENDIMENTO">Atendimento</SelectItem>
-                      <SelectItem value="COMPETENCIA">Competência</SelectItem>
-                      <SelectItem value="MATRICULAS">Matrículas</SelectItem>
-                      <SelectItem value="OUVIDORIA">Ouvidoria</SelectItem>
-                      <SelectItem value="SECRETARIA">SECRETARIA ACADÊMICA</SelectItem>                                      
-                      <SelectItem value="CENTRAL-LICENCIADOS">Central de Atendimento</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="text-sm font-medium mb-1 block">ID Supabase</label>
                   <Input

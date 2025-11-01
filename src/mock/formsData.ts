@@ -1398,7 +1398,6 @@ export const globalPoloOptions: string[] = [
   "INSTITUTO DE EDUCAÇÃO SUPERIOR E FACULDADES INTEGRADAS FRATERNUM",
   "TUTORES.ED",
   "JRW CURSOS",
-  "PRIMUS CURSOS E TREINAMENTOS",
 ];
 
 export const globalCursoOptions: string[] = [
@@ -1965,10 +1964,8 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM COMPETÊNCIA EM ELETRÔNICA",
     "TÉCNICO EM REFRIGERAÇÃO E CLIMATIZAÇÃO",
     "TÉCNICO EM TRANSAÇÃO IMOBILIÁRIA",
-    "TÉCNICO EM ELETROMECÂNICA",
+    "TÈCNICO EM ELETRÔMECANICA",
     "TÉCNICO EM INFORMÁTICA",
-    "AGRICULTURA",
-    "AGROPECUÁRIA",
   ],
   EJA: [
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS",
@@ -2019,7 +2016,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "AUTISMO",
     "AUXILIAR DE CONTABILIDADE",
     "LEGISLAÇÃO DA EDUCAÇÃO E LDB",
-    "ENFERMAGEM DO TRABALHO",
   ],
   "Profissionalizante Especial": ["AUX. DE SAÚDE BUCAL", "AUXILIAR DE ENFERMAGEM ESPECIAL", "CURSO DE INGLES"],
   "Pós Técnico": [
@@ -3546,7 +3542,15 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       Curso: "select",
     },
     selectOptions: {
-      Atividade: ["ENVIADO À AUDITORIA", "Aguardando assinatura", "Negado na triagem", "Enviado à certificadora"],
+      Atividade: [
+        "Aprovado na Triagem",
+        "Negado na Triagem",
+        "Enviado à certificadora",
+        "Emissão de certificado",
+        "Auditoria",
+        "Aguardando Assinatura",
+        "Indeferido pela Auditoria",
+      ],
       Plataforma: [
         "LA EDUCAÇÃO",
         "LA FACULDADES",
@@ -3610,17 +3614,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     },
   },
   PEDAGÓGICO: {
-    fields: [
-      "Colaborador",
-      "Aluno",
-      "Atividade",
-      "Nível de Ensino",
-      "Curso",
-      "Data da análise",
-      "Status",
-      "Média",
-      "Observações",
-    ],
+    fields: ["Colaborador", "Aluno", "Atividade", "Nível de Ensino", "Curso", "Data da análise", "Status", "Média", "Observações"],
     fieldTypes: {
       Observações: "textarea",
       "Data da análise": "date",
@@ -3696,7 +3690,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       "Plataforma",
       "Nível de Ensino",
       "Curso",
-      "Gestor",
+      "Polo",
       "Data",
       "Observações",
     ],
@@ -3707,10 +3701,16 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       Plataforma: "select",
       "Nível de Ensino": "select",
       Curso: "select",
-      Gestor: "select",
+      Polo: "select",
     },
     selectOptions: {
-      Atividade: ["Certificado anexado ao Bitrix"],
+      Atividade: [
+        "Cadastro de Aluno",
+        "Atualização de Dados",
+        "Consulta de Informações",
+        "Geração de Relatório",
+        "Outros",
+      ],
     },
   },
   COMPETÊNCIA: {
