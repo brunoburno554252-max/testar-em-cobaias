@@ -1398,7 +1398,6 @@ export const globalPoloOptions: string[] = [
   "INSTITUTO DE EDUCAÇÃO SUPERIOR E FACULDADES INTEGRADAS FRATERNUM",
   "TUTORES.ED",
   "JRW CURSOS",
-  "Ana Carla de Oliveira Silva",
 ];
 
 export const globalCursoOptions: string[] = [
@@ -3834,6 +3833,7 @@ export const globalGestorOptions: string[] = [
   "RENAN BARBOZA",
   "PAULO CÉSAR",
   "NATHÁLIA GALESKI",
+  "ANA CARLA DE OLIVEIRA SILVA",
 ];
 
 export const globalSelectOptions: Record<string, string[]> = {
