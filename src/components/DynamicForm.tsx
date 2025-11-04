@@ -60,6 +60,14 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     }
   }, [formName, username, isCompetenciaForm, storageKey]);
 
+  // Preencher automaticamente o campo Data com a data atual
+  useEffect(() => {
+    if (fields.includes("Data") && !formValues["Data"]) {
+      const today = new Date().toISOString().split('T')[0];
+      setFormValues(prev => ({ ...prev, Data: today }));
+    }
+  }, [fields]);
+
   const saveSelectableFields = () => {
     if (!isCompetenciaForm) return;
     
