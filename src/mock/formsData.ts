@@ -1398,6 +1398,7 @@ export const globalPoloOptions: string[] = [
   "INSTITUTO DE EDUCAÇÃO SUPERIOR E FACULDADES INTEGRADAS FRATERNUM",
   "TUTORES.ED",
   "JRW CURSOS",
+  "MARLON ROBERTO GONZALEZ VEDO",
 ];
 
 export const globalCursoOptions: string[] = [
@@ -3788,14 +3789,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     optionalFields: ["Polo", "Nível de Ensino", "Curso", "Plataforma", "Data da conclusão"],
     selectOptions: {
       STATUS: ["aberto", "em andamento", "resolvido", "fechado"],
-      Atividade: [
-        "Reclame Aqui",
-        "Google",
-        "Sula 2.0",
-        "Bot de atendimento",
-        "E-mail",
-        "Whats da Ouvidoria",
-      ],
+      Atividade: ["Reclame Aqui", "Google", "Sula 2.0", "Bot de atendimento", "E-mail", "Whats da Ouvidoria"],
     },
   },
   "Central de Atendimento aos Licenciados": {
