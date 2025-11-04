@@ -1858,7 +1858,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "LATU SENSO EM TERAPIA DA CONSTELAÇÃO FAMILIAR SISTÊMICA",
     "SUPERVISÃO E ORIENTAÇÃO ESCOLAR",
     "ENGENHARIA DE SEGURANÇA DO TRABALHO",
-    "LATO SENSU EM COMPORTAMENTO HUMANO E NEUROCIÊNCIA",
   ],
   "Segunda Licenciatura": [
     "ARTES VISUAIS",
