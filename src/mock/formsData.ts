@@ -3519,6 +3519,7 @@ export interface FormSectionConfig {
   fields: string[];
   fieldTypes?: Record<string, string>;
   selectOptions?: Record<string, string[]>;
+  optionalFields?: string[];
 }
 
 export const formsConfig: Record<string, FormSectionConfig> = {
@@ -3762,13 +3763,13 @@ export const formsConfig: Record<string, FormSectionConfig> = {
   OUVIDORIA: {
     fields: [
       "Colaborador",
-      "Aluno",
+      "Aluno/Polo",
+      "Polo",
       "Atividade",
       "STATUS",
       "Plataforma",
       "Nível de Ensino",
       "Curso",
-      "Polo",
       "Data",
       "Data da conclusão",
       "Observações",
@@ -3784,8 +3785,17 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       Curso: "select",
       Polo: "select",
     },
+    optionalFields: ["Polo", "Nível de Ensino", "Curso", "Plataforma", "Data da conclusão"],
     selectOptions: {
       STATUS: ["Aberto", "Em Andamento", "Resolvido", "Fechado"],
+      Atividade: [
+        "Reclame Aqui",
+        "Google",
+        "Sula 2.0",
+        "Bot de atendimento",
+        "E-mail",
+        "Whats da Ouvidoria",
+      ],
     },
   },
   "Central de Atendimento aos Licenciados": {

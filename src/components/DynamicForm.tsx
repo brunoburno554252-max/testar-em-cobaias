@@ -94,9 +94,10 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     console.log("👤 Username:", username);
     console.log("📊 Form Values:", formValues);
     
-    // Validar campos obrigatórios (exceto Observações)
+    // Validar campos obrigatórios (exceto Observações e campos opcionais)
+    const optionalFields = sectionConfig?.optionalFields || [];
     const emptyFields = fields.filter(
-      field => field !== "Observações" && !formValues[field]
+      field => field !== "Observações" && !optionalFields.includes(field) && !formValues[field]
     );
 
     if (emptyFields.length > 0) {
@@ -450,7 +451,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
                     {getFieldType(field) !== "document-blocks" && (
                       <Label htmlFor={field} className="text-base mb-2 block">
                         {field}
-                        {field !== "Observações" && (
+                        {field !== "Observações" && !sectionConfig?.optionalFields?.includes(field) && (
                           <span className="text-destructive ml-1">*</span>
                         )}
                       </Label>
