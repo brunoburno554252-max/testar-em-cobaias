@@ -1858,7 +1858,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "LATU SENSO EM TERAPIA DA CONSTELAÇÃO FAMILIAR SISTÊMICA",
     "SUPERVISÃO E ORIENTAÇÃO ESCOLAR",
     "ENGENHARIA DE SEGURANÇA DO TRABALHO",
-    "LATO SENSU EM COMPORTAMENTO HUMANO E NEUROCIÊNCIA",
   ],
   "Segunda Licenciatura": [
     "ARTES VISUAIS",
@@ -3580,7 +3579,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Pós-Graduação Chancela Abracomex",
         "Pós-Graduação Chancela Ebramed",
         "Pós-Graduação Chancela Educar Mais",
-        "Pós-Graduações",
+        "Pós-Graduação",
         "Segunda Licenciatura",
         "Superior Sequencial",
         "Aproveitamento/Competência",
