@@ -3616,6 +3616,36 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       Gestor: "select",
     },
   },
+  "PRÉ-MATRÍCULA": {
+    fields: [
+      "Colaborador",
+      "Aluno",
+      "Atividade",
+      "Plataforma",
+      "Nível de Ensino",
+      "Curso",
+      "Polo",
+      "Data",
+      "Previsão de conclusão",
+      "Gestor",
+      "Observações",
+    ],
+    fieldTypes: {
+      Observações: "textarea",
+      Data: "date",
+      "Previsão de conclusão": "date",
+      "Nível de Ensino": "select",
+      Plataforma: "select",
+      Atividade: "select",
+      Curso: "select",
+      Polo: "select",
+      Gestor: "select",
+    },
+    selectOptions: {
+      Atividade: ["pré matricula"],
+      Plataforma: ["sula 2.0"],
+    },
+  },
   PEDAGÓGICO: {
     fields: [
       "Colaborador",
