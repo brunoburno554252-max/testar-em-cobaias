@@ -1618,7 +1618,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "MBA EM GESTÃO JURÍDICA DA ÁREA DE SAÚDE E HOSPITALAR",
     "ADVOCACIA CÍVEL E NEGÓCIOS JURÍDICOS",
   ],
-  "Pós-Graduações": [
+  "Pós-Graduação": [
     "ESPECIALIZAÇÃO EM METODOLOGIA DO ENSINO DE LÍNGUA PORTUGUESA",
     "MBA - ADMINISTRAÇÃO FINANCEIRA E ORÇAMENTÁRIA",
     "MBA - COMPLIANCE E GESTÃO DE RISCOS",
@@ -1858,6 +1858,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "LATU SENSO EM TERAPIA DA CONSTELAÇÃO FAMILIAR SISTÊMICA",
     "SUPERVISÃO E ORIENTAÇÃO ESCOLAR",
     "ENGENHARIA DE SEGURANÇA DO TRABALHO",
+    "LATO SENSU EM COMPORTAMENTO HUMANO E NEUROCIÊNCIA",
   ],
   "Segunda Licenciatura": [
     "ARTES VISUAIS",
