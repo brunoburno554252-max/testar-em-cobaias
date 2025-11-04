@@ -45,11 +45,14 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
       Colaborador: username,
     };
     
-    // Preencher Data automaticamente se o campo existir
-    if (fields.includes("Data")) {
-      const today = new Date().toISOString().split('T')[0];
-      initialValues.Data = today;
-    }
+    // Preencher automaticamente todos os campos do tipo "date" com a data atual
+    const today = new Date().toISOString().split('T')[0];
+    fields.forEach(field => {
+      const fieldType = sectionConfig?.fieldTypes?.[field] || "text";
+      if (fieldType === "date") {
+        initialValues[field] = today;
+      }
+    });
     
     return initialValues;
   });
@@ -62,14 +65,18 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
       if (savedData) {
         try {
           const parsed = JSON.parse(savedData);
-          // Manter a data atual se não estiver nos dados salvos
+          // Manter a data atual para todos os campos do tipo date se não estiver nos dados salvos
           const today = new Date().toISOString().split('T')[0];
-          setFormValues(prev => ({ 
-            ...prev, 
-            ...parsed, 
-            Colaborador: username,
-            Data: parsed.Data || today 
-          }));
+          const updatedValues = { ...parsed, Colaborador: username };
+          
+          fields.forEach(field => {
+            const fieldType = sectionConfig?.fieldTypes?.[field] || "text";
+            if (fieldType === "date" && !parsed[field]) {
+              updatedValues[field] = today;
+            }
+          });
+          
+          setFormValues(prev => ({ ...prev, ...updatedValues }));
         } catch (error) {
           console.error("Erro ao carregar dados salvos:", error);
         }
