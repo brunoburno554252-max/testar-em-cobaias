@@ -3787,7 +3787,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     },
     optionalFields: ["Polo", "Nível de Ensino", "Curso", "Plataforma", "Data da conclusão"],
     selectOptions: {
-      STATUS: ["Aberto", "Em Andamento", "Resolvido", "Fechado"],
+      STATUS: ["aberto", "em andamento", "resolvido", "fechado"],
       Atividade: [
         "Reclame Aqui",
         "Google",
