@@ -40,8 +40,18 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
   const isCompetenciaForm = formName === "COMPETÊNCIA";
   const storageKey = `saved_form_${getSessionKey(formName)}`;
   
-  const [formValues, setFormValues] = useState<Record<string, string>>({
-    Colaborador: username,
+  const [formValues, setFormValues] = useState<Record<string, string>>(() => {
+    const initialValues: Record<string, string> = {
+      Colaborador: username,
+    };
+    
+    // Preencher Data automaticamente se o campo existir
+    if (fields.includes("Data")) {
+      const today = new Date().toISOString().split('T')[0];
+      initialValues.Data = today;
+    }
+    
+    return initialValues;
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -52,21 +62,20 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
       if (savedData) {
         try {
           const parsed = JSON.parse(savedData);
-          setFormValues(prev => ({ ...prev, ...parsed, Colaborador: username }));
+          // Manter a data atual se não estiver nos dados salvos
+          const today = new Date().toISOString().split('T')[0];
+          setFormValues(prev => ({ 
+            ...prev, 
+            ...parsed, 
+            Colaborador: username,
+            Data: parsed.Data || today 
+          }));
         } catch (error) {
           console.error("Erro ao carregar dados salvos:", error);
         }
       }
     }
-  }, [formName, username, isCompetenciaForm, storageKey]);
-
-  // Preencher automaticamente o campo Data com a data atual
-  useEffect(() => {
-    if (fields.includes("Data") && !formValues["Data"]) {
-      const today = new Date().toISOString().split('T')[0];
-      setFormValues(prev => ({ ...prev, Data: today }));
-    }
-  }, [fields]);
+  }, [formName, username, isCompetenciaForm, storageKey, fields]);
 
   const saveSelectableFields = () => {
     if (!isCompetenciaForm) return;
