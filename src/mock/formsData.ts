@@ -1399,6 +1399,7 @@ export const globalPoloOptions: string[] = [
   "TUTORES.ED",
   "JRW CURSOS",
   "MARLON ROBERTO GONZALEZ VEDO",
+  "POLO NÃO ENCONTRADO",
 ];
 
 export const globalCursoOptions: string[] = [
