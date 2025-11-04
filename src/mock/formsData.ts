@@ -1967,6 +1967,8 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM TRANSAÇÃO IMOBILIÁRIA",
     "TÈCNICO EM ELETRÔMECANICA",
     "TÉCNICO EM INFORMÁTICA",
+    "TÉCNICO EM TELECOMUNICAÇÕES
+
   ],
   EJA: [
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS",
