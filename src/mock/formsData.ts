@@ -1400,6 +1400,7 @@ export const globalPoloOptions: string[] = [
   "JRW CURSOS",
   "MARLON ROBERTO GONZALEZ VEDO",
   "GRUPO PRIME EDUCACIONAL",
+  "VERICIO'S FORMAÇÃO E OPORTUNIDADES",
   "POLO NÃO ENCONTRADO",
 ];
 
