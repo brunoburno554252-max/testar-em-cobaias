@@ -1860,6 +1860,8 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "LATU SENSO EM TERAPIA DA CONSTELAÇÃO FAMILIAR SISTÊMICA",
     "SUPERVISÃO E ORIENTAÇÃO ESCOLAR",
     "ENGENHARIA DE SEGURANÇA DO TRABALHO",
+    "EDUCAÇÃO ESPECIAL PARA DEFICIÊNCIA INTELECTUAL",
+
   ],
   "Segunda Licenciatura": [
     "ARTES VISUAIS",
