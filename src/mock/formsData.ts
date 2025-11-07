@@ -3517,7 +3517,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "ORATÓRIA – 30 HORAS",
     "JORNALISMO – 75 HORAS",
   ],
-  " DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER": [
+  "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER": [
     "CIÊNCIAS DA ADMINISTRAÇÃO - MESTRADO",
     "CIÊNCIAS DA EDUCAÇÃO - MESTRADO",
     "CIÊNCIAS JURÍDICAS - MESTRADO",
@@ -3623,7 +3623,8 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Profissionalizante Avançado",
         "Profissionalizante Especial",
         "Pós Técnico",
-        "PROFISSIONALIZANTES PREMIUM",
+        "PROFISSIONALIZANTES PREMIUM"
+        "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER",
       ],
     },
   },
