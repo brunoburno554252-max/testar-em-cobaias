@@ -3623,7 +3623,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Profissionalizante Avançado",
         "Profissionalizante Especial",
         "Pós Técnico",
-        "PROFISSIONALIZANTES PREMIUM"
+        "PROFISSIONALIZANTES PREMIUM",
         "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER",
       ],
     },
