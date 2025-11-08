@@ -3624,7 +3624,6 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Profissionalizante Especial",
         "Pós Técnico",
         "PROFISSIONALIZANTES PREMIUM",
-        "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER",
       ],
     },
   },
@@ -3935,6 +3934,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "TECNÓLOGOS - UNIMAIS",
     "FORMAÇÃO SPEED - UNIMAIS",
     "PROFISSIONALIZANTES COMUM",
+    "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER",
   ],
   Plataforma: [
     "LA EDUCAÇÃO",
