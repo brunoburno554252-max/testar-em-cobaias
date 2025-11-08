@@ -1402,6 +1402,7 @@ export const globalPoloOptions: string[] = [
   "GRUPO PRIME EDUCACIONAL",
   "VERICIO'S FORMAÇÃO E OPORTUNIDADES",
   "PROMAISEAD",
+  "UNIVERSO EAD",
   "POLO NÃO ENCONTRADO",
 ];
 
