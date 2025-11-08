@@ -1972,7 +1972,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÈCNICO EM ELETRÔMECANICA",
     "TÉCNICO EM INFORMÁTICA",
     "TÉCNICO EM TELECOMUNICAÇÕES",
-    "Técnico em Farmácia"
+    "Técnico em Farmácia",
     "Técnico em Agricultura",
     "Técnico em Agropecuária",
   ],
