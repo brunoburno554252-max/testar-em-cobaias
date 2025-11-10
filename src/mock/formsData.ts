@@ -2019,6 +2019,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM TRANSAÇÕES IMOBILIÁRIAS",
     "TÉCNICO EM TRANSAÇÕES TRADER",
     "TÉCNICO EM VETERINÁRIA",
+    "TÉCNICO EM QUÍMICA",
   ],
   "Profissionalizante Avançado": [
     "ADMINISTRAÇÃO PARA MICRO E MÉDIAS EMPRESAS",
