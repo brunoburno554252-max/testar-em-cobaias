@@ -2030,6 +2030,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "LEGISLAÇÃO DA EDUCAÇÃO E LDB",
     "CUIDADOR DE IDOSOS",
     "GESTÃO DE RECURSOS HUMANOS",
+    "AUXILIAR DE ENFERMAGEM AVANÇADO",
   ],
   "Profissionalizante Especial": ["AUX. DE SAÚDE BUCAL", "AUXILIAR DE ENFERMAGEM ESPECIAL", "CURSO DE INGLES"],
   "Pós Técnico": [
