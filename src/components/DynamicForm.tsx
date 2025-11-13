@@ -39,6 +39,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
   const fields = sectionConfig?.fields || [];
   const isCompetenciaForm = formName === "COMPETÊNCIA";
   const storageKey = `saved_form_${getSessionKey(formName)}`;
+  const globalPlataformaKey = 'global_plataforma_value';
   
   const [formValues, setFormValues] = useState<Record<string, string>>(() => {
     const initialValues: Record<string, string> = {
@@ -49,6 +50,14 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     if (fields.includes("Data")) {
       const today = new Date().toISOString().split('T')[0];
       initialValues.Data = today;
+    }
+    
+    // Carregar Plataforma global se o campo existir
+    if (fields.includes("Plataforma")) {
+      const savedPlataforma = localStorage.getItem(globalPlataformaKey);
+      if (savedPlataforma) {
+        initialValues.Plataforma = savedPlataforma;
+      }
     }
     
     return initialValues;
@@ -214,7 +223,22 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         // Limpar apenas Observações
         setFormValues(prev => ({ ...prev, Observações: "" }));
       } else {
-        setFormValues({ Colaborador: username });
+        // Manter Plataforma global se existir
+        const savedPlataforma = localStorage.getItem(globalPlataformaKey);
+        const resetValues: Record<string, string> = { Colaborador: username };
+        
+        // Adicionar Data automaticamente se o campo existir
+        if (fields.includes("Data")) {
+          const today = new Date().toISOString().split('T')[0];
+          resetValues.Data = today;
+        }
+        
+        // Manter Plataforma global se o campo existir e houver valor salvo
+        if (fields.includes("Plataforma") && savedPlataforma) {
+          resetValues.Plataforma = savedPlataforma;
+        }
+        
+        setFormValues(resetValues);
       }
     } catch (error: any) {
       console.error("❌ Erro completo:", error);
@@ -234,6 +258,11 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         newValues["Curso"] = "";
         console.log("🎓 Nível de Ensino selecionado:", value);
         console.log("📚 Cursos disponíveis:", nivelEnsinoCursoMap[value] || "Nenhum");
+      }
+      
+      // Se Plataforma mudar, salvar globalmente
+      if (field === "Plataforma") {
+        localStorage.setItem(globalPlataformaKey, value);
       }
       
       return newValues;
