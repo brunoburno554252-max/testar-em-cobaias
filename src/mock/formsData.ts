@@ -1866,6 +1866,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "ENGENHARIA DE SEGURANÇA DO TRABALHO",
     "EDUCAÇÃO ESPECIAL PARA DEFICIÊNCIA INTELECTUAL",
     "PATOLOGIA ORAL E MAXILOFACIAL",
+    "ANATOMIA DE CABEÇA E PESCOÇO",
   ],
   "Segunda Licenciatura": [
     "ARTES VISUAIS",
