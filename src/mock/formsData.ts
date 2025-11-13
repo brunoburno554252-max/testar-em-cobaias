@@ -1863,6 +1863,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "SUPERVISÃO E ORIENTAÇÃO ESCOLAR",
     "ENGENHARIA DE SEGURANÇA DO TRABALHO",
     "EDUCAÇÃO ESPECIAL PARA DEFICIÊNCIA INTELECTUAL",
+    "PATOLOGIA ORAL E MAXILOFACIAL",
   ],
   "Segunda Licenciatura": [
     "ARTES VISUAIS",
