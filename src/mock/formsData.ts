@@ -3638,6 +3638,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "IEPB",
         "C-técnica",
         "Nobel",
+        "SISTEMA EDUCACIONAL INTEGRADO",
       ],
       "Nível de Ensino": [
         "Aperfeiçoamento De Estudos",
@@ -3990,6 +3991,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "IEPB",
     "C-TÉCNICA",
     "NOBEL",
+    "SISTEMA EDUCACIONAL INTEGRADO",
   ],
   Atividade: [
     "MATRICULA",
