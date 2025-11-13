@@ -3624,22 +3624,6 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Aguardando Assinatura",
         "Indeferido pela Auditoria",
       ],
-      Plataforma: [
-        "LA EDUCAÇÃO",
-        "LA FACULDADES",
-        "PRIME",
-        "ABC",
-        "UNIMAIS",
-        "UNIFEMM",
-        "FAMAR",
-        "VICINT",
-        "IPEMIG",
-        "ITECC",
-        "IEPB",
-        "C-técnica",
-        "Nobel",
-        "SISTEMA EDUCACIONAL INTEGRADO",
-      ],
       "Nível de Ensino": [
         "Aperfeiçoamento De Estudos",
         "Extensão Universitária",
@@ -3713,7 +3697,6 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     },
     selectOptions: {
       Atividade: ["pré matricula"],
-      Plataforma: ["sula 2.0"],
     },
   },
   PEDAGÓGICO: {
@@ -3859,7 +3842,6 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Chancela",
         "Verificação de Experiencia",
       ],
-      Plataforma: ["ITECC", "FRATEC", "C-TÉCNICA", "LA SUL", "ASTORTEC", "LATEC", "WAL RJ", "IEPB PB2/PB"],
     },
   },
   OUVIDORIA: {
