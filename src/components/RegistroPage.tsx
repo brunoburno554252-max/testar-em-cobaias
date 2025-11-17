@@ -94,8 +94,8 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
         }
       }
       if (filtroNomeAluno) {
-        query = query.or(`form_data->>Aluno.ilike.%${filtroNomeAluno}%,form_data->>ALUNO.ilike.%${filtroNomeAluno}%,form_data->>Nome.ilike.%${filtroNomeAluno}%`);
-        countQuery = countQuery.or(`form_data->>Aluno.ilike.%${filtroNomeAluno}%,form_data->>ALUNO.ilike.%${filtroNomeAluno}%,form_data->>Nome.ilike.%${filtroNomeAluno}%`);
+        query = query.or(`form_data->>Aluno.ilike.%${filtroNomeAluno}%,form_data->>ALUNO.ilike.%${filtroNomeAluno}%,form_data->>Nome.ilike.%${filtroNomeAluno}%,form_data->>'Aluno/Polo'.ilike.%${filtroNomeAluno}%`);
+        countQuery = countQuery.or(`form_data->>Aluno.ilike.%${filtroNomeAluno}%,form_data->>ALUNO.ilike.%${filtroNomeAluno}%,form_data->>Nome.ilike.%${filtroNomeAluno}%,form_data->>'Aluno/Polo'.ilike.%${filtroNomeAluno}%`);
       }
 
       const { count } = await countQuery;
