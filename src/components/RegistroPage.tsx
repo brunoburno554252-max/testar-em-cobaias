@@ -61,26 +61,23 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
   const loadRegistros = async () => {
     try {
       console.log("🔍 Buscando registros...");
-      
-      // Count query for pagination
-      let countQuery = supabase
-        .from("forms_submissions")
-        .select("*", { count: 'exact', head: true });
+      console.log("Filtros ativos:", { filtroIdSupabase, filtroUsuario, filtroNomeAluno });
       
       let query = supabase
         .from("forms_submissions")
         .select("*")
-        .order("created_at", { ascending: false })
-        .range((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE - 1);
+        .order("created_at", { ascending: false });
       
       console.log("🔑 User ID atual:", (await supabase.auth.getUser()).data.user?.id);
 
       // Aplicar filtros se houver
       if (filtroIdSupabase) {
-        query = query.or(`id::text.ilike.%${filtroIdSupabase}%`);
-        countQuery = countQuery.or(`id::text.ilike.%${filtroIdSupabase}%`);
+        console.log("🔍 Aplicando filtro de ID:", filtroIdSupabase);
+        query = query.ilike("id::text", `%${filtroIdSupabase}%`);
       }
+      
       if (filtroUsuario) {
+        console.log("🔍 Aplicando filtro de usuário:", filtroUsuario);
         // Buscar user_id correspondente ao nome em forms_users
         const { data: userData } = await supabase
           .from("forms_users")
@@ -90,32 +87,59 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
         if (userData && userData.length > 0) {
           const userIds = userData.map(u => u.user_id);
           query = query.in("user_id", userIds);
-          countQuery = countQuery.in("user_id", userIds);
+        } else {
+          // Se não encontrar usuários, retornar vazio
+          setRegistros([]);
+          setTotalCount(0);
+          setIsLoading(false);
+          return;
         }
       }
-      if (filtroNomeAluno) {
-        console.log("🔍 Filtro por nome de aluno:", filtroNomeAluno);
-        const nameFilter = `(form_data->>Aluno.ilike."%${filtroNomeAluno}%"),(form_data->>ALUNO.ilike."%${filtroNomeAluno}%"),(form_data->>Nome.ilike."%${filtroNomeAluno}%"),(form_data->>'Aluno/Polo'.ilike."%${filtroNomeAluno}%")`;
-        console.log("🔍 Query de filtro:", nameFilter);
-        query = query.or(nameFilter);
-        countQuery = countQuery.or(nameFilter);
-      }
 
-      const { count } = await countQuery;
-      setTotalCount(count || 0);
-
-      const { data, error } = await query;
+      // Para busca por nome de aluno, buscamos mais dados e filtramos no cliente
+      // porque queries JSONB com OR são complexas no PostgREST
+      const { data: allData, error } = await query;
 
       if (error) {
         console.error("❌ Erro ao buscar:", error);
         throw error;
       }
 
-      console.log("✅ Registros recebidos:", data?.length || 0);
-      console.log("📋 IDs recebidos:", data?.map(r => r.id.substring(0, 8)));
+      console.log("✅ Registros recebidos antes do filtro:", allData?.length || 0);
+      
+      // Filtrar por nome de aluno no cliente (busca em múltiplos campos JSON)
+      let filteredData = allData || [];
+      if (filtroNomeAluno) {
+        console.log("🔍 Filtrando por nome de aluno no cliente:", filtroNomeAluno);
+        const searchTerm = filtroNomeAluno.toLowerCase();
+        filteredData = filteredData.filter(registro => {
+          const formData = registro.form_data as any;
+          const aluno = formData?.Aluno?.toLowerCase() || '';
+          const alunoUpper = formData?.ALUNO?.toLowerCase() || '';
+          const nome = formData?.Nome?.toLowerCase() || '';
+          const alunoPolo = formData?.['Aluno/Polo']?.toLowerCase() || '';
+          
+          return aluno.includes(searchTerm) || 
+                 alunoUpper.includes(searchTerm) || 
+                 nome.includes(searchTerm) || 
+                 alunoPolo.includes(searchTerm);
+        });
+        console.log("✅ Registros após filtro de nome:", filteredData.length);
+      }
+
+      // Aplicar paginação no cliente
+      const totalFiltered = filteredData.length;
+      setTotalCount(totalFiltered);
+      
+      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+      const paginatedData = filteredData.slice(startIndex, endIndex);
+
+      console.log("✅ Registros após paginação:", paginatedData.length);
+      console.log("📋 IDs recebidos:", paginatedData?.map(r => r.id.substring(0, 8)));
       
       // Buscar nomes dos usuários
-      const userIds = [...new Set(data?.map(r => r.user_id) || [])];
+      const userIds = [...new Set(paginatedData?.map(r => r.user_id) || [])];
       const { data: usersData } = await supabase
         .from("forms_users")
         .select("user_id, full_name")
@@ -124,7 +148,7 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
       const userMap = new Map(usersData?.map(u => [u.user_id, u.full_name]) || []);
       
       // Adicionar user_name aos registros
-      const registrosComNome = data?.map(r => ({
+      const registrosComNome = paginatedData?.map(r => ({
         ...r,
         user_name: userMap.get(r.user_id) || "Usuário desconhecido"
       })) || [];
@@ -145,6 +169,12 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
     setFiltroIdSupabase("");
     setFiltroUsuario("");
     setFiltroNomeAluno("");
+    setCurrentPage(1);
+    // Força reload após limpar
+    setTimeout(() => {
+      setIsLoading(true);
+      loadRegistros();
+    }, 0);
   };
 
   const aplicarFiltros = () => {
