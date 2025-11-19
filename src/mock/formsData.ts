@@ -2004,6 +2004,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM AGRIMENSURA",
     "TÉCNICO EM AGROINDÚSTRIA",
     "TÉCNICO EM GASTRONOMIA",
+    "TÉCNICO EM ENFERMAGEM",
   ],
   EJA: [
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS",
