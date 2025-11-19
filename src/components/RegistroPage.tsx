@@ -60,57 +60,47 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
 
   const loadRegistros = async () => {
     try {
-      console.log("🔍 Buscando registros...");
-      console.log("Filtros ativos:", { filtroIdSupabase, filtroUsuario, filtroNomeAluno });
-      
-      let query = supabase
+      // Buscar TODOS os dados sem filtros no servidor
+      const { data: allData, error } = await supabase
         .from("forms_submissions")
         .select("*")
         .order("created_at", { ascending: false });
-      
-      console.log("🔑 User ID atual:", (await supabase.auth.getUser()).data.user?.id);
 
-      // Aplicar filtros se houver
-      if (filtroIdSupabase) {
-        console.log("🔍 Aplicando filtro de ID:", filtroIdSupabase);
-        query = query.ilike("id::text", `%${filtroIdSupabase}%`);
+      if (error) {
+        console.error("❌ Erro ao buscar:", error);
+        throw error;
       }
       
+      // Aplicar TODOS os filtros no cliente
+      let filteredData = allData || [];
+      
+      // Filtro por ID
+      if (filtroIdSupabase) {
+        const searchId = filtroIdSupabase.toLowerCase();
+        filteredData = filteredData.filter(registro => 
+          registro.id.toLowerCase().includes(searchId)
+        );
+      }
+      
+      // Filtro por usuário
       if (filtroUsuario) {
-        console.log("🔍 Aplicando filtro de usuário:", filtroUsuario);
-        // Buscar user_id correspondente ao nome em forms_users
         const { data: userData } = await supabase
           .from("forms_users")
           .select("user_id")
           .ilike("full_name", `%${filtroUsuario}%`);
         
         if (userData && userData.length > 0) {
-          const userIds = userData.map(u => u.user_id);
-          query = query.in("user_id", userIds);
+          const userIds = new Set(userData.map(u => u.user_id));
+          filteredData = filteredData.filter(registro => 
+            userIds.has(registro.user_id)
+          );
         } else {
-          // Se não encontrar usuários, retornar vazio
-          setRegistros([]);
-          setTotalCount(0);
-          setIsLoading(false);
-          return;
+          filteredData = [];
         }
       }
-
-      // Para busca por nome de aluno, buscamos mais dados e filtramos no cliente
-      // porque queries JSONB com OR são complexas no PostgREST
-      const { data: allData, error } = await query;
-
-      if (error) {
-        console.error("❌ Erro ao buscar:", error);
-        throw error;
-      }
-
-      console.log("✅ Registros recebidos antes do filtro:", allData?.length || 0);
       
-      // Filtrar por nome de aluno no cliente (busca em múltiplos campos JSON)
-      let filteredData = allData || [];
+      // Filtro por nome de aluno
       if (filtroNomeAluno) {
-        console.log("🔍 Filtrando por nome de aluno no cliente:", filtroNomeAluno);
         const searchTerm = filtroNomeAluno.toLowerCase();
         filteredData = filteredData.filter(registro => {
           const formData = registro.form_data as any;
@@ -124,7 +114,6 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
                  nome.includes(searchTerm) || 
                  alunoPolo.includes(searchTerm);
         });
-        console.log("✅ Registros após filtro de nome:", filteredData.length);
       }
 
       // Aplicar paginação no cliente
@@ -134,9 +123,6 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
       const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
       const endIndex = startIndex + ITEMS_PER_PAGE;
       const paginatedData = filteredData.slice(startIndex, endIndex);
-
-      console.log("✅ Registros após paginação:", paginatedData.length);
-      console.log("📋 IDs recebidos:", paginatedData?.map(r => r.id.substring(0, 8)));
       
       // Buscar nomes dos usuários
       const userIds = [...new Set(paginatedData?.map(r => r.user_id) || [])];
