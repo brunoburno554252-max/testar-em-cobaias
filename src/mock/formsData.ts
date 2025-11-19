@@ -1406,6 +1406,7 @@ export const globalPoloOptions: string[] = [
   "IMPACTO EDUCACIONAL",
   "ASSOCIAÇÃO PRÓ SEGURANÇA DO RIO GRANDE DO SUL - APROSERGS",
   "SOLANGE SOARES",
+  "NILTEC",
   "POLO NÃO ENCONTRADO",
 ];
 
