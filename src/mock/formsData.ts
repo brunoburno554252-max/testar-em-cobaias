@@ -4008,6 +4008,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "C-TÉCNICA",
     "NOBEL",
     "SISTEMA EDUCACIONAL INTEGRADO",
+    "FRATEC",
   ],
   Atividade: [
     "MATRICULA",
