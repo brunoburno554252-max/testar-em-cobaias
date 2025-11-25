@@ -1408,6 +1408,7 @@ export const globalPoloOptions: string[] = [
   "SOLANGE SOARES",
   "NILTEC",
   "UNICAMAMU",
+  "RONALDO APARECIDO DA SILVA",
   "POLO NÃO ENCONTRADO",
 ];
 
