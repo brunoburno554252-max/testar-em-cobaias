@@ -2079,6 +2079,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM SERVIÇOS JURÍDICOS",
     "TÉCNICO EM SISTEMAS DE ENERGIA RENOVÁVEL",
     "TÉCNICO EM VENDAS",
+    "TÉCNICO EM RECURSOS HUMANOS",
   ],
   "Profissionalizante Avançado": [
     "ADMINISTRAÇÃO PARA MICRO E MÉDIAS EMPRESAS",
