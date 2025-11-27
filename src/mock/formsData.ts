@@ -3620,6 +3620,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TEOLOGIA - PÓS DOUTORADO",
     "PSICOLOGIA - PÓS DOUTORADO",
   ],
+  "TREINAMENTO PARA PARCEIROS LA": ["TREINAMENTO"],
 };
 
 // ============= ESTRUTURA DE CONFIGURAÇÃO DE SEÇÕES =============
@@ -3991,6 +3992,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "FORMAÇÃO SPEED - UNIMAIS",
     "PROFISSIONALIZANTES COMUM",
     "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER",
+    "TREINAMENTO PARA PARCEIROS LA",
   ],
   Plataforma: [
     "LA EDUCAÇÃO",
