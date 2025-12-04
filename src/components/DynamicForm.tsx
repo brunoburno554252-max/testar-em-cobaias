@@ -7,7 +7,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formsConfig, globalSelectOptions, globalPoloOptions, globalCursoOptions, nivelEnsinoCursoMap } from "@/mock/formsData";
 import { toast } from "sonner";
-import { ArrowLeft, Send, Save } from "lucide-react";
+import { ArrowLeft, Send, Save, Trash2, FileText, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect } from "react";
 import { DocumentStatusBlocks } from "@/components/DocumentStatusBlocks";
@@ -351,7 +351,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
           value={formValues[field] || ""}
           onChange={(e) => handleChange(field, e.target.value)}
           placeholder={`Digite ${field.toLowerCase()}`}
-          className="min-h-[120px] resize-none"
+          className="min-h-[120px] resize-none bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20 transition-all duration-300"
         />
       );
     }
@@ -366,8 +366,11 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         // Se não houver nível de ensino selecionado
         if (!nivelEnsinoSelecionado) {
           return (
-            <div className="text-sm text-muted-foreground italic p-3 border border-dashed rounded-md">
-              Selecione primeiro o Nível de Ensino para visualizar os cursos disponíveis
+            <div className="text-sm text-muted-foreground italic p-4 border border-dashed border-border/50 rounded-xl bg-secondary/20">
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-primary/60" />
+                Selecione primeiro o Nível de Ensino para visualizar os cursos disponíveis
+              </span>
             </div>
           );
         }
@@ -375,7 +378,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         // Se houver nível selecionado mas não houver cursos disponíveis
         if (options.length === 0) {
           return (
-            <div className="text-sm text-muted-foreground italic p-3 border border-dashed rounded-md">
+            <div className="text-sm text-muted-foreground italic p-4 border border-dashed border-border/50 rounded-xl bg-secondary/20">
               Nenhum curso disponível para este nível de ensino.
             </div>
           );
@@ -397,7 +400,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     // Para o campo Média no PEDAGÓGICO, desabilitar se Status não for "Aprovado"
     if (isPedagogicoForm && isMediaField) {
       return (
-        <div className="space-y-1">
+        <div className="space-y-2">
           <Input
             id={field}
             type={fieldType}
@@ -405,13 +408,14 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
             onChange={(e) => handleChange(field, e.target.value)}
             placeholder={statusAprovado ? "Digite a média" : "Selecione Status = Aprovado primeiro"}
             disabled={!statusAprovado}
-            className="disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed"
             min="0"
             max="10"
             step="0.1"
           />
           {!statusAprovado && (
-            <p className="text-xs text-muted-foreground italic">
+            <p className="text-xs text-muted-foreground/70 italic flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3" />
               O campo Média só pode ser preenchido quando o Status for "Aprovado"
             </p>
           )}
@@ -427,32 +431,50 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         onChange={(e) => handleChange(field, e.target.value)}
         placeholder={isColaborador ? username : `Digite ${field.toLowerCase()}`}
         disabled={isColaborador}
-        className="disabled:opacity-70 disabled:cursor-not-allowed"
+        className="bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
       />
     );
   };
 
   return (
-    <div className="min-h-screen p-6 md:p-12">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen p-6 md:p-12 relative overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-[0.02] pointer-events-none" />
+      <div className="absolute top-20 -left-32 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float pointer-events-none" />
+      <div className="absolute bottom-20 -right-32 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-float pointer-events-none" style={{ animationDelay: '-3s' }} />
+      
+      <div className="max-w-4xl mx-auto relative z-10">
+        {/* Back button */}
         <Button
           variant="ghost"
           onClick={onBack}
-          className="mb-6 gap-2"
+          className="mb-6 gap-2 hover:bg-secondary/50 hover:text-primary transition-all duration-300 group"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300" />
           Voltar
         </Button>
 
-        <Card className="shadow-xl border-0">
-          <CardHeader className="space-y-3">
+        {/* Main card */}
+        <Card className="glass-strong shadow-2xl border-0 animate-fade-in overflow-hidden">
+          {/* Header gradient accent */}
+          <div className="h-1.5 bg-gradient-to-r from-primary via-accent to-primary" />
+          
+          <CardHeader className="space-y-4 pb-6">
             <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <CardTitle className="text-3xl">{formName}</CardTitle>
-                <CardDescription className="text-base mt-2">
+              <div className="flex-1 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/10">
+                    <FileText className="w-6 h-6 text-primary" />
+                  </div>
+                  <CardTitle className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-foreground via-foreground to-foreground/70 bg-clip-text">
+                    {formName}
+                  </CardTitle>
+                </div>
+                <CardDescription className="text-base text-muted-foreground/80">
                   Preencha os campos abaixo com as informações solicitadas
                 </CardDescription>
               </div>
+              
               {isCompetenciaForm && (
                 <div className="flex gap-2">
                   <Button
@@ -460,51 +482,58 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
                     variant="ghost"
                     size="sm"
                     onClick={saveSelectableFields}
-                    className="shrink-0 gap-2 text-muted-foreground hover:text-foreground"
+                    className="shrink-0 gap-2 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all duration-300"
                     title="Salvar campos"
                   >
                     <Save className="w-4 h-4" />
-                    <span className="text-xs">Salvar</span>
+                    <span className="text-xs font-medium">Salvar</span>
                   </Button>
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     onClick={clearSavedFields}
-                    className="shrink-0 gap-2 text-muted-foreground hover:text-destructive"
+                    className="shrink-0 gap-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all duration-300"
                     title="Limpar campos salvos"
                   >
-                    <span className="text-xs">Limpar</span>
+                    <Trash2 className="w-4 h-4" />
+                    <span className="text-xs font-medium">Limpar</span>
                   </Button>
                 </div>
               )}
             </div>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+          
+          <CardContent className="pb-8">
+            <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {fields.map((field) => (
+                {fields.map((field, index) => (
                   <div
                     key={field}
-                    className={
+                    className={`space-y-2 animate-fade-in ${
                       getFieldType(field) === "textarea" || 
                       getFieldType(field) === "document-blocks" ||
                       field === "Central de Atendimento aos Licenciados"
                         ? "md:col-span-2"
                         : ""
-                    }
+                    }`}
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
                     {getFieldType(field) !== "document-blocks" && (
-                      <Label htmlFor={field} className="text-base mb-2 block">
+                      <Label 
+                        htmlFor={field} 
+                        className="text-sm font-semibold text-foreground/90 flex items-center gap-1"
+                      >
                         {field}
                         {field !== "Observações" && !sectionConfig?.optionalFields?.includes(field) && (
-                          <span className="text-destructive ml-1">*</span>
+                          <span className="text-destructive text-base">*</span>
                         )}
                       </Label>
                     )}
                     {renderField(field)}
                     {field === "Colaborador" && (
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
+                        <Sparkles className="w-3 h-3" />
                         Preenchido automaticamente com seu usuário
                       </p>
                     )}
@@ -512,14 +541,14 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
                 ))}
               </div>
 
-              <div className="flex gap-3 pt-4">
+              {/* Submit button */}
+              <div className="flex gap-3 pt-6">
                 <Button
                   type="submit"
-                  variant="success"
-                  className="flex-1 h-12 text-base font-semibold gap-2"
+                  className="flex-1 h-14 text-base font-bold gap-3 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
                   disabled={isSubmitting}
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-5 h-5" />
                   {isSubmitting ? "Enviando..." : "Enviar Formulário"}
                 </Button>
               </div>
