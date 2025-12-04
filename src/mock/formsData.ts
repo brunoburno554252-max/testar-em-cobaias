@@ -1884,6 +1884,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "EDUCAÇÃO ESPECIAL PARA DEFICIÊNCIA INTELECTUAL",
     "PATOLOGIA ORAL E MAXILOFACIAL",
     "ANATOMIA DE CABEÇA E PESCOÇO",
+    "PÓS GRADUAÇÃO LATO SENSU EM PSICOTERAPIA SISTÊMICA COMPORTAMENTAL",
   ],
   "Segunda Licenciatura": [
     "ARTES VISUAIS",
