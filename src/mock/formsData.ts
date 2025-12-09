@@ -1422,6 +1422,7 @@ export const globalPoloOptions: string[] = [
   "SIAO CURSOS",
   "SABERIS EAD",
   "NEW WORLD INFORMÁTICA",
+  "QUALIFICA CURSOS ONLINE",
   "POLO NÃO ENCONTRADO",
 ];
 
