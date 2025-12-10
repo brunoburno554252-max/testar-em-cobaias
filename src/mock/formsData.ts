@@ -2108,6 +2108,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "GESTÃO DE RECURSOS HUMANOS",
     "AUXILIAR DE ENFERMAGEM AVANÇADO",
     "GESTÃO BANCÁRIA",
+    "INTELIGÊNCIA ARTIFICIAL",
   ],
   "Profissionalizante Especial": ["AUX. DE SAÚDE BUCAL", "AUXILIAR DE ENFERMAGEM ESPECIAL", "CURSO DE INGLES"],
   "Pós Técnico": [
@@ -3128,7 +3129,6 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "PROSPECÇÃO DE CLIENTES",
     "ATENDIMENTO E VENDAS NO VAREJO",
     "TELEMARKETING",
-    "INTELIGÊNCIA ARTIFICIAL",
   ],
   "PÓS - GRADUAÇÕES - VINCIT": [
     "ESPECIALIZAÇÃO EM GESTÃO ESTRATÉGICA EM ESG - AMBIENTAL, SOCIAL E GOVERNANÇA",
