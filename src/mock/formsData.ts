@@ -3128,6 +3128,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "PROSPECÇÃO DE CLIENTES",
     "ATENDIMENTO E VENDAS NO VAREJO",
     "TELEMARKETING",
+    "INTELIGÊNCIA ARTIFICIAL",
   ],
   "PÓS - GRADUAÇÕES - VINCIT": [
     "ESPECIALIZAÇÃO EM GESTÃO ESTRATÉGICA EM ESG - AMBIENTAL, SOCIAL E GOVERNANÇA",
