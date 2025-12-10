@@ -1,6 +1,6 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formsData } from "@/mock/formsData";
-import { FileText, LogOut, ClipboardList, Sparkles } from "lucide-react";
+import { FileText, LogOut, ClipboardList, Sparkles, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface FormSelectorProps {
@@ -37,15 +37,26 @@ const FormSelector = ({ username, onSelectForm, onLogout }: FormSelectorProps) =
               Selecione um formulário para começar.
             </p>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={onLogout} 
-            className="gap-2 h-11 px-5 glass hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 transition-all animate-fade-in"
-            style={{ animationDelay: '0.1s' }}
-          >
-            <LogOut className="w-4 h-4" />
-            Sair
-          </Button>
+          <div className="flex items-center gap-3 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <Button 
+              variant="default" 
+              asChild
+              className="gap-2 h-11 px-5 shadow-lg hover:shadow-xl transition-all"
+            >
+              <a href="https://dash.laeducacao.com.br" target="_blank" rel="noopener noreferrer">
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </a>
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={onLogout} 
+              className="gap-2 h-11 px-5 glass hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50 transition-all"
+            >
+              <LogOut className="w-4 h-4" />
+              Sair
+            </Button>
+          </div>
         </div>
 
         {/* Form Cards Grid */}
