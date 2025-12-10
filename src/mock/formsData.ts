@@ -2109,6 +2109,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "AUXILIAR DE ENFERMAGEM AVANÇADO",
     "GESTÃO BANCÁRIA",
     "INTELIGÊNCIA ARTIFICIAL",
+    "MARKETING DIGITAL",
   ],
   "Profissionalizante Especial": ["AUX. DE SAÚDE BUCAL", "AUXILIAR DE ENFERMAGEM ESPECIAL", "CURSO DE INGLES"],
   "Pós Técnico": [
