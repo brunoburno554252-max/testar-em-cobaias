@@ -1424,7 +1424,6 @@ export const globalPoloOptions: string[] = [
   "NEW WORLD INFORMÁTICA",
   "QUALIFICA CURSOS ONLINE",
   "CENTRO DE FORMAÇÃO EJA",
-  "MECATRÓNICA",
   "POLO NÃO ENCONTRADO",
 ];
 
@@ -2096,6 +2095,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM SISTEMAS DE ENERGIA RENOVÁVEL",
     "TÉCNICO EM VENDAS",
     "TÉCNICO EM RECURSOS HUMANOS",
+    "MECATRÓNICA",
   ],
   "Profissionalizante Avançado": [
     "ADMINISTRAÇÃO PARA MICRO E MÉDIAS EMPRESAS",
