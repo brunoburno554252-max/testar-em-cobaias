@@ -5,26 +5,9 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Mapa de níveis de ensino para templates da Meta
-// SUBSTITUA os valores pelos nomes reais dos seus templates na Meta
-const TEMPLATE_MAP: Record<string, string> = {
-  "Aperfeiçoamento De Estudos": "template_aperfeicoamento",
-  "Extensão Universitária": "template_extensao",
-  "Formação Pedagógica": "template_formacao_pedagogica",
-  "Graduação": "template_graduacao",
-  "Pós-Graduação": "template_pos_graduacao",
-  "Segunda Licenciatura": "template_segunda_licenciatura",
-  "Superior Sequencial": "template_superior_sequencial",
-  "Aproveitamento/Competência": "template_aproveitamento",
-  "EJA": "template_eja",
-  "Técnico regular": "template_tecnico_regular",
-  "Profissionalizante Avançado": "template_profissionalizante_avancado",
-  "Profissionalizante Especial": "template_profissionalizante_especial",
-  "Pós Técnico": "template_pos_tecnico",
-  "PROFISSIONALIZANTES PREMIUM": "template_profissionalizantes_premium",
-  "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER": "template_doutorados_mestrados",
-  "PÓS-GRADUAÇÃO CHANCELA": "template_pos_chancela",
-};
+// Nome do template único que será usado para todas as mensagens
+// SUBSTITUA pelo nome real do seu template na Meta
+const TEMPLATE_NAME = "template_certificacao";
 
 interface WhatsAppRequest {
   phone: string;
@@ -66,18 +49,8 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Buscar o template correspondente ao nível de ensino
-    const templateName = TEMPLATE_MAP[nivelEnsino];
-    if (!templateName) {
-      console.error('Template not found for nivel:', nivelEnsino);
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          error: `Template não encontrado para o nível de ensino: ${nivelEnsino}` 
-        }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    // Usar o template único
+    const templateName = TEMPLATE_NAME;
 
     // Formatar número de telefone (remover caracteres não numéricos e adicionar código do país se necessário)
     let formattedPhone = phone.replace(/\D/g, '');
