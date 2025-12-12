@@ -1424,7 +1424,8 @@ export const globalPoloOptions: string[] = [
   "NEW WORLD INFORMÁTICA",
   "QUALIFICA CURSOS ONLINE",
   "CENTRO DE FORMAÇÃO EJA",
-  "POLO FETEC",
+  "POLO FETEC"
+  "polo",
   "POLO NÃO ENCONTRADO",
 ];
 
