@@ -3702,6 +3702,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Pós Técnico",
         "PROFISSIONALIZANTES PREMIUM",
         "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER",
+        "PÓS-GRADUAÇÃO CHANCELA"
       ],
     },
   },
