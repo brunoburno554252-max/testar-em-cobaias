@@ -3688,9 +3688,10 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Indeferido pela Auditoria",
       ],
     },
-    // Apenas Telefone WhatsApp é condicional
+    // Campos condicionais: só aparecem quando Atividade = "Enviado à certificadora"
     conditionalFields: {
       "Telefone WhatsApp": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
+      "Nível de Ensino": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
     },
   },
   MATRÍCULA: {
