@@ -124,11 +124,33 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     console.log("👤 Username:", username);
     console.log("📊 Form Values:", formValues);
     
-    // Validar campos obrigatórios (exceto Observações e campos opcionais)
+    // Validar campos obrigatórios (exceto Observações, campos opcionais e campos condicionais não visíveis)
     const optionalFields = sectionConfig?.optionalFields || [];
-    const emptyFields = fields.filter(
-      field => field !== "Observações" && !optionalFields.includes(field) && !formValues[field]
-    );
+    const conditionalFields = sectionConfig?.conditionalFields || {};
+    
+    const emptyFields = fields.filter(field => {
+      // Ignorar Observações
+      if (field === "Observações") return false;
+      // Ignorar campos opcionais
+      if (optionalFields.includes(field)) return false;
+      
+      // Verificar se é um campo condicional
+      const conditionalConfig = conditionalFields[field];
+      if (conditionalConfig) {
+        const dependsOnValue = formValues[conditionalConfig.dependsOn];
+        const showWhenValues = Array.isArray(conditionalConfig.showWhen) 
+          ? conditionalConfig.showWhen 
+          : [conditionalConfig.showWhen];
+        
+        // Se o campo não está visível, ignorar na validação
+        if (!showWhenValues.includes(dependsOnValue)) {
+          return false;
+        }
+      }
+      
+      // Verificar se está vazio
+      return !formValues[field];
+    });
 
     if (emptyFields.length > 0) {
       console.log("❌ Campos vazios:", emptyFields);
@@ -215,6 +237,25 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         if (registroError) {
           console.error("⚠️ Erro ao salvar registro:", registroError);
           // Não bloquear o fluxo se falhar o registro
+        }
+      }
+
+      // Enviar WhatsApp automaticamente se for CERTIFICAÇÃO e Atividade = "Enviado à certificadora"
+      if (isCertificacaoForm && formValues["Atividade"] === "Enviado à certificadora") {
+        const telefone = formValues["Telefone WhatsApp"];
+        const nomeAluno = formValues["Aluno"];
+        const nomeCurso = formValues["Curso"];
+        const nivelEnsino = formValues["Nível de Ensino"];
+
+        if (telefone && nomeAluno && nomeCurso && nivelEnsino) {
+          console.log("📱 Enviando WhatsApp para a certificadora...");
+          await sendMessage({
+            phone: telefone,
+            nomeAluno,
+            nomeCurso,
+            nivelEnsino,
+            dadosExtras: formValues
+          });
         }
       }
 
@@ -511,38 +552,54 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
           <CardContent className="pb-8">
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {fields.map((field, index) => (
-                  <div
-                    key={field}
-                    className={`space-y-2 animate-fade-in ${
-                      getFieldType(field) === "textarea" || 
-                      getFieldType(field) === "document-blocks" ||
-                      field === "Central de Atendimento aos Licenciados"
-                        ? "md:col-span-2"
-                        : ""
-                    }`}
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    {getFieldType(field) !== "document-blocks" && (
-                      <Label 
-                        htmlFor={field} 
-                        className="text-sm font-semibold text-foreground/90 flex items-center gap-1"
-                      >
-                        {field}
-                        {field !== "Observações" && !sectionConfig?.optionalFields?.includes(field) && (
-                          <span className="text-destructive text-base">*</span>
-                        )}
-                      </Label>
-                    )}
-                    {renderField(field)}
-                    {field === "Colaborador" && (
-                      <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
-                        <Sparkles className="w-3 h-3" />
-                        Preenchido automaticamente com seu usuário
-                      </p>
-                    )}
-                  </div>
-                ))}
+                {fields.map((field, index) => {
+                  // Verificar se o campo é condicional
+                  const conditionalConfig = sectionConfig?.conditionalFields?.[field];
+                  if (conditionalConfig) {
+                    const dependsOnValue = formValues[conditionalConfig.dependsOn];
+                    const showWhenValues = Array.isArray(conditionalConfig.showWhen) 
+                      ? conditionalConfig.showWhen 
+                      : [conditionalConfig.showWhen];
+                    
+                    // Se o valor do campo dependente não corresponde, não renderizar
+                    if (!showWhenValues.includes(dependsOnValue)) {
+                      return null;
+                    }
+                  }
+
+                  return (
+                    <div
+                      key={field}
+                      className={`space-y-2 animate-fade-in ${
+                        getFieldType(field) === "textarea" || 
+                        getFieldType(field) === "document-blocks" ||
+                        field === "Central de Atendimento aos Licenciados"
+                          ? "md:col-span-2"
+                          : ""
+                      }`}
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      {getFieldType(field) !== "document-blocks" && (
+                        <Label 
+                          htmlFor={field} 
+                          className="text-sm font-semibold text-foreground/90 flex items-center gap-1"
+                        >
+                          {field}
+                          {field !== "Observações" && !sectionConfig?.optionalFields?.includes(field) && (
+                            <span className="text-destructive text-base">*</span>
+                          )}
+                        </Label>
+                      )}
+                      {renderField(field)}
+                      {field === "Colaborador" && (
+                        <p className="text-xs text-muted-foreground/60 flex items-center gap-1.5">
+                          <Sparkles className="w-3 h-3" />
+                          Preenchido automaticamente com seu usuário
+                        </p>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Submit button */}
@@ -550,64 +607,20 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
                 <Button
                   type="submit"
                   className="flex-1 h-14 text-base font-bold gap-3 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isWhatsappLoading}
                 >
-                  <Send className="w-5 h-5" />
-                  {isSubmitting ? "Enviando..." : "Enviar Formulário"}
+                  {isSubmitting || isWhatsappLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Enviando...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-5 h-5" />
+                      Enviar Formulário
+                    </>
+                  )}
                 </Button>
-
-                {/* Botão para enviar para a Certificadora - Apenas na seção CERTIFICAÇÃO */}
-                {isCertificacaoForm && (
-                  <Button
-                    type="button"
-                    onClick={async () => {
-                      // Validar campos obrigatórios
-                      const telefone = formValues["Telefone"] || formValues["Celular"] || formValues["WhatsApp"];
-                      const nomeAluno = formValues["Aluno"] || formValues["Nome do Aluno"] || formValues["Nome"];
-                      const nomeCurso = formValues["Curso"];
-                      const nivelEnsino = formValues["Nível de Ensino"];
-
-                      if (!telefone) {
-                        toast.error("Telefone é obrigatório para enviar à certificadora");
-                        return;
-                      }
-                      if (!nomeAluno) {
-                        toast.error("Nome do aluno é obrigatório para enviar à certificadora");
-                        return;
-                      }
-                      if (!nomeCurso) {
-                        toast.error("Curso é obrigatório para enviar à certificadora");
-                        return;
-                      }
-                      if (!nivelEnsino) {
-                        toast.error("Nível de Ensino é obrigatório para enviar à certificadora");
-                        return;
-                      }
-
-                      await sendMessage({
-                        phone: telefone,
-                        nomeAluno,
-                        nomeCurso,
-                        nivelEnsino,
-                        dadosExtras: formValues
-                      });
-                    }}
-                    className="flex-1 h-14 text-base font-bold gap-3 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white shadow-lg shadow-green-500/20 hover:shadow-xl hover:shadow-green-500/30 transition-all duration-300 hover:-translate-y-0.5"
-                    disabled={isWhatsappLoading || isSubmitting}
-                  >
-                    {isWhatsappLoading ? (
-                      <>
-                        <Loader2 className="w-5 h-5 animate-spin" />
-                        Enviando...
-                      </>
-                    ) : (
-                      <>
-                        <MessageCircle className="w-5 h-5" />
-                        Enviar para a Certificadora
-                      </>
-                    )}
-                  </Button>
-                )}
               </div>
             </form>
           </CardContent>

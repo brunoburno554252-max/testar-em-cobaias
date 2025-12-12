@@ -3642,11 +3642,17 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
 // ============= ESTRUTURA DE CONFIGURAÇÃO DE SEÇÕES =============
 // Cada seção é completamente independente com seus próprios campos
 
+export interface ConditionalFieldConfig {
+  dependsOn: string;
+  showWhen: string | string[];
+}
+
 export interface FormSectionConfig {
   fields: string[];
   fieldTypes?: Record<string, string>;
   selectOptions?: Record<string, string[]>;
   optionalFields?: string[];
+  conditionalFields?: Record<string, ConditionalFieldConfig>;
 }
 
 export const formsConfig: Record<string, FormSectionConfig> = {
@@ -3655,9 +3661,10 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       "Colaborador",
       "Aluno",
       "Atividade",
-      "Plataforma",
+      "Telefone WhatsApp",
       "Nível de Ensino",
       "Curso",
+      "Plataforma",
       "Data da análise",
       "Observações",
     ],
@@ -3668,6 +3675,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       Plataforma: "select",
       "Nível de Ensino": "select",
       Curso: "select",
+      "Telefone WhatsApp": "tel",
     },
     selectOptions: {
       Atividade: [
@@ -3679,6 +3687,12 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Aguardando Assinatura",
         "Indeferido pela Auditoria",
       ],
+    },
+    // Campos condicionais: só aparecem quando Atividade = "Enviado à certificadora"
+    conditionalFields: {
+      "Telefone WhatsApp": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
+      "Nível de Ensino": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
+      "Curso": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
     },
   },
   MATRÍCULA: {
