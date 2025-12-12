@@ -1424,7 +1424,7 @@ export const globalPoloOptions: string[] = [
   "NEW WORLD INFORMÁTICA",
   "QUALIFICA CURSOS ONLINE",
   "CENTRO DE FORMAÇÃO EJA",
-  "POLO FETEC"
+  "POLO FETEC",
   "polo",
   "POLO NÃO ENCONTRADO",
 ];
@@ -4001,7 +4001,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "TREINAMENTO PARA PARCEIROS LA",
     "PÓS-GRADUAÇÃO CHANCELA",
     "GRADUAÇÃO CHANCELA",
-    "TÉCNICO CHANCELA"
+    "TÉCNICO CHANCELA",
   ],
   Plataforma: [
     "LA EDUCAÇÃO",
