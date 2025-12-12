@@ -3702,7 +3702,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Pós Técnico",
         "PROFISSIONALIZANTES PREMIUM",
         "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER",
-        "PÓS-GRADUAÇÃO CHANCELA"
+        "PÓS-GRADUAÇÃO CHANCELA",
       ],
     },
   },
@@ -4014,6 +4014,7 @@ export const globalSelectOptions: Record<string, string[]> = {
     "PROFISSIONALIZANTES COMUM",
     "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER",
     "TREINAMENTO PARA PARCEIROS LA",
+    "PÓS-GRADUAÇÃO CHANCELA",
   ],
   Plataforma: [
     "LA EDUCAÇÃO",
