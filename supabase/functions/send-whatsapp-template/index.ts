@@ -5,8 +5,26 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Nome do template único na Meta (substitua pelo nome real)
-const TEMPLATE_NAME = "template_certificacao";
+// Mapa de níveis de ensino para templates da Meta
+// SUBSTITUA os valores pelos nomes reais dos seus templates na Meta
+const TEMPLATE_MAP: Record<string, string> = {
+  "Aperfeiçoamento De Estudos": "template_aperfeicoamento",
+  "Extensão Universitária": "template_extensao",
+  "Formação Pedagógica": "template_formacao_pedagogica",
+  "Graduação": "template_graduacao",
+  "Pós-Graduação": "template_pos_graduacao",
+  "Segunda Licenciatura": "template_segunda_licenciatura",
+  "Superior Sequencial": "template_superior_sequencial",
+  "Aproveitamento/Competência": "template_aproveitamento",
+  "EJA": "template_eja",
+  "Técnico regular": "template_tecnico_regular",
+  "Profissionalizante Avançado": "template_profissionalizante_avancado",
+  "Profissionalizante Especial": "template_profissionalizante_especial",
+  "Pós Técnico": "template_pos_tecnico",
+  "PROFISSIONALIZANTES PREMIUM": "template_profissionalizantes_premium",
+  "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER": "template_doutorados_mestrados",
+  "PÓS-GRADUAÇÃO CHANCELA": "template_pos_chancela",
+};
 
 interface WhatsAppRequest {
   phone: string;
@@ -48,7 +66,18 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    console.log('Usando template único:', TEMPLATE_NAME);
+    // Buscar o template correspondente ao nível de ensino
+    const templateName = TEMPLATE_MAP[nivelEnsino];
+    if (!templateName) {
+      console.error('Template not found for nivel:', nivelEnsino);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: `Template não encontrado para o nível de ensino: ${nivelEnsino}` 
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Formatar número de telefone (remover caracteres não numéricos e adicionar código do país se necessário)
     let formattedPhone = phone.replace(/\D/g, '');
@@ -58,7 +87,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Sending WhatsApp template message:', {
       phone: formattedPhone,
-      template: TEMPLATE_NAME,
+      template: templateName,
       nomeAluno,
       nomeCurso,
       nivelEnsino
@@ -67,21 +96,19 @@ const handler = async (req: Request): Promise<Response> => {
     // Montar payload para a API do WhatsApp
     // {{1}} = nome do aluno
     // {{2}} = nome do curso
-    // {{3}} = nível de ensino
     const payload = {
       messaging_product: "whatsapp",
       to: formattedPhone,
       type: "template",
       template: {
-        name: TEMPLATE_NAME,
+        name: templateName,
         language: { code: "pt_BR" },
         components: [
           {
             type: "body",
             parameters: [
               { type: "text", text: nomeAluno },
-              { type: "text", text: nomeCurso },
-              { type: "text", text: nivelEnsino }
+              { type: "text", text: nomeCurso }
             ]
           }
         ]
