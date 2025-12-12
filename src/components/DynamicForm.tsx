@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,10 +7,10 @@ import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formsConfig, globalSelectOptions, globalPoloOptions, globalCursoOptions, nivelEnsinoCursoMap } from "@/mock/formsData";
 import { toast } from "sonner";
-import { ArrowLeft, Send, Save, Trash2, FileText, Sparkles } from "lucide-react";
+import { ArrowLeft, Send, Save, Trash2, FileText, Sparkles, MessageCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useEffect } from "react";
 import { DocumentStatusBlocks } from "@/components/DocumentStatusBlocks";
+import { useWhatsapp } from "@/hooks/useWhatsapp";
 
 interface DynamicFormProps {
   formName: string;
@@ -38,8 +38,12 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
   const sectionConfig = formsConfig[formName];
   const fields = sectionConfig?.fields || [];
   const isCompetenciaForm = formName === "COMPETÊNCIA";
+  const isCertificacaoForm = formName === "CERTIFICAÇÃO";
   const storageKey = `saved_form_${getSessionKey(formName)}`;
   const globalPlataformaKey = 'global_plataforma_value';
+  
+  // Hook do WhatsApp para envio de templates
+  const { sendMessage, isLoading: isWhatsappLoading } = useWhatsapp();
   
   const [formValues, setFormValues] = useState<Record<string, string>>(() => {
     const initialValues: Record<string, string> = {
@@ -542,7 +546,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
               </div>
 
               {/* Submit button */}
-              <div className="flex gap-3 pt-6">
+              <div className="flex flex-col sm:flex-row gap-3 pt-6">
                 <Button
                   type="submit"
                   className="flex-1 h-14 text-base font-bold gap-3 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 hover:-translate-y-0.5"
@@ -551,6 +555,59 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
                   <Send className="w-5 h-5" />
                   {isSubmitting ? "Enviando..." : "Enviar Formulário"}
                 </Button>
+
+                {/* Botão para enviar para a Certificadora - Apenas na seção CERTIFICAÇÃO */}
+                {isCertificacaoForm && (
+                  <Button
+                    type="button"
+                    onClick={async () => {
+                      // Validar campos obrigatórios
+                      const telefone = formValues["Telefone"] || formValues["Celular"] || formValues["WhatsApp"];
+                      const nomeAluno = formValues["Aluno"] || formValues["Nome do Aluno"] || formValues["Nome"];
+                      const nomeCurso = formValues["Curso"];
+                      const nivelEnsino = formValues["Nível de Ensino"];
+
+                      if (!telefone) {
+                        toast.error("Telefone é obrigatório para enviar à certificadora");
+                        return;
+                      }
+                      if (!nomeAluno) {
+                        toast.error("Nome do aluno é obrigatório para enviar à certificadora");
+                        return;
+                      }
+                      if (!nomeCurso) {
+                        toast.error("Curso é obrigatório para enviar à certificadora");
+                        return;
+                      }
+                      if (!nivelEnsino) {
+                        toast.error("Nível de Ensino é obrigatório para enviar à certificadora");
+                        return;
+                      }
+
+                      await sendMessage({
+                        phone: telefone,
+                        nomeAluno,
+                        nomeCurso,
+                        nivelEnsino,
+                        dadosExtras: formValues
+                      });
+                    }}
+                    className="flex-1 h-14 text-base font-bold gap-3 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white shadow-lg shadow-green-500/20 hover:shadow-xl hover:shadow-green-500/30 transition-all duration-300 hover:-translate-y-0.5"
+                    disabled={isWhatsappLoading || isSubmitting}
+                  >
+                    {isWhatsappLoading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <MessageCircle className="w-5 h-5" />
+                        Enviar para a Certificadora
+                      </>
+                    )}
+                  </Button>
+                )}
               </div>
             </form>
           </CardContent>
