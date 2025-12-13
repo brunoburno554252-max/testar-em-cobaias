@@ -246,6 +246,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         const nomeAluno = formValues["Aluno"];
         const nomeCurso = formValues["Curso"];
         const nivelEnsino = formValues["Nível de Ensino"];
+        const plataforma = formValues["Plataforma"];
 
         if (telefone && nomeAluno && nomeCurso && nivelEnsino) {
           console.log("📱 Enviando WhatsApp para a certificadora...");
@@ -254,6 +255,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
             nomeAluno,
             nomeCurso,
             nivelEnsino,
+            plataforma,
             dadosExtras: formValues
           });
         }

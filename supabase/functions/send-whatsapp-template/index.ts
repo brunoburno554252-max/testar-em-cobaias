@@ -31,6 +31,7 @@ interface WhatsAppRequest {
   nomeAluno: string;
   nomeCurso: string;
   nivelEnsino: string;
+  plataforma?: string;
   dadosExtras?: Record<string, unknown>;
 }
 
@@ -52,7 +53,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { phone, nomeAluno, nomeCurso, nivelEnsino, dadosExtras }: WhatsAppRequest = await req.json();
+    const { phone, nomeAluno, nomeCurso, nivelEnsino, plataforma, dadosExtras }: WhatsAppRequest = await req.json();
 
     // Validação dos campos obrigatórios
     if (!phone || !nomeAluno || !nomeCurso || !nivelEnsino) {
@@ -90,12 +91,14 @@ const handler = async (req: Request): Promise<Response> => {
       template: templateName,
       nomeAluno,
       nomeCurso,
-      nivelEnsino
+      nivelEnsino,
+      plataforma
     });
 
     // Montar payload para a API do WhatsApp
     // {{1}} = nome do aluno
     // {{2}} = nome do curso
+    // {{3}} = plataforma
     const payload = {
       messaging_product: "whatsapp",
       to: formattedPhone,
@@ -108,7 +111,8 @@ const handler = async (req: Request): Promise<Response> => {
             type: "body",
             parameters: [
               { type: "text", text: nomeAluno },
-              { type: "text", text: nomeCurso }
+              { type: "text", text: nomeCurso },
+              { type: "text", text: plataforma || "LA EDUCAÇÃO" }
             ]
           }
         ]
