@@ -7,6 +7,7 @@ interface SendMessageParams {
   nomeAluno: string;
   nomeCurso: string;
   nivelEnsino: string;
+  plataforma?: string;
   dadosExtras?: Record<string, unknown>;
 }
 
@@ -25,6 +26,7 @@ export const useWhatsapp = () => {
     nomeAluno,
     nomeCurso,
     nivelEnsino,
+    plataforma,
     dadosExtras
   }: SendMessageParams): Promise<SendMessageResult> => {
     setIsLoading(true);
@@ -52,7 +54,8 @@ export const useWhatsapp = () => {
         phone: cleanPhone,
         nomeAluno,
         nomeCurso,
-        nivelEnsino
+        nivelEnsino,
+        plataforma
       });
 
       const { data, error: functionError } = await supabase.functions.invoke(
@@ -63,6 +66,7 @@ export const useWhatsapp = () => {
             nomeAluno,
             nomeCurso,
             nivelEnsino,
+            plataforma,
             dadosExtras
           }
         }
