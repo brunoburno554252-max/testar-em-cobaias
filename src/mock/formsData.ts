@@ -1645,6 +1645,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "GINECOLOGIA E OBSTETRÍCIA",
     "PEDIATRIA",
     "MEDICINA DO TRABALHO",
+    "MBA GESTÃO JURÍDICA ADUANEIRA E INTERNACIONAL",
   ],
   "Pós-Graduação": [
     "ESPECIALIZAÇÃO EM METODOLOGIA DO ENSINO DE LÍNGUA PORTUGUESA",
@@ -3703,7 +3704,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     conditionalFields: {
       "Telefone WhatsApp": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
       "Telefone do Polo": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
-      "Polo": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
+      Polo: { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
     },
   },
   MATRÍCULA: {
