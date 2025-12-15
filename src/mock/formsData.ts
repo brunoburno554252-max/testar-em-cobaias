@@ -3696,11 +3696,8 @@ export const formsConfig: Record<string, FormSectionConfig> = {
     optionalFields: ["Telefone do Polo"],
     conditionalFields: {
       "Telefone WhatsApp": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
-      "Polo": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
       "Telefone do Polo": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
-      "Nível de Ensino": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
       "Curso": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
-      "Plataforma": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
     },
   },
   MATRÍCULA: {
