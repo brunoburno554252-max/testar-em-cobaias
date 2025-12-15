@@ -129,13 +129,25 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { phone, nomeAluno, nomeCurso, nivelEnsino, plataforma, polo, telefonePolo, dadosExtras }: WhatsAppRequest = await req.json();
 
-    // Validação dos campos obrigatórios
-    if (!phone || !nomeAluno || !nomeCurso || !nivelEnsino) {
-      console.error('Missing required fields:', { phone: !!phone, nomeAluno: !!nomeAluno, nomeCurso: !!nomeCurso, nivelEnsino: !!nivelEnsino });
+    // Validação dos campos obrigatórios (telefone do aluno agora é opcional)
+    if (!nomeAluno || !nomeCurso || !nivelEnsino) {
+      console.error('Missing required fields:', { nomeAluno: !!nomeAluno, nomeCurso: !!nomeCurso, nivelEnsino: !!nivelEnsino });
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: 'Campos obrigatórios não preenchidos: telefone, nome do aluno, nome do curso e nível de ensino são necessários' 
+          error: 'Campos obrigatórios não preenchidos: nome do aluno, nome do curso e nível de ensino são necessários' 
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Verificar se há pelo menos um telefone para enviar
+    if (!phone && !telefonePolo) {
+      console.error('No phone numbers provided');
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'É necessário fornecer pelo menos um número de telefone (aluno ou polo)' 
         }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
@@ -154,48 +166,45 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const formattedPhone = formatPhoneNumber(phone);
     const plataformaValue = plataforma || "LA EDUCAÇÃO";
 
-    console.log('Sending WhatsApp template message to student:', {
-      phone: formattedPhone,
-      template: templateName,
-      nomeAluno,
-      nomeCurso,
-      nivelEnsino,
-      plataforma: plataformaValue
-    });
-
-    // 1. Enviar mensagem para o ALUNO
-    const studentResult = await sendWhatsAppMessage(
-      phoneNumberId,
-      accessToken,
-      formattedPhone,
-      templateName,
-      [
-        { type: "text", text: nomeAluno },
-        { type: "text", text: nomeCurso },
-        { type: "text", text: plataformaValue }
-      ]
-    );
-
-    if (!studentResult.success) {
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          error: studentResult.error,
-          details: studentResult.details
-        }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    console.log('WhatsApp message sent successfully to student:', studentResult.messageId);
-
     const response: WhatsAppResponse = {
-      success: true,
-      messageId: studentResult.messageId
+      success: true
     };
+
+    // 1. Enviar mensagem para o ALUNO (apenas se telefone foi fornecido)
+    if (phone) {
+      const formattedPhone = formatPhoneNumber(phone);
+
+      console.log('Sending WhatsApp template message to student:', {
+        phone: formattedPhone,
+        template: templateName,
+        nomeAluno,
+        nomeCurso,
+        nivelEnsino,
+        plataforma: plataformaValue
+      });
+
+      const studentResult = await sendWhatsAppMessage(
+        phoneNumberId,
+        accessToken,
+        formattedPhone,
+        templateName,
+        [
+          { type: "text", text: nomeAluno },
+          { type: "text", text: nomeCurso },
+          { type: "text", text: plataformaValue }
+        ]
+      );
+
+      if (!studentResult.success) {
+        console.error('Failed to send message to student:', studentResult.error);
+        // Continuar para tentar enviar ao polo
+      } else {
+        console.log('WhatsApp message sent successfully to student:', studentResult.messageId);
+        response.messageId = studentResult.messageId;
+      }
+    }
 
     // 2. Enviar mensagem para o POLO (se telefone do polo foi fornecido)
     if (telefonePolo && polo) {

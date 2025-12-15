@@ -3699,7 +3699,7 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Indeferido pela Auditoria",
       ],
     },
-    optionalFields: ["Telefone do Polo"],
+    optionalFields: ["Telefone do Polo", "Telefone WhatsApp"],
     conditionalFields: {
       "Telefone WhatsApp": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
       "Telefone do Polo": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
