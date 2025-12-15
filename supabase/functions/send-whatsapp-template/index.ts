@@ -6,7 +6,6 @@ const corsHeaders = {
 };
 
 // Mapa de níveis de ensino para templates da Meta
-// SUBSTITUA os valores pelos nomes reais dos seus templates na Meta
 const TEMPLATE_MAP: Record<string, string> = {
   "Aperfeiçoamento De Estudos": "template_aperfeicoamento",
   "Extensão Universitária": "template_extensao",
@@ -26,13 +25,88 @@ const TEMPLATE_MAP: Record<string, string> = {
   "PÓS-GRADUAÇÃO CHANCELA": "template_pos_chancela",
 };
 
+// Template específico para o Polo
+const TEMPLATE_POLO = "template_polo";
+
 interface WhatsAppRequest {
   phone: string;
   nomeAluno: string;
   nomeCurso: string;
   nivelEnsino: string;
   plataforma?: string;
+  polo?: string;
+  telefonePolo?: string;
   dadosExtras?: Record<string, unknown>;
+}
+
+interface WhatsAppResponse {
+  success: boolean;
+  messageId?: string;
+  poloMessageId?: string;
+  error?: string;
+  details?: unknown;
+}
+
+// Função auxiliar para enviar mensagem WhatsApp
+async function sendWhatsAppMessage(
+  phoneNumberId: string,
+  accessToken: string,
+  formattedPhone: string,
+  templateName: string,
+  parameters: { type: string; text: string }[]
+): Promise<{ success: boolean; messageId?: string; error?: string; details?: unknown }> {
+  const payload = {
+    messaging_product: "whatsapp",
+    to: formattedPhone,
+    type: "template",
+    template: {
+      name: templateName,
+      language: { code: "pt_BR" },
+      components: [
+        {
+          type: "body",
+          parameters: parameters
+        }
+      ]
+    }
+  };
+
+  const response = await fetch(
+    `https://graph.facebook.com/v18.0/${phoneNumberId}/messages`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    console.error('WhatsApp API error:', responseData);
+    return {
+      success: false,
+      error: responseData.error?.message || 'Erro ao enviar mensagem WhatsApp',
+      details: responseData
+    };
+  }
+
+  return {
+    success: true,
+    messageId: responseData.messages?.[0]?.id
+  };
+}
+
+// Função para formatar número de telefone
+function formatPhoneNumber(phone: string): string {
+  let formattedPhone = phone.replace(/\D/g, '');
+  if (!formattedPhone.startsWith('55')) {
+    formattedPhone = '55' + formattedPhone;
+  }
+  return formattedPhone;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -53,7 +127,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { phone, nomeAluno, nomeCurso, nivelEnsino, plataforma, dadosExtras }: WhatsAppRequest = await req.json();
+    const { phone, nomeAluno, nomeCurso, nivelEnsino, plataforma, polo, telefonePolo, dadosExtras }: WhatsAppRequest = await req.json();
 
     // Validação dos campos obrigatórios
     if (!phone || !nomeAluno || !nomeCurso || !nivelEnsino) {
@@ -80,80 +154,86 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Formatar número de telefone (remover caracteres não numéricos e adicionar código do país se necessário)
-    let formattedPhone = phone.replace(/\D/g, '');
-    if (!formattedPhone.startsWith('55')) {
-      formattedPhone = '55' + formattedPhone;
-    }
+    const formattedPhone = formatPhoneNumber(phone);
+    const plataformaValue = plataforma || "LA EDUCAÇÃO";
 
-    console.log('Sending WhatsApp template message:', {
+    console.log('Sending WhatsApp template message to student:', {
       phone: formattedPhone,
       template: templateName,
       nomeAluno,
       nomeCurso,
       nivelEnsino,
-      plataforma
+      plataforma: plataformaValue
     });
 
-    // Montar payload para a API do WhatsApp
-    // {{1}} = nome do aluno
-    // {{2}} = nome do curso
-    // {{3}} = plataforma
-    const payload = {
-      messaging_product: "whatsapp",
-      to: formattedPhone,
-      type: "template",
-      template: {
-        name: templateName,
-        language: { code: "pt_BR" },
-        components: [
-          {
-            type: "body",
-            parameters: [
-              { type: "text", text: nomeAluno },
-              { type: "text", text: nomeCurso },
-              { type: "text", text: plataforma || "LA EDUCAÇÃO" }
-            ]
-          }
-        ]
-      }
-    };
-
-    // Enviar requisição para a API do WhatsApp
-    const whatsappResponse = await fetch(
-      `https://graph.facebook.com/v18.0/${phoneNumberId}/messages`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      }
+    // 1. Enviar mensagem para o ALUNO
+    const studentResult = await sendWhatsAppMessage(
+      phoneNumberId,
+      accessToken,
+      formattedPhone,
+      templateName,
+      [
+        { type: "text", text: nomeAluno },
+        { type: "text", text: nomeCurso },
+        { type: "text", text: plataformaValue }
+      ]
     );
 
-    const responseData = await whatsappResponse.json();
-
-    if (!whatsappResponse.ok) {
-      console.error('WhatsApp API error:', responseData);
+    if (!studentResult.success) {
       return new Response(
         JSON.stringify({ 
           success: false, 
-          error: responseData.error?.message || 'Erro ao enviar mensagem WhatsApp',
-          details: responseData
+          error: studentResult.error,
+          details: studentResult.details
         }),
-        { status: whatsappResponse.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    console.log('WhatsApp message sent successfully:', responseData);
+    console.log('WhatsApp message sent successfully to student:', studentResult.messageId);
+
+    const response: WhatsAppResponse = {
+      success: true,
+      messageId: studentResult.messageId
+    };
+
+    // 2. Enviar mensagem para o POLO (se telefone do polo foi fornecido)
+    if (telefonePolo && polo) {
+      const formattedPoloPhone = formatPhoneNumber(telefonePolo);
+      
+      console.log('Sending WhatsApp template message to polo:', {
+        phone: formattedPoloPhone,
+        template: TEMPLATE_POLO,
+        nomeAluno,
+        nomeCurso,
+        polo,
+        plataforma: plataformaValue
+      });
+
+      const poloResult = await sendWhatsAppMessage(
+        phoneNumberId,
+        accessToken,
+        formattedPoloPhone,
+        TEMPLATE_POLO,
+        [
+          { type: "text", text: nomeAluno },
+          { type: "text", text: nomeCurso },
+          { type: "text", text: polo },
+          { type: "text", text: plataformaValue }
+        ]
+      );
+
+      if (poloResult.success) {
+        console.log('WhatsApp message sent successfully to polo:', poloResult.messageId);
+        response.poloMessageId = poloResult.messageId;
+      } else {
+        console.error('Failed to send message to polo:', poloResult.error);
+        // Não falhar a operação inteira se a mensagem do polo falhar
+      }
+    }
 
     return new Response(
-      JSON.stringify({ 
-        success: true, 
-        messageId: responseData.messages?.[0]?.id,
-        data: responseData
-      }),
+      JSON.stringify(response),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 

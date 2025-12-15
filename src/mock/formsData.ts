@@ -3663,6 +3663,8 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       "Aluno",
       "Atividade",
       "Telefone WhatsApp",
+      "Polo",
+      "Telefone do Polo",
       "Plataforma",
       "Nível de Ensino",
       "Curso",
@@ -3676,7 +3678,9 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       Plataforma: "select",
       "Nível de Ensino": "select",
       Curso: "select",
+      Polo: "select",
       "Telefone WhatsApp": "tel",
+      "Telefone do Polo": "tel",
     },
     selectOptions: {
       Atividade: [
@@ -3689,9 +3693,14 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Indeferido pela Auditoria",
       ],
     },
-    // Apenas Telefone WhatsApp é condicional
+    optionalFields: ["Telefone do Polo"],
     conditionalFields: {
       "Telefone WhatsApp": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
+      "Polo": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
+      "Telefone do Polo": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
+      "Nível de Ensino": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
+      "Curso": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
+      "Plataforma": { dependsOn: "Atividade", showWhen: "Enviado à certificadora" },
     },
   },
   MATRÍCULA: {

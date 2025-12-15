@@ -8,12 +8,15 @@ interface SendMessageParams {
   nomeCurso: string;
   nivelEnsino: string;
   plataforma?: string;
+  polo?: string;
+  telefonePolo?: string;
   dadosExtras?: Record<string, unknown>;
 }
 
 interface SendMessageResult {
   success: boolean;
   messageId?: string;
+  poloMessageId?: string;
   error?: string;
 }
 
@@ -27,6 +30,8 @@ export const useWhatsapp = () => {
     nomeCurso,
     nivelEnsino,
     plataforma,
+    polo,
+    telefonePolo,
     dadosExtras
   }: SendMessageParams): Promise<SendMessageResult> => {
     setIsLoading(true);
@@ -50,12 +55,26 @@ export const useWhatsapp = () => {
         return { success: false, error: errorMsg };
       }
 
+      // Validação do telefone do polo (se fornecido)
+      let cleanPoloPhone: string | undefined;
+      if (telefonePolo) {
+        cleanPoloPhone = telefonePolo.replace(/\D/g, '');
+        if (cleanPoloPhone.length < 10 || cleanPoloPhone.length > 13) {
+          const errorMsg = 'Número de telefone do polo inválido';
+          setError(errorMsg);
+          toast.error(errorMsg);
+          return { success: false, error: errorMsg };
+        }
+      }
+
       console.log('Calling send-whatsapp-template edge function:', {
         phone: cleanPhone,
         nomeAluno,
         nomeCurso,
         nivelEnsino,
-        plataforma
+        plataforma,
+        polo,
+        telefonePolo: cleanPoloPhone
       });
 
       const { data, error: functionError } = await supabase.functions.invoke(
@@ -67,6 +86,8 @@ export const useWhatsapp = () => {
             nomeCurso,
             nivelEnsino,
             plataforma,
+            polo,
+            telefonePolo: cleanPoloPhone,
             dadosExtras
           }
         }
@@ -87,8 +108,18 @@ export const useWhatsapp = () => {
         return { success: false, error: errorMsg };
       }
 
-      toast.success('Mensagem enviada com sucesso para a certificadora!');
-      return { success: true, messageId: data.messageId };
+      // Mensagem de sucesso personalizada
+      if (data.poloMessageId) {
+        toast.success('Mensagens enviadas para aluno e polo!');
+      } else {
+        toast.success('Mensagem enviada com sucesso para a certificadora!');
+      }
+      
+      return { 
+        success: true, 
+        messageId: data.messageId,
+        poloMessageId: data.poloMessageId
+      };
 
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Erro ao enviar mensagem';
