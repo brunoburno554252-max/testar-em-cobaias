@@ -3976,6 +3976,7 @@ export const globalGestorOptions: string[] = [
   "NATHÁLIA GALESKI",
   "ANA CARLA DE OLIVEIRA SILVA",
   "JOÃO PAULO",
+  "FLAVIO",
 ];
 
 export const globalSelectOptions: Record<string, string[]> = {
