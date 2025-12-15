@@ -250,10 +250,10 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         const polo = formValues["Polo"];
         const telefonePolo = formValues["Telefone do Polo"];
 
-        if (telefone && nomeAluno && nomeCurso && nivelEnsino) {
+        if (nomeAluno && nomeCurso && nivelEnsino && (telefone || telefonePolo)) {
           console.log("📱 Enviando WhatsApp para a certificadora...");
           await sendMessage({
-            phone: telefone,
+            phone: telefone || "",
             nomeAluno,
             nomeCurso,
             nivelEnsino,
