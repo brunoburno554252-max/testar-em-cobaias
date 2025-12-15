@@ -1426,6 +1426,7 @@ export const globalPoloOptions: string[] = [
   "CENTRO DE FORMAÇÃO EJA",
   "POLO FETEC",
   "polo",
+  "EDUCA MAIS",
   "POLO NÃO ENCONTRADO",
 ];
 
