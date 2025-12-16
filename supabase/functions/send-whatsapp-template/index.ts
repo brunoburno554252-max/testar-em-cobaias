@@ -5,25 +5,50 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Mapa de níveis de ensino para templates da Meta
-const TEMPLATE_MAP: Record<string, string> = {
-  "Aperfeiçoamento De Estudos": "template_aperfeicoamento",
-  "Extensão Universitária": "template_extensao",
-  "Formação Pedagógica": "template_formacao_pedagogica",
-  "Graduação": "template_graduacao",
-  "Pós-Graduação": "template_pos_graduacao",
-  "Segunda Licenciatura": "template_segunda_licenciatura",
-  "Superior Sequencial": "template_superior_sequencial",
-  "Aproveitamento/Competência": "template_aproveitamento",
-  "EJA": "template_eja",
-  "Técnico regular": "template_tecnico_regular",
-  "Profissionalizante Avançado": "template_profissionalizante_avancado",
-  "Profissionalizante Especial": "template_profissionalizante_especial",
-  "Pós Técnico": "template_pos_tecnico",
-  "PROFISSIONALIZANTES PREMIUM": "template_profissionalizantes_premium",
-  "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER": "template_doutorados_mestrados",
-  "PÓS-GRADUAÇÃO CHANCELA": "template_pos_chancela",
-};
+// Templates de 30 dias
+const TEMPLATE_30_DIAS: string[] = [
+  "Aperfeiçoamento De Estudos",
+  "Extensão Universitária",
+  "Pós-Graduação",
+  "Superior Sequencial",
+  "Aproveitamento/Competência",
+  "EJA",
+  "Técnico regular",
+  "Profissionalizante Avançado",
+  "Profissionalizante Especial",
+  "Pós Técnico",
+  "PROFISSIONALIZANTES PREMIUM",
+  "PÓS - GRADUAÇÕES - VINCIT",
+  "PÓS - GRADUAÇÕES - UNIMAIS",
+  "PROFISSIONALIZANTES COMUM",
+  "DOUTORADOS/MESTRADOS/PÓS DOUTORADO - IVY ENBER",
+  "TREINAMENTO PARA PARCEIROS LA",
+  "PÓS-GRADUAÇÃO CHANCELA",
+  "TÉCNICO CHANCELA"
+];
+
+// Templates de 120 dias
+const TEMPLATE_120_DIAS: string[] = [
+  "Formação Pedagógica",
+  "Graduação",
+  "Segunda Licenciatura",
+  "BACHAREL/ LICENCIATURA - UNIMAIS",
+  "SEGUNDA LICENCIATURA/FORMAÇÃO PEDAGÓGICA - UNIMAIS",
+  "TECNÓLOGOS - UNIMAIS",
+  "FORMAÇÃO SPEED - UNIMAIS",
+  "GRADUAÇÃO CHANCELA"
+];
+
+// Função para obter o template baseado no nível de ensino
+function getTemplateForNivel(nivelEnsino: string): string | null {
+  if (TEMPLATE_30_DIAS.includes(nivelEnsino)) {
+    return "template_30";
+  }
+  if (TEMPLATE_120_DIAS.includes(nivelEnsino)) {
+    return "template_120";
+  }
+  return null;
+}
 
 // Template específico para o Polo
 const TEMPLATE_POLO = "template_polo";
@@ -154,15 +179,16 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Buscar o template correspondente ao nível de ensino
-    const templateName = TEMPLATE_MAP[nivelEnsino];
+    const templateName = getTemplateForNivel(nivelEnsino);
     if (!templateName) {
-      console.error('Template not found for nivel:', nivelEnsino);
+      console.log('No template found for nivel:', nivelEnsino, '- skipping WhatsApp message');
+      // Não é erro, apenas não envia mensagem para níveis sem template
       return new Response(
         JSON.stringify({ 
-          success: false, 
-          error: `Template não encontrado para o nível de ensino: ${nivelEnsino}` 
+          success: true, 
+          message: `Nível de ensino "${nivelEnsino}" não requer envio de mensagem WhatsApp` 
         }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
