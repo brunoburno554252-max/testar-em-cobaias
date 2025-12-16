@@ -3748,7 +3748,6 @@ export const formsConfig: Record<string, FormSectionConfig> = {
       "Telefone WhatsApp": { dependsOn: "Atividade", showWhen: ["Enviado à certificadora", "Negado na Triagem"] },
       "Telefone do Polo": { dependsOn: "Atividade", showWhen: ["Enviado à certificadora", "Negado na Triagem"] },
       Polo: { dependsOn: "Atividade", showWhen: ["Enviado à certificadora", "Negado na Triagem"] },
-      Observações: { dependsOn: "Atividade", showWhen: ["Negado na Triagem"] },
     },
   },
   MATRÍCULA: {
