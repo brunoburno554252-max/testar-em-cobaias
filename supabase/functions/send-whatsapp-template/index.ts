@@ -39,8 +39,17 @@ const TEMPLATE_120_DIAS: string[] = [
   "GRADUAÇÃO CHANCELA"
 ];
 
-// Função para obter o template baseado no nível de ensino
-function getTemplateForNivel(nivelEnsino: string): string | null {
+// Template para triagem negada
+const TEMPLATE_NEGADO = "certificacao_negado";
+
+// Função para obter o template baseado no nível de ensino e tipo de ação
+function getTemplateForNivel(nivelEnsino: string, tipoAcao: string = "aprovado"): string | null {
+  // Se for negado, usa template específico
+  if (tipoAcao === "negado") {
+    return TEMPLATE_NEGADO;
+  }
+  
+  // Se for aprovado, usa template baseado no prazo
   if (TEMPLATE_30_DIAS.includes(nivelEnsino)) {
     return "template_30";
   }
@@ -61,6 +70,7 @@ interface WhatsAppRequest {
   plataforma?: string;
   polo?: string;
   telefonePolo?: string;
+  tipoAcao?: string; // "aprovado" ou "negado"
   dadosExtras?: Record<string, unknown>;
 }
 
@@ -152,7 +162,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { phone, nomeAluno, nomeCurso, nivelEnsino, plataforma, polo, telefonePolo, dadosExtras }: WhatsAppRequest = await req.json();
+    const { phone, nomeAluno, nomeCurso, nivelEnsino, plataforma, polo, telefonePolo, tipoAcao, dadosExtras }: WhatsAppRequest = await req.json();
 
     // Validação dos campos obrigatórios (telefone do aluno agora é opcional)
     if (!nomeAluno || !nomeCurso || !nivelEnsino) {
@@ -178,8 +188,8 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Buscar o template correspondente ao nível de ensino
-    const templateName = getTemplateForNivel(nivelEnsino);
+    // Buscar o template correspondente ao nível de ensino e tipo de ação
+    const templateName = getTemplateForNivel(nivelEnsino, tipoAcao || "aprovado");
     if (!templateName) {
       console.log('No template found for nivel:', nivelEnsino, '- skipping WhatsApp message');
       // Não é erro, apenas não envia mensagem para níveis sem template
@@ -201,26 +211,36 @@ const handler = async (req: Request): Promise<Response> => {
     // 1. Enviar mensagem para o ALUNO (apenas se telefone foi fornecido)
     if (phone) {
       const formattedPhone = formatPhoneNumber(phone);
+      const acaoAtual = tipoAcao || "aprovado";
 
       console.log('Sending WhatsApp template message to student:', {
         phone: formattedPhone,
         template: templateName,
+        tipoAcao: acaoAtual,
         nomeAluno,
         nomeCurso,
         nivelEnsino,
         plataforma: plataformaValue
       });
 
+      // Parâmetros variam conforme o tipo de ação
+      const messageParams = acaoAtual === "negado"
+        ? [
+            { type: "text", text: nomeAluno },
+            { type: "text", text: nomeCurso }
+          ]
+        : [
+            { type: "text", text: nomeAluno },
+            { type: "text", text: nivelEnsino },
+            { type: "text", text: nomeCurso }
+          ];
+
       const studentResult = await sendWhatsAppMessage(
         phoneNumberId,
         accessToken,
         formattedPhone,
         templateName,
-        [
-          { type: "text", text: nomeAluno },
-          { type: "text", text: nivelEnsino },
-          { type: "text", text: nomeCurso }
-        ]
+        messageParams
       );
 
       if (!studentResult.success) {
