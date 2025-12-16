@@ -128,9 +128,14 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     const optionalFields = sectionConfig?.optionalFields || [];
     const conditionalFields = sectionConfig?.conditionalFields || {};
     
+    // Verificar se Observações é obrigatório (quando Atividade = "Negado na Triagem")
+    const isObservacoesRequired = isCertificacaoForm && formValues["Atividade"] === "Negado na Triagem";
+    
     const emptyFields = fields.filter(field => {
-      // Ignorar Observações
-      if (field === "Observações") return false;
+      // Observações é obrigatório apenas quando Atividade = "Negado na Triagem"
+      if (field === "Observações") {
+        return isObservacoesRequired && !formValues[field];
+      }
       // Ignorar campos opcionais
       if (optionalFields.includes(field)) return false;
       
@@ -154,7 +159,10 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
 
     if (emptyFields.length > 0) {
       console.log("❌ Campos vazios:", emptyFields);
-      toast.error("Por favor, preencha todos os campos obrigatórios");
+      const errorMsg = emptyFields.includes("Observações") 
+        ? "O campo Observações é obrigatório quando a atividade é 'Negado na Triagem'"
+        : "Por favor, preencha todos os campos obrigatórios";
+      toast.error(errorMsg);
       return;
     }
 
