@@ -40,7 +40,7 @@ const TEMPLATE_120_DIAS: string[] = [
 ];
 
 // Template para triagem negada
-const TEMPLATE_NEGADO = "certificacao_negado";
+const TEMPLATE_NEGADO = "certificacao_negada";
 
 // Função para obter o template baseado no nível de ensino e tipo de ação
 function getTemplateForNivel(nivelEnsino: string, tipoAcao: string = "aprovado"): string | null {
