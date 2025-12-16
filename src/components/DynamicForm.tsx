@@ -258,7 +258,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
             nomeCurso,
             nivelEnsino,
             plataforma,
-            polo,
+            nomePolo: polo,
             telefonePolo,
             tipoAcao: "aprovado",
             dadosExtras: formValues
@@ -285,7 +285,7 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
             nomeCurso,
             nivelEnsino,
             plataforma,
-            polo,
+            nomePolo: polo,
             telefonePolo,
             tipoAcao: "negado",
             observacoes,

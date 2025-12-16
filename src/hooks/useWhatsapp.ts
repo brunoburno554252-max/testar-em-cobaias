@@ -8,7 +8,7 @@ interface SendMessageParams {
   nomeCurso: string;
   nivelEnsino: string;
   plataforma?: string;
-  polo?: string;
+  nomePolo?: string;
   telefonePolo?: string;
   tipoAcao?: string; // "aprovado" ou "negado"
   observacoes?: string; // Para template negado
@@ -32,7 +32,7 @@ export const useWhatsapp = () => {
     nomeCurso,
     nivelEnsino,
     plataforma,
-    polo,
+    nomePolo,
     telefonePolo,
     tipoAcao,
     observacoes,
@@ -77,7 +77,7 @@ export const useWhatsapp = () => {
         nomeCurso,
         nivelEnsino,
         plataforma,
-        polo,
+        nomePolo,
         telefonePolo: cleanPoloPhone,
         tipoAcao,
         observacoes
@@ -92,7 +92,7 @@ export const useWhatsapp = () => {
             nomeCurso,
             nivelEnsino,
             plataforma,
-            polo,
+            nomePolo,
             telefonePolo: cleanPoloPhone,
             tipoAcao,
             observacoes,
