@@ -218,8 +218,8 @@ const handler = async (req: Request): Promise<Response> => {
         templateName,
         [
           { type: "text", text: nomeAluno },
-          { type: "text", text: nomeCurso },
-          { type: "text", text: nivelEnsino }
+          { type: "text", text: nivelEnsino },
+          { type: "text", text: nomeCurso }
         ]
       );
 
