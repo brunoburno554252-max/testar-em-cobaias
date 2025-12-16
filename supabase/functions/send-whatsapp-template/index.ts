@@ -71,6 +71,7 @@ interface WhatsAppRequest {
   polo?: string;
   telefonePolo?: string;
   tipoAcao?: string; // "aprovado" ou "negado"
+  observacoes?: string; // Para template negado
   dadosExtras?: Record<string, unknown>;
 }
 
@@ -162,7 +163,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { phone, nomeAluno, nomeCurso, nivelEnsino, plataforma, polo, telefonePolo, tipoAcao, dadosExtras }: WhatsAppRequest = await req.json();
+    const { phone, nomeAluno, nomeCurso, nivelEnsino, plataforma, polo, telefonePolo, tipoAcao, observacoes, dadosExtras }: WhatsAppRequest = await req.json();
 
     // Validação dos campos obrigatórios (telefone do aluno agora é opcional)
     if (!nomeAluno || !nomeCurso || !nivelEnsino) {
@@ -227,7 +228,8 @@ const handler = async (req: Request): Promise<Response> => {
       const messageParams = acaoAtual === "negado"
         ? [
             { type: "text", text: nomeAluno },
-            { type: "text", text: nomeCurso }
+            { type: "text", text: nomeCurso },
+            { type: "text", text: observacoes || "Documentação pendente" }
           ]
         : [
             { type: "text", text: nomeAluno },

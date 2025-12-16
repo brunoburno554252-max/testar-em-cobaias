@@ -11,6 +11,7 @@ interface SendMessageParams {
   polo?: string;
   telefonePolo?: string;
   tipoAcao?: string; // "aprovado" ou "negado"
+  observacoes?: string; // Para template negado
   dadosExtras?: Record<string, unknown>;
 }
 
@@ -34,6 +35,7 @@ export const useWhatsapp = () => {
     polo,
     telefonePolo,
     tipoAcao,
+    observacoes,
     dadosExtras
   }: SendMessageParams): Promise<SendMessageResult> => {
     setIsLoading(true);
@@ -77,7 +79,8 @@ export const useWhatsapp = () => {
         plataforma,
         polo,
         telefonePolo: cleanPoloPhone,
-        tipoAcao
+        tipoAcao,
+        observacoes
       });
 
       const { data, error: functionError } = await supabase.functions.invoke(
@@ -92,6 +95,7 @@ export const useWhatsapp = () => {
             polo,
             telefonePolo: cleanPoloPhone,
             tipoAcao,
+            observacoes,
             dadosExtras
           }
         }
