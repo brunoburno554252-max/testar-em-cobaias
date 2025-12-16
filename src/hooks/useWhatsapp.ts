@@ -10,6 +10,7 @@ interface SendMessageParams {
   plataforma?: string;
   polo?: string;
   telefonePolo?: string;
+  tipoAcao?: string; // "aprovado" ou "negado"
   dadosExtras?: Record<string, unknown>;
 }
 
@@ -32,6 +33,7 @@ export const useWhatsapp = () => {
     plataforma,
     polo,
     telefonePolo,
+    tipoAcao,
     dadosExtras
   }: SendMessageParams): Promise<SendMessageResult> => {
     setIsLoading(true);
@@ -74,7 +76,8 @@ export const useWhatsapp = () => {
         nivelEnsino,
         plataforma,
         polo,
-        telefonePolo: cleanPoloPhone
+        telefonePolo: cleanPoloPhone,
+        tipoAcao
       });
 
       const { data, error: functionError } = await supabase.functions.invoke(
@@ -88,6 +91,7 @@ export const useWhatsapp = () => {
             plataforma,
             polo,
             telefonePolo: cleanPoloPhone,
+            tipoAcao,
             dadosExtras
           }
         }
