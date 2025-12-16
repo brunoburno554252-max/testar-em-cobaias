@@ -39,10 +39,15 @@ const TEMPLATE_120_DIAS: string[] = [
   "GRADUAÇÃO CHANCELA"
 ];
 
-// Template para triagem negada
+// Templates para ALUNO
 const TEMPLATE_NEGADO = "certificacao_negada";
 
-// Função para obter o template baseado no nível de ensino e tipo de ação
+// Templates para POLO (Licenciados)
+const TEMPLATE_POLO_NEGADO = "certificacao_negada_licenciado";
+const TEMPLATE_POLO_30 = "template_30_licenciado";
+const TEMPLATE_POLO_120 = "template_120_licenciado";
+
+// Função para obter o template do ALUNO baseado no nível de ensino e tipo de ação
 function getTemplateForNivel(nivelEnsino: string, tipoAcao: string = "aprovado"): string | null {
   // Se for negado, usa template específico
   if (tipoAcao === "negado") {
@@ -59,8 +64,22 @@ function getTemplateForNivel(nivelEnsino: string, tipoAcao: string = "aprovado")
   return null;
 }
 
-// Template específico para o Polo
-const TEMPLATE_POLO = "template_polo";
+// Função para obter o template do POLO baseado no nível de ensino e tipo de ação
+function getTemplateForPolo(nivelEnsino: string, tipoAcao: string = "aprovado"): string | null {
+  // Se for negado, usa template específico para polo
+  if (tipoAcao === "negado") {
+    return TEMPLATE_POLO_NEGADO;
+  }
+  
+  // Se for aprovado, usa template baseado no prazo
+  if (TEMPLATE_30_DIAS.includes(nivelEnsino)) {
+    return TEMPLATE_POLO_30;
+  }
+  if (TEMPLATE_120_DIAS.includes(nivelEnsino)) {
+    return TEMPLATE_POLO_120;
+  }
+  return null;
+}
 
 interface WhatsAppRequest {
   phone: string;
@@ -257,35 +276,53 @@ const handler = async (req: Request): Promise<Response> => {
     // 2. Enviar mensagem para o POLO (se telefone do polo foi fornecido)
     if (telefonePolo && nomePolo) {
       const formattedPoloPhone = formatPhoneNumber(telefonePolo);
+      const acaoAtual = tipoAcao || "aprovado";
       
-      console.log('Sending WhatsApp template message to polo:', {
-        phone: formattedPoloPhone,
-        template: TEMPLATE_POLO,
-        nomeAluno,
-        nomeCurso,
-        nomePolo,
-        plataforma: plataformaValue
-      });
+      // Obter template do polo baseado no nível de ensino e tipo de ação
+      const poloTemplateName = getTemplateForPolo(nivelEnsino, acaoAtual);
+      
+      if (poloTemplateName) {
+        console.log('Sending WhatsApp template message to polo:', {
+          phone: formattedPoloPhone,
+          template: poloTemplateName,
+          tipoAcao: acaoAtual,
+          nomeAluno,
+          nomeCurso,
+          nomePolo,
+          observacoes
+        });
 
-      const poloResult = await sendWhatsAppMessage(
-        phoneNumberId,
-        accessToken,
-        formattedPoloPhone,
-        TEMPLATE_POLO,
-        [
-          { type: "text", text: nomeAluno },
-          { type: "text", text: nomeCurso },
-          { type: "text", text: nomePolo },
-          { type: "text", text: plataformaValue }
-        ]
-      );
+        // Parâmetros do polo variam conforme o tipo de ação (mesmas variáveis do aluno)
+        const poloMessageParams = acaoAtual === "negado"
+          ? [
+              { type: "text", text: nomePolo },
+              { type: "text", text: nomeAluno },
+              { type: "text", text: nomeCurso },
+              { type: "text", text: observacoes || "Documentação pendente" }
+            ]
+          : [
+              { type: "text", text: nomePolo },
+              { type: "text", text: nomeAluno },
+              { type: "text", text: nivelEnsino },
+              { type: "text", text: nomeCurso }
+            ];
 
-      if (poloResult.success) {
-        console.log('WhatsApp message sent successfully to polo:', poloResult.messageId);
-        response.poloMessageId = poloResult.messageId;
+        const poloResult = await sendWhatsAppMessage(
+          phoneNumberId,
+          accessToken,
+          formattedPoloPhone,
+          poloTemplateName,
+          poloMessageParams
+        );
+
+        if (poloResult.success) {
+          console.log('WhatsApp message sent successfully to polo:', poloResult.messageId);
+          response.poloMessageId = poloResult.messageId;
+        } else {
+          console.error('Failed to send message to polo:', poloResult.error);
+        }
       } else {
-        console.error('Failed to send message to polo:', poloResult.error);
-        // Não falhar a operação inteira se a mensagem do polo falhar
+        console.log('No polo template found for nivel:', nivelEnsino, '- skipping polo message');
       }
     }
 
