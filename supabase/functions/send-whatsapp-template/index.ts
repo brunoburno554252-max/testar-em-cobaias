@@ -68,7 +68,7 @@ interface WhatsAppRequest {
   nomeCurso: string;
   nivelEnsino: string;
   plataforma?: string;
-  polo?: string;
+  nomePolo?: string;
   telefonePolo?: string;
   tipoAcao?: string; // "aprovado" ou "negado"
   observacoes?: string; // Para template negado
@@ -163,7 +163,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    const { phone, nomeAluno, nomeCurso, nivelEnsino, plataforma, polo, telefonePolo, tipoAcao, observacoes, dadosExtras }: WhatsAppRequest = await req.json();
+    const { phone, nomeAluno, nomeCurso, nivelEnsino, plataforma, nomePolo, telefonePolo, tipoAcao, observacoes, dadosExtras }: WhatsAppRequest = await req.json();
 
     // Validação dos campos obrigatórios (telefone do aluno agora é opcional)
     if (!nomeAluno || !nomeCurso || !nivelEnsino) {
@@ -255,7 +255,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // 2. Enviar mensagem para o POLO (se telefone do polo foi fornecido)
-    if (telefonePolo && polo) {
+    if (telefonePolo && nomePolo) {
       const formattedPoloPhone = formatPhoneNumber(telefonePolo);
       
       console.log('Sending WhatsApp template message to polo:', {
@@ -263,7 +263,7 @@ const handler = async (req: Request): Promise<Response> => {
         template: TEMPLATE_POLO,
         nomeAluno,
         nomeCurso,
-        polo,
+        nomePolo,
         plataforma: plataformaValue
       });
 
@@ -275,7 +275,7 @@ const handler = async (req: Request): Promise<Response> => {
         [
           { type: "text", text: nomeAluno },
           { type: "text", text: nomeCurso },
-          { type: "text", text: polo },
+          { type: "text", text: nomePolo },
           { type: "text", text: plataformaValue }
         ]
       );
