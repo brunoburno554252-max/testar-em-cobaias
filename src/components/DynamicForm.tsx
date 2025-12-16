@@ -260,6 +260,35 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
             plataforma,
             polo,
             telefonePolo,
+            tipoAcao: "aprovado",
+            dadosExtras: formValues
+          });
+        }
+      }
+
+      // Enviar WhatsApp automaticamente se for CERTIFICAÇÃO e Atividade = "Negado na triagem"
+      if (isCertificacaoForm && formValues["Atividade"] === "Negado na triagem") {
+        const telefone = formValues["Telefone WhatsApp"];
+        const nomeAluno = formValues["Aluno"];
+        const nomeCurso = formValues["Curso"];
+        const nivelEnsino = formValues["Nível de Ensino"];
+        const plataforma = formValues["Plataforma"];
+        const polo = formValues["Polo"];
+        const telefonePolo = formValues["Telefone do Polo"];
+        const observacoes = formValues["Observações"];
+
+        if (nomeAluno && nomeCurso && nivelEnsino && (telefone || telefonePolo)) {
+          console.log("📱 Enviando WhatsApp para negado na triagem...");
+          await sendMessage({
+            phone: telefone || "",
+            nomeAluno,
+            nomeCurso,
+            nivelEnsino,
+            plataforma,
+            polo,
+            telefonePolo,
+            tipoAcao: "negado",
+            observacoes,
             dadosExtras: formValues
           });
         }
