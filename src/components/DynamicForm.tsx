@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { formsConfig, globalSelectOptions, globalPoloOptions, globalCursoOptions, nivelEnsinoCursoMap } from "@/mock/formsData";
+import { formsConfig, globalSelectOptions, globalPoloOptions, globalCursoOptions, nivelEnsinoCursoMap, poloTelefoneMap } from "@/mock/formsData";
 import { toast } from "sonner";
 import { ArrowLeft, Send, Save, Trash2, FileText, Sparkles, MessageCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -345,6 +345,12 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         localStorage.setItem(globalPlataformaKey, value);
       }
       
+      // Se Polo mudar, preencher automaticamente o Telefone do Polo
+      if (field === "Polo" && poloTelefoneMap[value]) {
+        newValues["Telefone do Polo"] = poloTelefoneMap[value];
+        console.log("📞 Telefone do Polo preenchido automaticamente:", poloTelefoneMap[value]);
+      }
+      
       return newValues;
     });
   };
@@ -503,14 +509,19 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
       );
     }
 
+    // Campo Telefone do Polo - somente leitura quando preenchido automaticamente pelo Polo
+    const isTelefonePoloField = field === "Telefone do Polo";
+    const isTelefonePoloDisabled = isTelefonePoloField && !!formValues["Polo"] && !!poloTelefoneMap[formValues["Polo"]];
+
     return (
       <Input
         id={field}
         type={fieldType}
         value={formValues[field] || ""}
         onChange={(e) => handleChange(field, e.target.value)}
-        placeholder={isColaborador ? username : `Digite ${field.toLowerCase()}`}
-        disabled={isColaborador}
+        placeholder={isColaborador ? username : isTelefonePoloField ? "Selecione um polo para preencher automaticamente" : `Digite ${field.toLowerCase()}`}
+        disabled={isColaborador || isTelefonePoloDisabled}
+        readOnly={isTelefonePoloDisabled}
         className="bg-background/50 border-border/50 focus:border-primary/50 focus:ring-primary/20 transition-all duration-300 disabled:opacity-60 disabled:cursor-not-allowed"
       />
     );
