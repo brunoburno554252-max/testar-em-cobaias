@@ -266,8 +266,8 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         }
       }
 
-      // Enviar WhatsApp automaticamente se for CERTIFICAÇÃO e Atividade = "Negado na triagem"
-      if (isCertificacaoForm && formValues["Atividade"] === "Negado na triagem") {
+      // Enviar WhatsApp automaticamente se for CERTIFICAÇÃO e Atividade = "Negado na Triagem"
+      if (isCertificacaoForm && formValues["Atividade"] === "Negado na Triagem") {
         const telefone = formValues["Telefone WhatsApp"];
         const nomeAluno = formValues["Aluno"];
         const nomeCurso = formValues["Curso"];
