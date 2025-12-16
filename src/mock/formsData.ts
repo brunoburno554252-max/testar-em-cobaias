@@ -3700,11 +3700,12 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Indeferido pela Auditoria",
       ],
     },
-    optionalFields: ["Telefone do Polo", "Telefone WhatsApp", "Polo"],
+    optionalFields: ["Telefone do Polo", "Telefone WhatsApp", "Polo", "Observações"],
     conditionalFields: {
       "Telefone WhatsApp": { dependsOn: "Atividade", showWhen: ["Enviado à certificadora", "Negado na Triagem"] },
       "Telefone do Polo": { dependsOn: "Atividade", showWhen: ["Enviado à certificadora", "Negado na Triagem"] },
       Polo: { dependsOn: "Atividade", showWhen: ["Enviado à certificadora", "Negado na Triagem"] },
+      Observações: { dependsOn: "Atividade", showWhen: ["Negado na Triagem"] },
     },
   },
   MATRÍCULA: {
