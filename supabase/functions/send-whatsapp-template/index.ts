@@ -292,12 +292,13 @@ const handler = async (req: Request): Promise<Response> => {
           observacoes
         });
 
-        // Parâmetros do polo variam conforme o tipo de ação (mesmas variáveis do aluno)
+        // Parâmetros do polo variam conforme o tipo de ação
+        // Ordem correta para negado: nomePolo, nomeCurso, nomeAluno, observacoes
         const poloMessageParams = acaoAtual === "negado"
           ? [
               { type: "text", text: nomePolo },
-              { type: "text", text: nomeAluno },
               { type: "text", text: nomeCurso },
+              { type: "text", text: nomeAluno },
               { type: "text", text: observacoes || "Documentação pendente" }
             ]
           : [
