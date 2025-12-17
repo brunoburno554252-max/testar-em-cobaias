@@ -303,8 +303,8 @@ const handler = async (req: Request): Promise<Response> => {
             ]
           : [
               { type: "text", text: nomePolo },
-              { type: "text", text: nomeCurso },
               { type: "text", text: nivelEnsino },
+              { type: "text", text: nomeCurso },
               { type: "text", text: nomeAluno }
             ];
 
