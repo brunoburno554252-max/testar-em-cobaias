@@ -252,8 +252,8 @@ const handler = async (req: Request): Promise<Response> => {
           ]
         : [
             { type: "text", text: nomeAluno },
-            { type: "text", text: nomeCurso },
-            { type: "text", text: nivelEnsino }
+            { type: "text", text: nivelEnsino },
+            { type: "text", text: nomeCurso }
           ];
 
       const studentResult = await sendWhatsAppMessage(
