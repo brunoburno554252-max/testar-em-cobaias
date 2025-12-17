@@ -141,12 +141,17 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
         return isObservacoesRequired && !formValues[field];
       }
       
-      // Telefone WhatsApp é obrigatório quando Atividade = "Enviado à certificadora" ou "Negado na Triagem"
+      // Telefone WhatsApp - validação especial: obrigatório quando Atividade é específica
       if (field === "Telefone WhatsApp") {
-        return isTelefoneWhatsAppRequired && !formValues[field];
+        if (isTelefoneWhatsAppRequired) {
+          const telefoneValue = formValues[field]?.toString().trim();
+          console.log("📞 Validando Telefone WhatsApp:", telefoneValue, "Obrigatório:", isTelefoneWhatsAppRequired);
+          return !telefoneValue || telefoneValue === "";
+        }
+        return false; // Não obrigatório para outras atividades
       }
       
-      // Ignorar campos opcionais
+      // Ignorar campos opcionais (exceto os já tratados acima)
       if (optionalFields.includes(field)) return false;
       
       // Verificar se é um campo condicional
@@ -652,9 +657,28 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
                           className="text-sm font-semibold text-foreground/90 flex items-center gap-1"
                         >
                           {field}
-                          {field !== "Observações" && !sectionConfig?.optionalFields?.includes(field) && (
-                            <span className="text-destructive text-base">*</span>
-                          )}
+                          {(() => {
+                            // Telefone WhatsApp é obrigatório condicionalmente
+                            if (field === "Telefone WhatsApp" && formName === "CERTIFICAÇÃO") {
+                              const atividade = formValues["Atividade"];
+                              if (atividade === "Enviado à certificadora" || atividade === "Negado na Triagem") {
+                                return <span className="text-destructive text-base">*</span>;
+                              }
+                              return null;
+                            }
+                            // Observações é opcional (exceto quando Negado na Triagem)
+                            if (field === "Observações") {
+                              if (formName === "CERTIFICAÇÃO" && formValues["Atividade"] === "Negado na Triagem") {
+                                return <span className="text-destructive text-base">*</span>;
+                              }
+                              return null;
+                            }
+                            // Outros campos opcionais
+                            if (sectionConfig?.optionalFields?.includes(field)) {
+                              return null;
+                            }
+                            return <span className="text-destructive text-base">*</span>;
+                          })()}
                         </Label>
                       )}
                       {renderField(field)}
