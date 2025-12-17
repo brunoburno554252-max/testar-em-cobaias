@@ -135,12 +135,15 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     const optionalFields = sectionConfig?.optionalFields || [];
     const conditionalFields = sectionConfig?.conditionalFields || {};
     
-    // Verificar se Observações é obrigatório (quando Atividade = "Negado na Triagem")
-    const isObservacoesRequired = isCertificacaoForm && formValues["Atividade"] === "Negado na Triagem";
+    // Verificar se Observações é obrigatório (quando Atividade = "Negado na Triagem" ou "Negado pela Certificadora")
+    const isObservacoesRequired = (isCertificacaoForm && formValues["Atividade"] === "Negado na Triagem") ||
+      (isCompetenciaForm && formValues["Atividade"] === "Negado pela Certificadora");
     
-    // Verificar se Telefone WhatsApp é obrigatório (quando Atividade = "Enviado à certificadora" ou "Negado na Triagem")
-    const isTelefoneWhatsAppRequired = isCertificacaoForm && 
-      (formValues["Atividade"] === "Enviado à certificadora" || formValues["Atividade"] === "Negado na Triagem");
+    // Verificar se Telefone WhatsApp é obrigatório
+    const isTelefoneWhatsAppRequired = (isCertificacaoForm && 
+      (formValues["Atividade"] === "Enviado à certificadora" || formValues["Atividade"] === "Negado na Triagem")) ||
+      (isCompetenciaForm && 
+      (formValues["Atividade"] === "Enviado a Certificadora" || formValues["Atividade"] === "Negado pela Certificadora"));
     
     const emptyFields = fields.filter(field => {
       // Observações é obrigatório apenas quando Atividade = "Negado na Triagem"
@@ -183,9 +186,9 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
       console.log("❌ Campos vazios:", emptyFields);
       let errorMsg = "Por favor, preencha todos os campos obrigatórios";
       if (emptyFields.includes("Observações")) {
-        errorMsg = "O campo Observações é obrigatório quando a atividade é 'Negado na Triagem'";
+        errorMsg = "O campo Observações é obrigatório quando a atividade é 'Negado na Triagem' ou 'Negado pela Certificadora'";
       } else if (emptyFields.includes("Telefone WhatsApp")) {
-        errorMsg = "O campo Telefone WhatsApp é obrigatório quando a atividade é 'Enviado à certificadora' ou 'Negado na Triagem'";
+        errorMsg = "O campo Telefone WhatsApp é obrigatório para envio à certificadora ou negado";
       }
       toast.error(errorMsg);
       return;
@@ -312,6 +315,60 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
 
         if (nomeAluno && nomeCurso && nivelEnsino && (telefone || telefonePolo)) {
           console.log("📱 Enviando WhatsApp para negado na triagem...");
+          await sendMessage({
+            phone: telefone || "",
+            nomeAluno,
+            nomeCurso,
+            nivelEnsino,
+            plataforma,
+            nomePolo: polo,
+            telefonePolo,
+            tipoAcao: "negado",
+            observacoes,
+            dadosExtras: formValues
+          });
+        }
+      }
+
+      // Enviar WhatsApp automaticamente se for COMPETÊNCIA e Atividade = "Enviado a Certificadora"
+      if (isCompetenciaForm && formValues["Atividade"] === "Enviado a Certificadora") {
+        const telefone = formValues["Telefone WhatsApp"];
+        const nomeAluno = formValues["Aluno"];
+        const nomeCurso = formValues["Curso"];
+        const nivelEnsino = formValues["Nível de Ensino"];
+        const plataforma = formValues["Plataforma"];
+        const polo = formValues["Polo"];
+        const telefonePolo = formValues["Telefone do Polo"];
+
+        if (nomeAluno && nomeCurso && nivelEnsino && (telefone || telefonePolo)) {
+          console.log("📱 [COMPETÊNCIA] Enviando WhatsApp para a certificadora...");
+          await sendMessage({
+            phone: telefone || "",
+            nomeAluno,
+            nomeCurso,
+            nivelEnsino,
+            plataforma,
+            nomePolo: polo,
+            telefonePolo,
+            tipoAcao: "aprovado",
+            dadosExtras: formValues
+          });
+        }
+      }
+
+      // Enviar WhatsApp automaticamente se for COMPETÊNCIA e Atividade = "Negado pela Certificadora"
+      if (isCompetenciaForm && formValues["Atividade"] === "Negado pela Certificadora") {
+        const telefone = formValues["Telefone WhatsApp"];
+        const nomeAluno = formValues["Aluno"];
+        const nomeCurso = formValues["Curso"];
+        const nivelEnsino = formValues["Nível de Ensino"];
+        const plataforma = formValues["Plataforma"];
+        const polo = formValues["Polo"];
+        const telefonePolo = formValues["Telefone do Polo"];
+        const observacoes = formValues["Observações"];
+
+        if (nomeAluno && nomeCurso && nivelEnsino && (telefone || telefonePolo)) {
+          console.log("📱 [COMPETÊNCIA] Enviando WhatsApp para negado pela certificadora...");
           await sendMessage({
             phone: telefone || "",
             nomeAluno,
@@ -666,16 +723,22 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
                           {field}
                           {(() => {
                             // Telefone WhatsApp é obrigatório condicionalmente
-                            if (field === "Telefone WhatsApp" && formName === "CERTIFICAÇÃO") {
+                            if (field === "Telefone WhatsApp" && (formName === "CERTIFICAÇÃO" || formName === "COMPETÊNCIA")) {
                               const atividade = formValues["Atividade"];
-                              if (atividade === "Enviado à certificadora" || atividade === "Negado na Triagem") {
+                              if (formName === "CERTIFICAÇÃO" && (atividade === "Enviado à certificadora" || atividade === "Negado na Triagem")) {
+                                return <span className="text-destructive text-base">*</span>;
+                              }
+                              if (formName === "COMPETÊNCIA" && (atividade === "Enviado a Certificadora" || atividade === "Negado pela Certificadora")) {
                                 return <span className="text-destructive text-base">*</span>;
                               }
                               return null;
                             }
-                            // Observações é opcional (exceto quando Negado na Triagem)
+                            // Observações é opcional (exceto quando Negado na Triagem ou Negado pela Certificadora)
                             if (field === "Observações") {
                               if (formName === "CERTIFICAÇÃO" && formValues["Atividade"] === "Negado na Triagem") {
+                                return <span className="text-destructive text-base">*</span>;
+                              }
+                              if (formName === "COMPETÊNCIA" && formValues["Atividade"] === "Negado pela Certificadora") {
                                 return <span className="text-destructive text-base">*</span>;
                               }
                               return null;
