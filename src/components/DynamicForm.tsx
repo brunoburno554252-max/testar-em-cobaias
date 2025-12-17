@@ -131,11 +131,21 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     // Verificar se Observações é obrigatório (quando Atividade = "Negado na Triagem")
     const isObservacoesRequired = isCertificacaoForm && formValues["Atividade"] === "Negado na Triagem";
     
+    // Verificar se Telefone WhatsApp é obrigatório (quando Atividade = "Enviado à certificadora" ou "Negado na Triagem")
+    const isTelefoneWhatsAppRequired = isCertificacaoForm && 
+      (formValues["Atividade"] === "Enviado à certificadora" || formValues["Atividade"] === "Negado na Triagem");
+    
     const emptyFields = fields.filter(field => {
       // Observações é obrigatório apenas quando Atividade = "Negado na Triagem"
       if (field === "Observações") {
         return isObservacoesRequired && !formValues[field];
       }
+      
+      // Telefone WhatsApp é obrigatório quando Atividade = "Enviado à certificadora" ou "Negado na Triagem"
+      if (field === "Telefone WhatsApp") {
+        return isTelefoneWhatsAppRequired && !formValues[field];
+      }
+      
       // Ignorar campos opcionais
       if (optionalFields.includes(field)) return false;
       
@@ -159,9 +169,12 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
 
     if (emptyFields.length > 0) {
       console.log("❌ Campos vazios:", emptyFields);
-      const errorMsg = emptyFields.includes("Observações") 
-        ? "O campo Observações é obrigatório quando a atividade é 'Negado na Triagem'"
-        : "Por favor, preencha todos os campos obrigatórios";
+      let errorMsg = "Por favor, preencha todos os campos obrigatórios";
+      if (emptyFields.includes("Observações")) {
+        errorMsg = "O campo Observações é obrigatório quando a atividade é 'Negado na Triagem'";
+      } else if (emptyFields.includes("Telefone WhatsApp")) {
+        errorMsg = "O campo Telefone WhatsApp é obrigatório quando a atividade é 'Enviado à certificadora' ou 'Negado na Triagem'";
+      }
       toast.error(errorMsg);
       return;
     }
