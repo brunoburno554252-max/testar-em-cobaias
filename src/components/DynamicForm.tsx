@@ -124,6 +124,13 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     console.log("👤 Username:", username);
     console.log("📊 Form Values:", formValues);
     
+    // Validar espaço no final do nome do aluno
+    const alunoValue = formValues["Aluno"]?.toString() || "";
+    if (alunoValue && alunoValue !== alunoValue.trimEnd()) {
+      toast.error("O nome do aluno não pode ter espaço no final. Por favor, remova o espaço.");
+      return;
+    }
+    
     // Validar campos obrigatórios (exceto Observações, campos opcionais e campos condicionais não visíveis)
     const optionalFields = sectionConfig?.optionalFields || [];
     const conditionalFields = sectionConfig?.conditionalFields || {};
