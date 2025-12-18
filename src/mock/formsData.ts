@@ -3951,11 +3951,10 @@ export const formsConfig: Record<string, FormSectionConfig> = {
         "Verificação de Experiencia",
       ],
     },
-    optionalFields: ["Telefone do Polo", "Telefone WhatsApp", "Polo", "Observações"],
+    optionalFields: ["Telefone do Polo", "Telefone WhatsApp", "Observações"],
     conditionalFields: {
       "Telefone WhatsApp": { dependsOn: "Atividade", showWhen: ["Enviado a Certificadora", "Negado pela Certificadora"] },
       "Telefone do Polo": { dependsOn: "Atividade", showWhen: ["Enviado a Certificadora", "Negado pela Certificadora"] },
-      Polo: { dependsOn: "Atividade", showWhen: ["Enviado a Certificadora", "Negado pela Certificadora"] },
     },
   },
   OUVIDORIA: {
