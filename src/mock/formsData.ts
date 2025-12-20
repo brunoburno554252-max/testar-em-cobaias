@@ -1469,6 +1469,7 @@ export const poloTelefoneMap: Record<string, string> = {
   "Polo Ead Smart Sync Digital-X": "(41) 99997-3419",
   "Vio Educação": "(31) 97152-2973",
   "FOR YOU": "(11) 97080-2302",
+  "TECPRO MULTI ENSINO": "(91)984939322",
 };
 
 // Lista de nomes dos polos (extraída do mapeamento)
