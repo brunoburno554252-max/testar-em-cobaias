@@ -1470,6 +1470,7 @@ export const poloTelefoneMap: Record<string, string> = {
   "Vio Educação": "(31) 97152-2973",
   "FOR YOU": "(11) 97080-2302",
   "TECPRO MULTI ENSINO": "(91)984939322",
+  "POLO CATIANA FERRAZ": "(51)998553407",
 };
 
 // Lista de nomes dos polos (extraída do mapeamento)
