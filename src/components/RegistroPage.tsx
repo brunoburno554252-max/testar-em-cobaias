@@ -256,9 +256,9 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
     }
   };
 
-  // Check if user can edit/delete a registro
-  const canModifyRegistro = (registro: Registro) => {
-    return isAdmin || registro.user_id === currentUserId;
+  // Check if user can edit/delete a registro (only admins)
+  const canModifyRegistro = () => {
+    return isAdmin;
   };
 
   // Open delete confirmation dialog
@@ -533,7 +533,7 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
                           )}
 
                           <div className="md:col-span-2 flex justify-end gap-2 pt-2 flex-wrap">
-                            {canModifyRegistro(registro) && (
+                            {canModifyRegistro() && (
                               <>
                                 <Button
                                   variant="outline"
