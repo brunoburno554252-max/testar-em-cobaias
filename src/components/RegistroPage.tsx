@@ -2,9 +2,27 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, FileText, Calendar, User, Search, X, ClipboardList, AlertTriangle } from "lucide-react";
+import { ArrowLeft, FileText, Calendar, User, Search, X, ClipboardList, AlertTriangle, Trash2, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import {
@@ -45,11 +63,31 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
   const ITEMS_PER_PAGE = 10;
+  
+  // States for delete confirmation
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [registroToDelete, setRegistroToDelete] = useState<Registro | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  
+  // States for edit dialog
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [registroToEdit, setRegistroToEdit] = useState<Registro | null>(null);
+  const [editFormData, setEditFormData] = useState<Record<string, string>>({});
+  const [isSaving, setIsSaving] = useState(false);
+  
+  // Current user ID for permission checks
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
     checkAdminStatus();
     loadRegistros();
+    getCurrentUser();
   }, []);
+
+  const getCurrentUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setCurrentUserId(user?.id || null);
+  };
 
   const checkAdminStatus = async () => {
     const { data, error } = await supabase.rpc('is_fiz_merda_admin');
@@ -215,6 +253,79 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
     } catch (error: any) {
       console.error("Erro ao marcar registro:", error);
       toast.error("Erro ao salvar marcação");
+    }
+  };
+
+  // Check if user can edit/delete a registro
+  const canModifyRegistro = (registro: Registro) => {
+    return isAdmin || registro.user_id === currentUserId;
+  };
+
+  // Open delete confirmation dialog
+  const openDeleteDialog = (registro: Registro) => {
+    setRegistroToDelete(registro);
+    setDeleteDialogOpen(true);
+  };
+
+  // Handle delete confirmation
+  const handleDeleteConfirm = async () => {
+    if (!registroToDelete) return;
+    
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from("forms_submissions")
+        .delete()
+        .eq("id", registroToDelete.id);
+      
+      if (error) throw error;
+      
+      toast.success("Registro excluído com sucesso");
+      setDeleteDialogOpen(false);
+      setRegistroToDelete(null);
+      loadRegistros();
+    } catch (error: any) {
+      console.error("Erro ao excluir registro:", error);
+      toast.error("Erro ao excluir registro");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // Open edit dialog
+  const openEditDialog = (registro: Registro) => {
+    setRegistroToEdit(registro);
+    setEditFormData(registro.form_data || {});
+    setEditDialogOpen(true);
+  };
+
+  // Handle edit form field change
+  const handleEditFieldChange = (key: string, value: string) => {
+    setEditFormData(prev => ({ ...prev, [key]: value }));
+  };
+
+  // Handle save edit
+  const handleSaveEdit = async () => {
+    if (!registroToEdit) return;
+    
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from("forms_submissions")
+        .update({ form_data: editFormData, updated_at: new Date().toISOString() })
+        .eq("id", registroToEdit.id);
+      
+      if (error) throw error;
+      
+      toast.success("Registro atualizado com sucesso");
+      setEditDialogOpen(false);
+      setRegistroToEdit(null);
+      loadRegistros();
+    } catch (error: any) {
+      console.error("Erro ao atualizar registro:", error);
+      toast.error("Erro ao atualizar registro");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -421,7 +532,27 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
                             </div>
                           )}
 
-                          <div className="md:col-span-2 flex justify-end pt-2">
+                          <div className="md:col-span-2 flex justify-end gap-2 pt-2 flex-wrap">
+                            {canModifyRegistro(registro) && (
+                              <>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => openEditDialog(registro)}
+                                  className="gap-2"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                  Editar
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  onClick={() => openDeleteDialog(registro)}
+                                  className="gap-2 text-destructive border-destructive/50 hover:bg-destructive/10"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                  Excluir
+                                </Button>
+                              </>
+                            )}
                             <Button
                               variant={cardsVermelhos.has(registro.id) ? "outline" : "destructive"}
                               onClick={() => toggleCardVermelho(registro.id)}
@@ -490,6 +621,76 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir este registro? Esta ação não pode ser desfeita.
+              {registroToDelete && (
+                <div className="mt-3 p-3 bg-secondary/50 rounded-lg text-sm">
+                  <p><strong>Formulário:</strong> {registroToDelete.form_name}</p>
+                  <p><strong>Usuário:</strong> {registroToDelete.user_name}</p>
+                  <p><strong>ID:</strong> {registroToDelete.id}</p>
+                </div>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Excluindo..." : "Excluir"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Editar Registro</DialogTitle>
+          </DialogHeader>
+          
+          {registroToEdit && (
+            <div className="space-y-4 py-4">
+              <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground mb-4">
+                <div><strong>Formulário:</strong> {registroToEdit.form_name}</div>
+                <div><strong>Usuário:</strong> {registroToEdit.user_name}</div>
+              </div>
+              
+              <div className="space-y-4">
+                {Object.entries(editFormData).map(([key, value]) => (
+                  <div key={key} className="space-y-2">
+                    <Label htmlFor={key}>{key}</Label>
+                    <Input
+                      id={key}
+                      value={String(value) || ""}
+                      onChange={(e) => handleEditFieldChange(key, e.target.value)}
+                      className="bg-card/50"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditDialogOpen(false)} disabled={isSaving}>
+              Cancelar
+            </Button>
+            <Button onClick={handleSaveEdit} disabled={isSaving}>
+              {isSaving ? "Salvando..." : "Salvar Alterações"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
