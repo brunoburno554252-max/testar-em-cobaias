@@ -1,6 +1,6 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formsData } from "@/mock/formsData";
-import { FileText, LogOut, ClipboardList, Sparkles, LayoutDashboard } from "lucide-react";
+import { FileText, LogOut, ClipboardList, Sparkles, LayoutDashboard, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface FormSelectorProps {
@@ -109,6 +109,33 @@ const FormSelector = ({ username, onSelectForm, onLogout }: FormSelectorProps) =
                 <CardDescription className="flex items-center gap-2">
                   <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary">
                     Histórico
+                  </span>
+                </CardDescription>
+              </div>
+            </CardHeader>
+          </Card>
+
+          {/* Produtividade Diária Card */}
+          <Card
+            className="cursor-pointer glass hover-lift group animate-fade-in border-0 overflow-hidden relative"
+            style={{ animationDelay: `${0.1 * (formNames.length + 2)}s` }}
+            onClick={() => onSelectForm("PRODUTIVIDADE")}
+          >
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              style={{ background: 'linear-gradient(135deg, hsl(142, 76%, 36%), hsl(142, 76%, 46%))', opacity: 0.05 }} />
+            <div className="absolute top-0 right-0 w-24 h-24 -mr-6 -mt-6 rounded-full blur-2xl"
+              style={{ background: 'linear-gradient(135deg, hsl(142, 76%, 36%), hsl(142, 76%, 46%))', opacity: 0.2 }} />
+            <CardHeader className="space-y-4 relative z-10">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 shadow-lg bg-emerald-500">
+                <BarChart3 className="w-7 h-7 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-xl mb-2 font-display group-hover:text-emerald-600 transition-colors">
+                  Produtividade do Dia
+                </CardTitle>
+                <CardDescription className="flex items-center gap-2">
+                  <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600">
+                    Tempo Real
                   </span>
                 </CardDescription>
               </div>

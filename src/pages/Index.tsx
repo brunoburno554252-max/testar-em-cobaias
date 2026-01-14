@@ -4,6 +4,7 @@ import LoginPage from "@/components/LoginPage";
 import FormSelector from "@/components/FormSelector";
 import DynamicForm from "@/components/DynamicForm";
 import RegistroPage from "@/components/RegistroPage";
+import ProdutividadeDiaria from "@/components/ProdutividadeDiaria";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
@@ -84,6 +85,14 @@ const Index = () => {
       return (
         <RegistroPage
           username={username}
+          onBack={handleBack}
+        />
+      );
+    }
+
+    if (selectedForm === "PRODUTIVIDADE") {
+      return (
+        <ProdutividadeDiaria
           onBack={handleBack}
         />
       );
