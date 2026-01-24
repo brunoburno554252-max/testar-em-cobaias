@@ -96,21 +96,50 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
     }
   };
 
+  // Fetch all records in batches of 1000
+  const fetchAllRecords = async () => {
+    const BATCH_SIZE = 1000;
+    let allRecords: any[] = [];
+    let offset = 0;
+    let hasMore = true;
+
+    while (hasMore) {
+      const { data, error } = await supabase
+        .from("forms_submissions")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .range(offset, offset + BATCH_SIZE - 1);
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        allRecords = [...allRecords, ...data];
+        offset += BATCH_SIZE;
+        hasMore = data.length === BATCH_SIZE;
+      } else {
+        hasMore = false;
+      }
+    }
+
+    return allRecords;
+  };
+
   const loadRegistros = async () => {
     try {
-      // Build the query with filters applied at database level
-      let query = supabase
-        .from("forms_submissions")
-        .select("*", { count: 'exact' });
-
-      // Apply ID filter directly in the database query
+      // Fetch ALL records in batches
+      const allData = await fetchAllRecords();
+      
+      let filteredData = allData || [];
+      
+      // Filter by ID (partial match)
       if (filtroIdSupabase) {
-        // Use ilike for partial matching on the ID
-        query = query.ilike('id', `%${filtroIdSupabase}%`);
+        const searchId = filtroIdSupabase.toLowerCase();
+        filteredData = filteredData.filter(registro => 
+          registro.id.toLowerCase().includes(searchId)
+        );
       }
-
-      // Apply user filter
-      let userFilterIds: string[] | null = null;
+      
+      // Filter by user
       if (filtroUsuario) {
         const { data: userData } = await supabase
           .from("forms_users")
@@ -118,44 +147,16 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
           .ilike("full_name", `%${filtroUsuario}%`);
         
         if (userData && userData.length > 0) {
-          userFilterIds = userData.map(u => u.user_id);
-          query = query.in('user_id', userFilterIds);
+          const userIds = new Set(userData.map(u => u.user_id));
+          filteredData = filteredData.filter(registro => 
+            userIds.has(registro.user_id)
+          );
         } else {
-          // No users match, return empty
-          setRegistros([]);
-          setTotalCount(0);
-          setIsLoading(false);
-          return;
+          filteredData = [];
         }
       }
-
-      // Get count first
-      const { count } = await query;
-      setTotalCount(count || 0);
-
-      // Apply pagination and ordering
-      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-      query = supabase
-        .from("forms_submissions")
-        .select("*");
-
-      if (filtroIdSupabase) {
-        query = query.ilike('id', `%${filtroIdSupabase}%`);
-      }
-      if (userFilterIds) {
-        query = query.in('user_id', userFilterIds);
-      }
-
-      query = query
-        .order("created_at", { ascending: false })
-        .range(startIndex, startIndex + ITEMS_PER_PAGE - 1);
-
-      const { data: paginatedData, error } = await query;
-
-      if (error) throw error;
       
-      // Filter by aluno name in frontend (since it's JSONB field)
-      let filteredData = paginatedData || [];
+      // Filter by student name
       if (filtroNomeAluno) {
         const searchTerm = filtroNomeAluno.toLowerCase();
         filteredData = filteredData.filter(registro => {
@@ -171,8 +172,17 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
                  alunoPolo.includes(searchTerm);
         });
       }
+
+      const totalFiltered = filteredData.length;
+      setTotalCount(totalFiltered);
       
-      const userIds = [...new Set(filteredData?.map(r => r.user_id) || [])];
+      // Paginate the filtered results
+      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+      const paginatedData = filteredData.slice(startIndex, endIndex);
+      
+      // Get user names
+      const userIds = [...new Set(paginatedData?.map(r => r.user_id) || [])];
       let usersData: { user_id: string; full_name: string }[] = [];
       if (userIds.length > 0) {
         const { data } = await supabase
@@ -184,7 +194,7 @@ const RegistroPage = ({ username, onBack }: RegistroPageProps) => {
       
       const userMap = new Map(usersData.map(u => [u.user_id, u.full_name]));
       
-      const registrosComNome = filteredData.map(r => ({
+      const registrosComNome = paginatedData.map(r => ({
         ...r,
         user_name: userMap.get(r.user_id) || "Usuário desconhecido"
       }));
