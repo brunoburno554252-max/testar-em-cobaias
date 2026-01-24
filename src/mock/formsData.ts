@@ -2080,7 +2080,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "TÉCNICO EM GASTRONOMIA",
     "TÉCNICO EM ENFERMAGEM",
     "TÉCNICO EM Mineração",
-    "Eletroeletrônica".
+    "Eletroeletrônica",
   ],
   EJA: [
     "EJA - EDUCAÇÃO DE JOVENS E ADULTOS",
@@ -4055,6 +4055,7 @@ export const globalGestorOptions: string[] = [
   "ANA CARLA DE OLIVEIRA SILVA",
   "JOÃO PAULO",
   "FLAVIO",
+  "Roseany Maciel",
 ];
 
 export const globalSelectOptions: Record<string, string[]> = {
