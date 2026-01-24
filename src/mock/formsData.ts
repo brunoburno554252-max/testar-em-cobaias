@@ -1696,6 +1696,7 @@ export const nivelEnsinoCursoMap: Record<string, string[]> = {
     "MBA GESTÃO JURÍDICA ADUANEIRA E INTERNACIONAL",
     "Docência no Ensino Superior",
     "NEUROLOGIA",
+    "Pedagogia Religiosa em Educação Católica",
   ],
   "Pós-Graduação": [
     "ESPECIALIZAÇÃO EM METODOLOGIA DO ENSINO DE LÍNGUA PORTUGUESA",
