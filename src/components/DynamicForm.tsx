@@ -5,12 +5,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { formsConfig, globalSelectOptions, globalPoloOptions, globalCursoOptions, nivelEnsinoCursoMap, poloTelefoneMap } from "@/mock/formsData";
+import { formsConfig, globalSelectOptions, globalCursoOptions } from "@/mock/formsData";
 import { toast } from "sonner";
 import { ArrowLeft, Send, Save, Trash2, FileText, Sparkles, MessageCircle, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { DocumentStatusBlocks } from "@/components/DocumentStatusBlocks";
 import { useWhatsapp } from "@/hooks/useWhatsapp";
+import { usePolosData, useCursosData } from "@/hooks/useFormData";
 
 interface DynamicFormProps {
   formName: string;
@@ -44,6 +45,10 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
   
   // Hook do WhatsApp para envio de templates
   const { sendMessage, isLoading: isWhatsappLoading } = useWhatsapp();
+  
+  // Hooks para buscar dados do banco com fallback para mock
+  const { poloOptions, poloTelefoneMap } = usePolosData();
+  const { nivelEnsinoCursoMap, modalidadeOptions } = useCursosData();
   
   const [formValues, setFormValues] = useState<Record<string, string>>(() => {
     const initialValues: Record<string, string> = {
@@ -462,9 +467,9 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
       return sectionConfig.selectOptions[field];
     }
     
-    // Usar listas globais para Polo
+    // Usar listas do banco (ou mock se vazio) para Polo
     if (field === "Polo") {
-      return globalPoloOptions;
+      return poloOptions;
     }
     
     // Para o campo Curso, filtrar baseado no Nível de Ensino selecionado
