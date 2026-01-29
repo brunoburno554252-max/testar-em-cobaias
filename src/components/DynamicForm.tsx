@@ -7,7 +7,7 @@ import { Combobox } from "@/components/ui/combobox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { formsConfig, globalSelectOptions, globalCursoOptions } from "@/mock/formsData";
 import { toast } from "sonner";
-import { ArrowLeft, Send, Save, Trash2, FileText, Sparkles, MessageCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, Send, Save, Trash2, FileText, Sparkles, MessageCircle, Loader2, Users, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { DocumentStatusBlocks } from "@/components/DocumentStatusBlocks";
 import { useWhatsapp } from "@/hooks/useWhatsapp";
@@ -696,6 +696,44 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
           </CardHeader>
           
           <CardContent className="pb-8">
+            {/* Alerta visual para polo EDUKS */}
+            {formValues["Polo"]?.toUpperCase().includes("EDUKS") && (isCertificacaoForm || isCompetenciaForm) && (
+              <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 animate-fade-in">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 rounded-lg bg-emerald-500/20 shrink-0">
+                    <Users className="w-5 h-5 text-emerald-600" />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-semibold text-emerald-700 flex items-center gap-2">
+                      <span>Polo EDUKS - Regra Especial</span>
+                      <span className="px-2 py-0.5 text-xs rounded-full bg-emerald-500/20 text-emerald-600 font-medium">Ativo</span>
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Mensagem será enviada para <strong>3 contatos</strong> do polo EDUKS:
+                    </p>
+                    <ul className="text-sm text-muted-foreground mt-2 space-y-1">
+                      <li className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Jean: (17) 98104-3712
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Igor: (17) 99231-8527
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Atendimento EDUKS: (17) 99636-2464
+                      </li>
+                    </ul>
+                    <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" />
+                      O aluno <strong>não</strong> receberá mensagem WhatsApp
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {fields.map((field, index) => {
