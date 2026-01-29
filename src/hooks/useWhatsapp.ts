@@ -19,6 +19,7 @@ interface SendMessageResult {
   success: boolean;
   messageId?: string;
   poloMessageId?: string;
+  poloMessageIds?: string[]; // Array para múltiplos IDs (EDUKS)
   error?: string;
 }
 
@@ -117,16 +118,21 @@ export const useWhatsapp = () => {
       }
 
       // Mensagem de sucesso personalizada
-      if (data.poloMessageId) {
+      if (data.poloMessageIds && data.poloMessageIds.length > 0) {
+        toast.success(`Mensagens enviadas para ${data.poloMessageIds.length} contatos do polo EDUKS!`);
+      } else if (data.poloMessageId) {
         toast.success('Mensagens enviadas para aluno e polo!');
-      } else {
+      } else if (data.messageId) {
         toast.success('Mensagem enviada com sucesso para a certificadora!');
+      } else {
+        toast.success('Registro salvo com sucesso!');
       }
       
       return { 
         success: true, 
         messageId: data.messageId,
-        poloMessageId: data.poloMessageId
+        poloMessageId: data.poloMessageId,
+        poloMessageIds: data.poloMessageIds
       };
 
     } catch (err) {

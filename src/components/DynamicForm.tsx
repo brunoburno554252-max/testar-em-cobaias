@@ -144,14 +144,16 @@ const DynamicForm = ({ formName, username, onBack }: DynamicFormProps) => {
     const isObservacoesRequired = (isCertificacaoForm && formValues["Atividade"] === "Negado na Triagem") ||
       (isCompetenciaForm && formValues["Atividade"] === "Negado pela Certificadora");
     
-    // Verificar se Telefone WhatsApp é obrigatório (com exceção para polo FOR YOU)
+    // Verificar se Telefone WhatsApp é obrigatório (com exceção para polos especiais: FOR YOU e EDUKS)
     const isPoloForYou = formValues["Polo"] === "FOR YOU";
+    const isPoloEDUKS = formValues["Polo"]?.toUpperCase().includes("EDUKS") ?? false;
+    const isPoloEspecial = isPoloForYou || isPoloEDUKS;
     const isTelefoneWhatsAppRequired = (
       (isCertificacaoForm && 
         (formValues["Atividade"] === "Enviado à certificadora" || formValues["Atividade"] === "Negado na Triagem")) ||
       (isCompetenciaForm && 
         (formValues["Atividade"] === "Enviado a Certificadora" || formValues["Atividade"] === "Negado pela Certificadora"))
-    ) && !isPoloForYou; // NÃO obrigatório se polo for FOR YOU
+    ) && !isPoloEspecial; // NÃO obrigatório se polo for especial (FOR YOU ou EDUKS)
     
     const emptyFields = fields.filter(field => {
       // Observações é obrigatório apenas quando Atividade = "Negado na Triagem"

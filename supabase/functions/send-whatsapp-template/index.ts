@@ -5,6 +5,21 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Configuração especial para polo EDUKS
+const EDUKS_CONFIG = {
+  phones: [
+    { name: "Jean", phone: "17981043712" },
+    { name: "Igor", phone: "17992318527" },
+    { name: "Atendimento EDUKS", phone: "17996362464" }
+  ],
+  skipStudentMessage: true // NÃO enviar para o aluno
+};
+
+// Função para verificar se é polo EDUKS
+function isPoloEDUKS(nomePolo: string): boolean {
+  return nomePolo?.toUpperCase().includes("EDUKS") ?? false;
+}
+
 // Templates de 30 dias
 const TEMPLATE_30_DIAS: string[] = [
   "Aperfeiçoamento De Estudos",
@@ -98,6 +113,7 @@ interface WhatsAppResponse {
   success: boolean;
   messageId?: string;
   poloMessageId?: string;
+  poloMessageIds?: string[]; // Array para múltiplos IDs (EDUKS)
   error?: string;
   details?: unknown;
 }
@@ -228,8 +244,16 @@ const handler = async (req: Request): Promise<Response> => {
       success: true
     };
 
-    // 1. Enviar mensagem para o ALUNO (apenas se telefone foi fornecido)
-    if (phone) {
+    // Verificar se é polo EDUKS
+    const isEDUKS = isPoloEDUKS(nomePolo || "");
+    
+    if (isEDUKS) {
+      console.log('🔵 EDUKS polo detected - applying special rules');
+      console.log('🔵 Skipping student message, sending to 3 EDUKS contacts');
+    }
+
+    // 1. Enviar mensagem para o ALUNO (apenas se telefone foi fornecido E NÃO for EDUKS)
+    if (phone && !isEDUKS) {
       const formattedPhone = formatPhoneNumber(phone);
       const acaoAtual = tipoAcao || "aprovado";
 
@@ -271,10 +295,67 @@ const handler = async (req: Request): Promise<Response> => {
         console.log('WhatsApp message sent successfully to student:', studentResult.messageId);
         response.messageId = studentResult.messageId;
       }
+    } else if (isEDUKS && phone) {
+      console.log('🔵 EDUKS: Skipping student message as per special rule');
     }
 
-    // 2. Enviar mensagem para o POLO (se telefone do polo foi fornecido)
-    if (telefonePolo && nomePolo) {
+    // 2. Enviar mensagem para o POLO
+    if (isEDUKS) {
+      // EDUKS: Enviar para os 3 números fixos
+      const acaoAtual = tipoAcao || "aprovado";
+      const poloTemplateName = getTemplateForPolo(nivelEnsino, acaoAtual);
+      
+      if (poloTemplateName) {
+        const poloMessageIds: string[] = [];
+        
+        for (const contact of EDUKS_CONFIG.phones) {
+          const formattedPoloPhone = formatPhoneNumber(contact.phone);
+          
+          console.log(`🔵 EDUKS: Sending to ${contact.name} (${formattedPoloPhone}):`, {
+            template: poloTemplateName,
+            tipoAcao: acaoAtual
+          });
+
+          // Parâmetros do polo - usar "EDUKS" como nome do polo
+          const poloMessageParams = acaoAtual === "negado"
+            ? [
+                { type: "text", text: "EDUKS" },
+                { type: "text", text: nomeCurso },
+                { type: "text", text: nomeAluno },
+                { type: "text", text: observacoes || "Documentação pendente" }
+              ]
+            : [
+                { type: "text", text: "EDUKS" },
+                { type: "text", text: nivelEnsino },
+                { type: "text", text: nomeCurso },
+                { type: "text", text: nomeAluno }
+              ];
+
+          const poloResult = await sendWhatsAppMessage(
+            phoneNumberId,
+            accessToken,
+            formattedPoloPhone,
+            poloTemplateName,
+            poloMessageParams
+          );
+
+          if (poloResult.success) {
+            console.log(`🔵 EDUKS: Message sent to ${contact.name}:`, poloResult.messageId);
+            if (poloResult.messageId) {
+              poloMessageIds.push(poloResult.messageId);
+            }
+          } else {
+            console.error(`🔵 EDUKS: Failed to send to ${contact.name}:`, poloResult.error);
+          }
+        }
+        
+        response.poloMessageIds = poloMessageIds;
+        console.log(`🔵 EDUKS: Sent ${poloMessageIds.length}/3 messages successfully`);
+      } else {
+        console.log('🔵 EDUKS: No polo template found for nivel:', nivelEnsino);
+      }
+    } else if (telefonePolo && nomePolo) {
+      // Polo normal: enviar para único número
       const formattedPoloPhone = formatPhoneNumber(telefonePolo);
       const acaoAtual = tipoAcao || "aprovado";
       
