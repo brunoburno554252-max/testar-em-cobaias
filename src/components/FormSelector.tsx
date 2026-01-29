@@ -115,11 +115,11 @@ const FormSelector = ({ username, onSelectForm, onLogout }: FormSelectorProps) =
             </CardHeader>
           </Card>
 
-          {/* Produtividade Diária Card */}
+          {/* Área Administrativa Card */}
           <Card
             className="cursor-pointer glass hover-lift group animate-fade-in border-0 overflow-hidden relative"
             style={{ animationDelay: `${0.1 * (formNames.length + 2)}s` }}
-            onClick={() => onSelectForm("PRODUTIVIDADE")}
+            onClick={() => onSelectForm("ADMIN")}
           >
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
               style={{ background: 'linear-gradient(135deg, hsl(142, 76%, 36%), hsl(142, 76%, 46%))', opacity: 0.05 }} />
@@ -131,11 +131,11 @@ const FormSelector = ({ username, onSelectForm, onLogout }: FormSelectorProps) =
               </div>
               <div>
                 <CardTitle className="text-xl mb-2 font-display group-hover:text-emerald-600 transition-colors">
-                  Produtividade do Dia
+                  Área Administrativa
                 </CardTitle>
                 <CardDescription className="flex items-center gap-2">
                   <span className="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-600">
-                    Tempo Real
+                    Admin Master
                   </span>
                 </CardDescription>
               </div>

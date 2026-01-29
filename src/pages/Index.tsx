@@ -4,9 +4,9 @@ import LoginPage from "@/components/LoginPage";
 import FormSelector from "@/components/FormSelector";
 import DynamicForm from "@/components/DynamicForm";
 import RegistroPage from "@/components/RegistroPage";
-import ProdutividadeDiaria from "@/components/ProdutividadeDiaria";
+import AdminArea from "@/components/admin/AdminArea";
 import { supabase } from "@/integrations/supabase/client";
-
+import { useIsAdminMaster } from "@/hooks/useIsAdminMaster";
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [username, setUsername] = useState<string | null>(null);
@@ -90,9 +90,9 @@ const Index = () => {
       );
     }
 
-    if (selectedForm === "PRODUTIVIDADE") {
+    if (selectedForm === "ADMIN") {
       return (
-        <ProdutividadeDiaria
+        <AdminArea
           onBack={handleBack}
         />
       );

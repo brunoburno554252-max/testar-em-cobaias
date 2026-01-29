@@ -95,6 +95,60 @@ export type Database = {
         }
         Relationships: []
       }
+      curso_modalidades: {
+        Row: {
+          created_at: string | null
+          curso_id: string
+          id: string
+          modalidade_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          curso_id: string
+          id?: string
+          modalidade_id: string
+        }
+        Update: {
+          created_at?: string | null
+          curso_id?: string
+          id?: string
+          modalidade_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "curso_modalidades_curso_id_fkey"
+            columns: ["curso_id"]
+            isOneToOne: false
+            referencedRelation: "cursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "curso_modalidades_modalidade_id_fkey"
+            columns: ["modalidade_id"]
+            isOneToOne: false
+            referencedRelation: "modalidades"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cursos: {
+        Row: {
+          created_at: string | null
+          id: string
+          nome: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          nome: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
       dashboard_data_persistent: {
         Row: {
           created_at: string
@@ -330,6 +384,24 @@ export type Database = {
         }
         Relationships: []
       }
+      modalidades: {
+        Row: {
+          created_at: string | null
+          id: string
+          nome: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          nome: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
       password_policies: {
         Row: {
           created_at: string
@@ -357,6 +429,27 @@ export type Database = {
           password_changed_at?: string | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      polos: {
+        Row: {
+          created_at: string | null
+          id: string
+          nome: string
+          telefone: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          nome: string
+          telefone?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          nome?: string
+          telefone?: string | null
         }
         Relationships: []
       }
