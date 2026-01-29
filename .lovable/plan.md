@@ -1,178 +1,146 @@
 
-# Plano: Área Administrativa de Polos, Modalidades e Cursos
 
-## Resumo
+# Plano: Migrar Dados do Mock para o Banco de Dados
 
-Transformar a página "Produtividade do Dia" em um **Painel Administrativo** completo com:
-- Produtividade (aba existente, mantida)
-- Gerenciamento de Polos (nome + telefone)
-- Gerenciamento de Modalidades (apenas nome)
-- Gerenciamento de Cursos (nome + vinculação com múltiplas modalidades)
+## Objetivo
 
-Acesso restrito a **Admin Master** apenas.
-
----
-
-## Banco de Dados
-
-### Tabela: `polos`
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| id | UUID (PK) | Identificador único |
-| nome | TEXT | Nome do polo |
-| telefone | TEXT | Telefone do polo |
-
-### Tabela: `modalidades`
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| id | UUID (PK) | Identificador único |
-| nome | TEXT | Nome da modalidade |
-
-### Tabela: `cursos`
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| id | UUID (PK) | Identificador único |
-| nome | TEXT | Nome do curso |
-
-### Tabela: `curso_modalidades` (relacionamento N:N)
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| id | UUID (PK) | Identificador único |
-| curso_id | UUID (FK) | Referência ao curso |
-| modalidade_id | UUID (FK) | Referência à modalidade |
-
-### Políticas RLS
-- **SELECT**: Todos usuários autenticados (para uso nos formulários dinâmicos)
-- **INSERT/UPDATE/DELETE**: Apenas quem passar em `is_admin_master_user()`
+Importar os dados do arquivo `src/mock/formsData.ts` para as tabelas `polos`, `modalidades`, `cursos` e `curso_modalidades` no banco de dados, e atualizar o `DynamicForm` para buscar dados do banco com fallback para o mock (garantindo que tudo continue funcionando).
 
 ---
 
 ## Dados a Migrar
 
-Baseado na análise do arquivo `src/mock/formsData.ts`:
-
-| Tipo | Quantidade | Origem |
-|------|------------|--------|
+| Tipo | Quantidade | Origem no Mock |
+|------|------------|----------------|
 | Polos | ~700 | `poloTelefoneMap` |
 | Modalidades | 17 | chaves do `nivelEnsinoCursoMap` |
-| Cursos | ~1000+ | valores do `nivelEnsinoCursoMap` (com deduplicação) |
-| Vínculos | ~1500+ | cada curso vinculado às suas modalidades |
+| Cursos | ~1000+ | valores do `nivelEnsinoCursoMap` (deduplicados) |
+| Vinculos | ~1500+ | cada curso vinculado à(s) sua(s) modalidade(s) |
 
----
-
-## Componentes a Criar
+### Modalidades (Nível de Ensino)
 
 ```text
-src/
-├── components/
-│   └── admin/
-│       ├── AdminArea.tsx           # Layout principal com Tabs
-│       ├── PolosManager.tsx        # CRUD de Polos
-│       ├── ModalidadesManager.tsx  # CRUD de Modalidades
-│       └── CursosManager.tsx       # CRUD de Cursos
-├── hooks/
-│   ├── usePolos.ts                 # Hook CRUD polos
-│   ├── useModalidades.ts           # Hook CRUD modalidades
-│   ├── useCursos.ts                # Hook CRUD cursos
-│   └── useIsAdminMaster.ts         # Verifica permissão
+1. Aperfeiçoamento De Estudos
+2. Extensão Universitária
+3. Pós-Graduação
+4. Segunda Licenciatura
+5. Superior Sequencial
+6. Aproveitamento/Competência
+7. EJA
+8. Técnico regular
+9. Profissionalizante Avançado
+10. Profissionalizante Especial
+11. Pós Técnico
+12. PROFISSIONALIZANTES PREMIUM
+13-17. (outras categorias do arquivo)
 ```
 
 ---
 
-## Fluxo de Navegação
+## Estratégia de Implementação
 
-```text
-FormSelector
-    │
-    └── Card "Área Administrativa" (substitui "Produtividade")
-            │
-            └── AdminArea (Tabs)
-                    ├── Tab "Produtividade" → ProdutividadeDiaria (existente)
-                    ├── Tab "Polos" → PolosManager
-                    ├── Tab "Modalidades" → ModalidadesManager
-                    └── Tab "Cursos" → CursosManager
-```
+### Fase 1: Criar Hooks para Buscar Dados do Banco
 
----
+Criar novos hooks que buscam dados do banco com fallback para o mock:
 
-## Interface dos Componentes
+- `usePolosData.ts` - Busca polos do banco, fallback para `poloTelefoneMap`
+- `useModalidadesData.ts` - Busca modalidades do banco, fallback para chaves do `nivelEnsinoCursoMap`
+- `useCursosData.ts` - Busca cursos do banco com relacionamento, fallback para `nivelEnsinoCursoMap`
 
-### PolosManager
-- Tabela: Nome | Telefone | Ações (Editar, Excluir)
-- Botão "Adicionar Polo" abre dialog/modal
-- Campo de busca por nome
-- Paginação
+### Fase 2: Atualizar o DynamicForm
 
-### ModalidadesManager
-- Tabela: Nome | Qtd Cursos | Ações
-- Botão "Adicionar Modalidade"
-- Campo de busca
+Modificar o `DynamicForm.tsx` para usar os novos hooks:
 
-### CursosManager
-- Tabela: Nome | Modalidades | Ações
-- Ao adicionar/editar: checkboxes para selecionar múltiplas modalidades
-- Filtro por modalidade
-- Busca por nome
+1. Substituir uso direto de `globalPoloOptions` pelo hook `usePolosData`
+2. Substituir uso direto de `nivelEnsinoCursoMap` pelo hook `useCursosData`
+3. Manter `poloTelefoneMap` para preenchimento automático do telefone (ou buscar do banco)
 
----
+### Fase 3: Script de Migração de Dados
 
-## Fases de Implementação
+Criar um script SQL para importar os dados do mock. Como o volume é grande (~2000+ registros), será feito via SQL direto:
 
-### Fase 1: Banco de Dados
-1. Criar tabela `polos` com RLS
-2. Criar tabela `modalidades` com RLS
-3. Criar tabela `cursos` com RLS
-4. Criar tabela `curso_modalidades` com RLS e FKs
-
-### Fase 2: Hook de Permissão
-1. Criar `useIsAdminMaster.ts` usando a função `is_admin_master_user()` existente
-
-### Fase 3: Componente Principal
-1. Criar `AdminArea.tsx` com sistema de Tabs (shadcn)
-2. Integrar `ProdutividadeDiaria` como primeira aba
-3. Atualizar `FormSelector` para usar "Área Administrativa"
-
-### Fase 4: CRUD de Polos
-1. Criar `usePolos.ts` (query + mutations)
-2. Criar `PolosManager.tsx` (tabela + form em dialog)
-
-### Fase 5: CRUD de Modalidades
-1. Criar `useModalidades.ts`
-2. Criar `ModalidadesManager.tsx`
-
-### Fase 6: CRUD de Cursos
-1. Criar `useCursos.ts` (com lógica para gerenciar vínculos N:N)
-2. Criar `CursosManager.tsx` (com seleção múltipla de modalidades)
-
-### Fase 7: Migração de Dados (Opcional/Manual)
-1. Script SQL para importar polos do mock
-2. Script SQL para importar modalidades
-3. Script SQL para importar cursos e criar vínculos
-
-### Fase 8: Integração com Formulários
-1. Atualizar `DynamicForm` para buscar polos/cursos do banco
-2. Manter fallback para dados mock se banco estiver vazio
+1. Inserir todas as modalidades
+2. Inserir todos os cursos (deduplicados)
+3. Criar os vínculos curso_modalidades
 
 ---
 
 ## Detalhes Técnicos
 
-### Hook useIsAdminMaster
+### Hook usePolosData
+
 ```typescript
-// Usa a função RPC existente is_admin_master_user()
-const { data: isAdmin, isLoading } = useQuery({
-  queryKey: ['is-admin-master'],
-  queryFn: async () => {
-    const { data } = await supabase.rpc('is_admin_master_user');
-    return data === true;
+export const usePolosData = () => {
+  const { polos, isLoading } = usePolos();
+  
+  // Se banco vazio ou carregando, usar mock
+  if (isLoading || polos.length === 0) {
+    return {
+      poloOptions: Object.keys(poloTelefoneMap),
+      poloTelefoneMap: poloTelefoneMap,
+      isLoading
+    };
   }
-});
+  
+  // Usar dados do banco
+  return {
+    poloOptions: polos.map(p => p.nome),
+    poloTelefoneMap: Object.fromEntries(
+      polos.map(p => [p.nome, p.telefone || ''])
+    ),
+    isLoading
+  };
+};
 ```
 
-### Componente CursosManager - Seleção Múltipla
-- Usa Checkbox do shadcn para cada modalidade
-- Ao salvar: deleta vínculos antigos e insere novos na tabela `curso_modalidades`
-- Exibe badges com as modalidades vinculadas na listagem
+### Hook useCursosData
+
+```typescript
+export const useCursosData = () => {
+  const { cursos, isLoading } = useCursos();
+  const { modalidades } = useModalidades();
+  
+  // Se banco vazio, usar mock
+  if (isLoading || cursos.length === 0) {
+    return {
+      nivelEnsinoCursoMap: nivelEnsinoCursoMap,
+      modalidadeOptions: Object.keys(nivelEnsinoCursoMap),
+      isLoading
+    };
+  }
+  
+  // Construir mapa modalidade -> cursos
+  const map: Record<string, string[]> = {};
+  modalidades.forEach(mod => {
+    map[mod.nome] = cursos
+      .filter(c => c.modalidades?.some(m => m.id === mod.id))
+      .map(c => c.nome);
+  });
+  
+  return {
+    nivelEnsinoCursoMap: map,
+    modalidadeOptions: modalidades.map(m => m.nome),
+    isLoading
+  };
+};
+```
+
+### Alterações no DynamicForm
+
+```typescript
+// Antes
+import { nivelEnsinoCursoMap, poloTelefoneMap, globalPoloOptions } from "@/mock/formsData";
+
+// Depois
+import { usePolosData, useCursosData } from "@/hooks/useFormData";
+
+const DynamicForm = ({ ... }) => {
+  const { poloOptions, poloTelefoneMap } = usePolosData();
+  const { nivelEnsinoCursoMap, modalidadeOptions } = useCursosData();
+  
+  // Resto do código permanece igual, apenas usando os dados dos hooks
+};
+```
 
 ---
 
@@ -180,16 +148,38 @@ const { data: isAdmin, isLoading } = useQuery({
 
 | Arquivo | Ação |
 |---------|------|
-| `src/components/admin/AdminArea.tsx` | Criar |
-| `src/components/admin/PolosManager.tsx` | Criar |
-| `src/components/admin/ModalidadesManager.tsx` | Criar |
-| `src/components/admin/CursosManager.tsx` | Criar |
-| `src/hooks/useIsAdminMaster.ts` | Criar |
-| `src/hooks/usePolos.ts` | Criar |
-| `src/hooks/useModalidades.ts` | Criar |
-| `src/hooks/useCursos.ts` | Criar |
-| `src/components/FormSelector.tsx` | Modificar (atualizar card) |
-| `src/pages/Index.tsx` | Modificar (adicionar rota para AdminArea) |
-| Migration SQL | Criar (4 tabelas + RLS) |
+| `src/hooks/useFormData.ts` | Criar (hooks usePolosData e useCursosData) |
+| `src/components/DynamicForm.tsx` | Modificar (usar hooks) |
+| `src/mock/formsData.ts` | Manter (fallback) |
 
-**Total**: 8 arquivos novos + 2 modificados + 1 migration
+---
+
+## Script de Migração (Execução Manual)
+
+Devido ao volume de dados (~2000+ registros), a migração será feita via script SQL que pode ser executado no Supabase SQL Editor. O script:
+
+1. Insere as 17 modalidades
+2. Insere os cursos (deduplicados de todas as modalidades)
+3. Cria os vínculos curso_modalidades
+
+**Nota**: Este script será gerado e executado separadamente após a implementação dos hooks, permitindo testar o sistema antes com os dados mock.
+
+---
+
+## Vantagens desta Abordagem
+
+1. **Zero downtime**: O sistema continua funcionando com dados mock enquanto o banco está vazio
+2. **Migração gradual**: Pode-se importar dados aos poucos
+3. **Fallback automático**: Se houver problema no banco, volta a usar mock
+4. **Código limpo**: Os hooks encapsulam a lógica de decisão
+
+---
+
+## Ordem de Implementação
+
+1. Criar `src/hooks/useFormData.ts` com os hooks `usePolosData` e `useCursosData`
+2. Atualizar `DynamicForm.tsx` para usar os novos hooks
+3. Testar que tudo continua funcionando (usando dados mock)
+4. Executar script de migração para popular o banco
+5. Verificar que os dados agora vêm do banco
+
