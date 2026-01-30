@@ -1,151 +1,97 @@
 
+# Plano para Corrigir a Migração de Dados Incompletos
 
-# Plano: Edge Function para Migrar Todos os Dados do Mock
+## Problema Identificado
 
-## Objetivo
+A Edge Function `migrate-mock-data` contém dados incompletos em comparação ao arquivo mock original:
 
-Criar uma Edge Function que migra automaticamente todos os dados do arquivo mock (`src/mock/formsData.ts`) para as tabelas do Supabase (`polos`, `modalidades`, `cursos` e `curso_modalidades`), de forma contínua e sem precisar de lotes manuais.
+| Categoria | Edge Function | Mock Original | Diferença |
+|-----------|---------------|---------------|-----------|
+| Polos | 378 | ~1470 | ~1092 faltando |
+| Modalidades | ~20 | ~26 | ~6 faltando |
+| Cursos | ~400 | ~700+ | ~300+ faltando |
 
-## Resumo dos Dados a Migrar
+A Edge Function foi criada com apenas uma parte dos dados do arquivo `src/mock/formsData.ts`, especificamente:
+- Polos: apenas até "Instituto Abraça-me" (linha 388), faltando ~1000 polos
+- Pós-Graduação: faltando centenas de cursos "LATO SENSU"
+- PROFISSIONALIZANTES PREMIUM: incompleto (só alguns cursos básicos)
 
-| Tabela | Quantidade |
-|--------|------------|
-| Polos | ~1.475 (com telefone) |
-| Modalidades | ~24 |
-| Cursos | ~4.000+ |
-| Vinculos (curso-modalidade) | ~5.000+ |
+## Solucao Proposta
 
-## Arquitetura da Solucao
+### Fase 1: Reescrever a Edge Function
+
+Modificar `supabase/functions/migrate-mock-data/index.ts` para importar os dados diretamente do arquivo mock original de forma dinâmica, em vez de ter os dados hardcoded:
 
 ```text
-+---------------------+      +------------------------+      +-----------------+
-|   Frontend React    | ---> |   Edge Function        | ---> |   Supabase DB   |
-|   (botao Admin)     |      |   migrate-mock-data    |      |   (tabelas)     |
-+---------------------+      +------------------------+      +-----------------+
-                                      |
-                                      v
-                             +------------------+
-                             |  Dados Embutidos |
-                             |  (JSON inline)   |
-                             +------------------+
++------------------------------+
+|   Edge Function (index.ts)   |
++------------------------------+
+           |
+           | Importa dados de
+           v
++------------------------------+
+|  shared/mock-data.ts (novo)  |
++------------------------------+
+           |
+           | Contém arrays completos:
+           | - POLOS_DATA (1470 itens)
+           | - MODALIDADES_CURSOS (26 categorias)
+           v
++------------------------------+
+|    Processa em lotes de 100  |
++------------------------------+
 ```
 
-## Detalhes Tecnicos
+### Fase 2: Criar arquivo de dados compartilhado
 
-### 1. Criar Edge Function `migrate-mock-data`
+Criar um novo arquivo `supabase/functions/_shared/mock-data.ts` contendo:
 
-**Arquivo:** `supabase/functions/migrate-mock-data/index.ts`
+1. **POLOS_DATA**: Array com todos os ~1470 polos, extraidos de `poloTelefoneMap`
+2. **MODALIDADES_CURSOS**: Objeto com todas as 26 modalidades e seus cursos, extraidos de `nivelEnsinoCursoMap`
 
-A Edge Function ira:
+### Fase 3: Atualizar a Edge Function
 
-1. **Receber requisicao POST** com autenticacao de admin
-2. **Executar em 4 fases sequenciais:**
-   - Fase 1: Inserir todas as modalidades
-   - Fase 2: Inserir todos os polos
-   - Fase 3: Inserir todos os cursos
-   - Fase 4: Criar vinculos curso-modalidade
-3. **Retornar relatorio** com contagens de sucesso/erro
+A Edge Function sera atualizada para:
+1. Importar de `../_shared/mock-data.ts`
+2. Manter a logica de processamento em lotes de 100
+3. Usar `upsert` com `ignoreDuplicates: true` para evitar duplicatas
 
-**Codigo principal:**
+### Arquivos a Modificar
+
+1. **Criar**: `supabase/functions/_shared/mock-data.ts`
+   - Contera todos os dados de polos (~1470)
+   - Contera todas as modalidades e cursos (~26 categorias, ~700+ cursos)
+
+2. **Atualizar**: `supabase/functions/migrate-mock-data/index.ts`
+   - Remover arrays de dados hardcoded
+   - Importar de `../_shared/mock-data.ts`
+   - Manter mesma logica de processamento progressivo
+
+### Detalhes Tecnicos
+
+O arquivo `_shared/mock-data.ts` sera estruturado assim:
 
 ```typescript
-// Dados embutidos diretamente na funcao (extraidos do mock)
-const POLOS_DATA = [
+// Todos os polos com telefones
+export const POLOS_DATA = [
   { nome: "POLO TESTE", telefone: "(44) 99905-6702" },
-  { nome: "Programa Universidade Facil", telefone: "(44) 99846-8426" },
-  // ... todos os 1.475 polos
+  // ... ~1470 polos
 ];
 
-const MODALIDADES = [
-  "Aperfeicoamento De Estudos",
-  "Extensao Universitaria",
-  "Formacao Pedagogica",
-  // ... todas as 24 modalidades
-];
-
-const CURSOS_POR_MODALIDADE = {
-  "Aperfeicoamento De Estudos": ["ARTE E EDUCACAO", ...],
-  "Extensao Universitaria": ["DIDATICA NAS SERIES INICIAIS", ...],
-  // ... todos os cursos por modalidade
+// Todas as modalidades com seus cursos
+export const MODALIDADES_CURSOS = {
+  "Aperfeicoamento De Estudos": [...],
+  "Extensao Universitaria": [...],
+  // ... ~26 categorias
 };
-
-serve(async (req) => {
-  // 1. Verificar autenticacao admin
-  // 2. Conectar ao Supabase com service role
-  // 3. Executar migracao em fases
-  // 4. Retornar relatorio
-});
 ```
 
-### 2. Configurar no `supabase/config.toml`
+### Resultado Esperado
 
-```toml
-[functions.migrate-mock-data]
-verify_jwt = true  # Requer autenticacao
-```
+Apos a implementacao:
+- **Polos**: ~1470 registros
+- **Modalidades**: ~26 registros
+- **Cursos**: ~700+ registros (unicos)
+- **Vinculos**: proporcional aos cursos/modalidades
 
-### 3. Adicionar Botao na Area Administrativa
-
-**Arquivo:** `src/components/admin/AdminArea.tsx`
-
-Adicionar um botao "Migrar Dados do Mock" que:
-- Chama a Edge Function
-- Mostra progresso/status
-- Exibe relatorio final
-
-### 4. Fluxo de Execucao
-
-```text
-1. Admin clica "Migrar Dados"
-        |
-        v
-2. Frontend chama Edge Function
-        |
-        v
-3. Edge Function conecta ao Supabase
-        |
-        v
-4. Fase 1: INSERT modalidades (ON CONFLICT DO NOTHING)
-        |
-        v
-5. Fase 2: INSERT polos (ON CONFLICT DO NOTHING)
-        |
-        v
-6. Fase 3: INSERT cursos (ON CONFLICT DO NOTHING)
-        |
-        v
-7. Fase 4: Buscar IDs e INSERT vinculos
-        |
-        v
-8. Retornar { success: true, stats: {...} }
-        |
-        v
-9. Frontend exibe "Migracao concluida!"
-```
-
-## Vantagens desta Abordagem
-
-- **Automatico**: Um clique para migrar tudo
-- **Idempotente**: Pode rodar multiplas vezes sem duplicar dados (ON CONFLICT)
-- **Progressivo**: Reporta status de cada fase
-- **Seguro**: Apenas admins podem executar
-- **Sem dependencias**: Dados embutidos na funcao, nao precisa acessar arquivos
-
-## Arquivos a Criar/Modificar
-
-| Arquivo | Acao |
-|---------|------|
-| `supabase/functions/migrate-mock-data/index.ts` | Criar (nova edge function) |
-| `supabase/config.toml` | Modificar (adicionar config da funcao) |
-| `src/components/admin/AdminArea.tsx` | Modificar (adicionar botao de migracao) |
-
-## Resultado Esperado
-
-Apos executar a funcao, o banco tera:
-- **~1.475 polos** com nome e telefone
-- **~24 modalidades**
-- **~4.000+ cursos** unicos
-- **~5.000+ vinculos** entre cursos e modalidades
-
-A area administrativa mostrara todos os dados corretamente, permitindo gestao completa.
-
+O usuario podera clicar no botao "Migrar Dados do Mock" uma unica vez e todos os dados serao migrados progressivamente em lotes de 100.
