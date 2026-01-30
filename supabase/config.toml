@@ -2,3 +2,6 @@ project_id = "jvjsaeprueaukcaixrgq"
 
 [functions.send-whatsapp-template]
 verify_jwt = false
+
+[functions.migrate-mock-data]
+verify_jwt = false
