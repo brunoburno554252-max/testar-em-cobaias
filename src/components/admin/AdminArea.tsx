@@ -5,7 +5,7 @@ import ProdutividadeDiaria from "@/components/ProdutividadeDiaria";
 import PolosManager from "./PolosManager";
 import ModalidadesManager from "./ModalidadesManager";
 import CursosManager from "./CursosManager";
-
+import MigrationButton from "./MigrationButton";
 interface AdminAreaProps {
   onBack: () => void;
 }
@@ -38,11 +38,12 @@ const AdminArea = ({ onBack }: AdminAreaProps) => {
                 <h1 className="text-3xl md:text-4xl font-display font-bold">
                   Área Administrativa
                 </h1>
-                <p className="text-muted-foreground">
+              <p className="text-muted-foreground">
                   Gerencie polos, modalidades e cursos
                 </p>
               </div>
             </div>
+            <MigrationButton />
           </div>
         </div>
 
