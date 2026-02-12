@@ -1,4 +1,4 @@
-// ============= LISTAS GLOBAIS (compartilhadas entre seções) =============
+,// ============= LISTAS GLOBAIS (compartilhadas entre seções) =============
 // Estas listas são utilizadas como opções selecionáveis nos campos Polo e Curso em todas as seções
 
 // Mapeamento de Polo para Telefone (usado para preenchimento automático)
@@ -4060,6 +4060,7 @@ export const globalGestorOptions: string[] = [
   "FLAVIO",
   "Roseany Maciel",
   "Jethro Neri Vargas Pereira",
+  "Maíra Freire dos Santos",
 ];
 
 export const globalSelectOptions: Record<string, string[]> = {
