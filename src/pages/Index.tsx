@@ -18,7 +18,7 @@ const Index = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        loadUserProfile(session.user.id);
+        loadUserProfile(session.user.id, session.user.email);
       }
       setLoading(false);
     });
@@ -29,7 +29,7 @@ const Index = () => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       if (session?.user) {
-        loadUserProfile(session.user.id);
+        loadUserProfile(session.user.id, session.user.email);
       } else {
         setUsername(null);
       }
@@ -38,15 +38,21 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const loadUserProfile = async (userId: string) => {
-    const { data } = await supabase
-      .from("forms_users")
-      .select("full_name, email")
-      .eq("user_id", userId)
-      .single();
+  const loadUserProfile = async (userId: string, userEmail?: string) => {
+    try {
+      const { data } = await supabase
+        .from("forms_users")
+        .select("full_name, email")
+        .eq("user_id", userId)
+        .maybeSingle();
 
-    if (data) {
-      setUsername(data.full_name || data.email.split("@")[0]);
+      if (data) {
+        setUsername(data.full_name || data.email.split("@")[0]);
+      } else {
+        setUsername(userEmail?.split("@")[0] || "Usuário");
+      }
+    } catch (error) {
+      setUsername(userEmail?.split("@")[0] || "Usuário");
     }
   };
 
