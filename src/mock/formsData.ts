@@ -1475,6 +1475,7 @@ export const poloTelefoneMap: Record<string, string> = {
   "Polo Avila": "(45)999237653",
   PEDRO: "(17)981497737",
   "POLO ERECHIM-RS": "(41)995648008",
+  "SANDOVAL VIEIRA JUNIOR LTDA": "(88)988147871",
 };
 
 // Lista de nomes dos polos (extraída do mapeamento)
