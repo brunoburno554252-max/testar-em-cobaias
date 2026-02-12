@@ -1,97 +1,59 @@
 
-# Plano para Corrigir a Migração de Dados Incompletos
+# Corrigir Login Travado
 
-## Problema Identificado
+## Problema
 
-A Edge Function `migrate-mock-data` contém dados incompletos em comparação ao arquivo mock original:
+Ao fazer login, o fluxo é:
+1. Supabase Auth autentica o usuario (funciona)
+2. App tenta buscar `username` na tabela `forms_users` do Supabase
+3. O banco de dados esta com timeout (nao responde)
+4. `username` fica `null`
+5. A condicao `if (!user || !username)` na linha 79 do `Index.tsx` mantém o usuario na tela de login
 
-| Categoria | Edge Function | Mock Original | Diferença |
-|-----------|---------------|---------------|-----------|
-| Polos | 378 | ~1470 | ~1092 faltando |
-| Modalidades | ~20 | ~26 | ~6 faltando |
-| Cursos | ~400 | ~700+ | ~300+ faltando |
+O usuario esta autenticado, mas o app nao reconhece porque nao conseguiu buscar o perfil.
 
-A Edge Function foi criada com apenas uma parte dos dados do arquivo `src/mock/formsData.ts`, especificamente:
-- Polos: apenas até "Instituto Abraça-me" (linha 388), faltando ~1000 polos
-- Pós-Graduação: faltando centenas de cursos "LATO SENSU"
-- PROFISSIONALIZANTES PREMIUM: incompleto (só alguns cursos básicos)
+## Solucao
 
-## Solucao Proposta
+Modificar `src/pages/Index.tsx` para ter um fallback quando a consulta ao banco falhar:
 
-### Fase 1: Reescrever a Edge Function
+1. **Fallback para username**: Se a consulta a `forms_users` falhar ou retornar vazio, usar o email do usuario (disponivel no objeto `user` do Supabase Auth) como username temporario.
 
-Modificar `supabase/functions/migrate-mock-data/index.ts` para importar os dados diretamente do arquivo mock original de forma dinâmica, em vez de ter os dados hardcoded:
+2. **Tratamento de erro em `loadUserProfile`**: Adicionar try/catch com timeout para nao ficar esperando indefinidamente.
 
-```text
-+------------------------------+
-|   Edge Function (index.ts)   |
-+------------------------------+
-           |
-           | Importa dados de
-           v
-+------------------------------+
-|  shared/mock-data.ts (novo)  |
-+------------------------------+
-           |
-           | Contém arrays completos:
-           | - POLOS_DATA (1470 itens)
-           | - MODALIDADES_CURSOS (26 categorias)
-           v
-+------------------------------+
-|    Processa em lotes de 100  |
-+------------------------------+
-```
+3. **Timeout de seguranca**: Se apos 5 segundos o perfil nao carregar, usar o email como fallback.
 
-### Fase 2: Criar arquivo de dados compartilhado
+### Mudancas no codigo
 
-Criar um novo arquivo `supabase/functions/_shared/mock-data.ts` contendo:
+**Arquivo: `src/pages/Index.tsx`**
 
-1. **POLOS_DATA**: Array com todos os ~1470 polos, extraidos de `poloTelefoneMap`
-2. **MODALIDADES_CURSOS**: Objeto com todas as 26 modalidades e seus cursos, extraidos de `nivelEnsinoCursoMap`
-
-### Fase 3: Atualizar a Edge Function
-
-A Edge Function sera atualizada para:
-1. Importar de `../_shared/mock-data.ts`
-2. Manter a logica de processamento em lotes de 100
-3. Usar `upsert` com `ignoreDuplicates: true` para evitar duplicatas
-
-### Arquivos a Modificar
-
-1. **Criar**: `supabase/functions/_shared/mock-data.ts`
-   - Contera todos os dados de polos (~1470)
-   - Contera todas as modalidades e cursos (~26 categorias, ~700+ cursos)
-
-2. **Atualizar**: `supabase/functions/migrate-mock-data/index.ts`
-   - Remover arrays de dados hardcoded
-   - Importar de `../_shared/mock-data.ts`
-   - Manter mesma logica de processamento progressivo
-
-### Detalhes Tecnicos
-
-O arquivo `_shared/mock-data.ts` sera estruturado assim:
+- Na funcao `loadUserProfile`: adicionar try/catch e fallback para `user.email`
+- Alterar a logica para que, se o banco falhar, o usuario ainda consiga entrar usando o email como nome
 
 ```typescript
-// Todos os polos com telefones
-export const POLOS_DATA = [
-  { nome: "POLO TESTE", telefone: "(44) 99905-6702" },
-  // ... ~1470 polos
-];
+const loadUserProfile = async (userId: string, userEmail?: string) => {
+  try {
+    const { data, error } = await supabase
+      .from("forms_users")
+      .select("full_name, email")
+      .eq("user_id", userId)
+      .single();
 
-// Todas as modalidades com seus cursos
-export const MODALIDADES_CURSOS = {
-  "Aperfeicoamento De Estudos": [...],
-  "Extensao Universitaria": [...],
-  // ... ~26 categorias
+    if (data) {
+      setUsername(data.full_name || data.email.split("@")[0]);
+    } else {
+      // Fallback: usar email do auth
+      setUsername(userEmail?.split("@")[0] || "Usuário");
+    }
+  } catch (error) {
+    // Banco indisponível - usar email como fallback
+    setUsername(userEmail?.split("@")[0] || "Usuário");
+  }
 };
 ```
 
-### Resultado Esperado
+- Atualizar as chamadas para passar o email:
+  - `loadUserProfile(session.user.id, session.user.email)`
 
-Apos a implementacao:
-- **Polos**: ~1470 registros
-- **Modalidades**: ~26 registros
-- **Cursos**: ~700+ registros (unicos)
-- **Vinculos**: proporcional aos cursos/modalidades
+### Resultado
 
-O usuario podera clicar no botao "Migrar Dados do Mock" uma unica vez e todos os dados serao migrados progressivamente em lotes de 100.
+O usuario conseguira fazer login mesmo quando o banco de dados estiver lento ou indisponivel, usando o email como nome temporario.
