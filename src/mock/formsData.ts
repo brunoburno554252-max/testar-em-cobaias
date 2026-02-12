@@ -1472,6 +1472,7 @@ export const poloTelefoneMap: Record<string, string> = {
   "TECPRO MULTI ENSINO": "(91)984939322",
   "POLO CATIANA FERRAZ": "(51)998553407",
   REIS: "(31)998898020",
+  SUPEREDU: "nan",
 };
 
 // Lista de nomes dos polos (extraída do mapeamento)
