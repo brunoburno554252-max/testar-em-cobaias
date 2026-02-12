@@ -1474,6 +1474,7 @@ export const poloTelefoneMap: Record<string, string> = {
   SUPEREDU: "nan",
   "Polo Avila": "(45)999237653",
   PEDRO: "(17)981497737",
+  "POLO ERECHIM-RS": "(41)995648008",
 };
 
 // Lista de nomes dos polos (extraída do mapeamento)
