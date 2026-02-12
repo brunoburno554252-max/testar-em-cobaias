@@ -525,7 +525,6 @@ export const poloTelefoneMap: Record<string, string> = {
   "Instituto educacional águia": "(61) 9275-1276",
   Dhionnes: "nan",
   "Instituto Corporativo de Educação em Negócios": "(64) 98451-1852",
-
   "FS CURSOS": "(62) 98484-5408",
   EDUQUI: "nan",
   "EngTECH Digital": "(91) 98123-8157",
@@ -1473,6 +1472,7 @@ export const poloTelefoneMap: Record<string, string> = {
   "POLO CATIANA FERRAZ": "(51)998553407",
   REIS: "(31)998898020",
   SUPEREDU: "nan",
+  "Polo Avila": "(45)999237653",
 };
 
 // Lista de nomes dos polos (extraída do mapeamento)
