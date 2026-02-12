@@ -1473,6 +1473,7 @@ export const poloTelefoneMap: Record<string, string> = {
   REIS: "(31)998898020",
   SUPEREDU: "nan",
   "Polo Avila": "(45)999237653",
+  PEDRO: "(17)981497737",
 };
 
 // Lista de nomes dos polos (extraída do mapeamento)
