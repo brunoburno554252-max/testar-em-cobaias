@@ -4061,7 +4061,7 @@ export const globalGestorOptions: string[] = [
   "Roseany Maciel",
   "Jethro Neri Vargas Pereira",
   "Maíra Freire dos Santos",
-];
+]
 
 export const globalSelectOptions: Record<string, string[]> = {
   STATUS: ["Aberto", "Em Andamento", "Resolvido", "Fechado"],
