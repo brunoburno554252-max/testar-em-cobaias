@@ -4058,6 +4058,7 @@ export const globalGestorOptions: string[] = [
   "JOÃO PAULO",
   "FLAVIO",
   "Roseany Maciel",
+  "Jethro Neri Vargas Pereira",
 ];
 
 export const globalSelectOptions: Record<string, string[]> = {
